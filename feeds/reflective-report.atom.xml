@@ -71,7 +71,151 @@ To summarize our observation from this comparison:
 &lt;p&gt;Our case study highlights a clear trend that LLM-based sentiment analysis offers a significant improvement in understanding and interpretability, especially in complex domains like crypto. By leveraging tools like Ollama and FastAPI, it is now possible to build powerful, local-first sentiment systems with minimal infrastructure, and data privacy could be better secured.
 Despite its advantages, the LLM approach is not perfect. It requires much more computational resources and time, making it slower than rule-based systems and less suitable for high-frequency trading. LLM outputs can vary a lot depending on prompt design, requiring rigorous prompt fine-tuning to ensure consistent scoring. Additionally, confidence scores are often heuristic rather than statistically grounded, unlike those from trained ML models, which must be handled with caution in risk management.
 For real-world applications, a hybrid approach combining speed with interpretability may be ideal. Firstly use rule-based models like VADER for rapid initial lightweight filtering, and then route high-impact or ambiguous news to LLMs for deep contextual reasoning.
-Our next phase will involve manually labelling a few texts from each data source and comparing them to how the price of cryptocurrencies moved at the time the articles were published. We will use this information to iteratively improve our model by implementing more preprocessing and data cleaning steps if necessary as well as improving LLM prompting to get more optimal results. We may also fine tune our LLM since cryptocurrencies and their uses evolve rapidly, thus, our model needs to adapt accordingly as well.&lt;/p&gt;</content><category term="Reflective Report"/><category term="Group Cryptollama"/></entry><entry><title>Demo Blog Post (by Group "Fintech Disruption")</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/demo-blog-post-by-group-fintech-disruption.html" rel="alternate"/><published>2026-01-15T17:12:00+08:00</published><updated>2026-01-15T17:12:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-01-15:/FINA2350-student-blog-2026-01/demo-blog-post-by-group-fintech-disruption.html</id><summary type="html">&lt;p&gt;By Group "Fintech Disruption"&lt;/p&gt;
+Our next phase will involve manually labelling a few texts from each data source and comparing them to how the price of cryptocurrencies moved at the time the articles were published. We will use this information to iteratively improve our model by implementing more preprocessing and data cleaning steps if necessary as well as improving LLM prompting to get more optimal results. We may also fine tune our LLM since cryptocurrencies and their uses evolve rapidly, thus, our model needs to adapt accordingly as well.&lt;/p&gt;</content><category term="Reflective Report"/><category term="Group Cryptollama"/></entry><entry><title>Event-Driven NLP Analysis of M&amp;A Announcements and Stock Price Reactions</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/event-driven-nlp-analysis-of-ma-announcements-and-stock-price-reactions.html" rel="alternate"/><published>2026-01-15T17:12:00+08:00</published><updated>2026-01-15T17:12:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-01-15:/FINA2350-student-blog-2026-01/event-driven-nlp-analysis-of-ma-announcements-and-stock-price-reactions.html</id><summary type="html">&lt;p&gt;By Group "Sentiment Arbitrage"&lt;/p&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In our NLP project, we aim to analyze how M&amp;amp;A announcements affect stock prices by combining announcement texts with financial data. However, we quickly ran into a major hurdle: finding reliable, high-quality data. Below is a log of our exploration and the lessons learned …&lt;/p&gt;</summary><content type="html">&lt;p&gt;By Group "Sentiment Arbitrage"&lt;/p&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In our NLP project, we aim to analyze how M&amp;amp;A announcements affect stock prices by combining announcement texts with financial data. However, we quickly ran into a major hurdle: finding reliable, high-quality data. Below is a log of our exploration and the lessons learned along the way.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Part I: Sourcing M&amp;amp;A Announcements&lt;/h2&gt;
+&lt;h3&gt;Version 1: Trying Newsdata.io&lt;/h3&gt;
+&lt;p&gt;We started with &lt;strong&gt;Newsdata.io&lt;/strong&gt;, but encountered four main problems:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;No full text&lt;/strong&gt; – Only abstracts of the announcement were provided, which was insufficient for NLP analysis.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Inaccurate keyword search&lt;/strong&gt; – The results contained many irrelevant articles such as market forecasting, comment, rumors.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Limited time window&lt;/strong&gt; – The free data provided is only for the most recent 48 hours, so historical analysis is not possible.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Small data volume&lt;/strong&gt; – The total number of articles was too small for meaningful modeling.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Attempted solution:&lt;/strong&gt;&lt;br&gt;
+To solve problem 1 “No full Text”, we attempted to built a scraper using &lt;strong&gt;Beautiful Soup&lt;/strong&gt; library, but it pulled noisy content (ads, &lt;code&gt;&amp;lt;title&amp;gt;&lt;/code&gt; sections). Switching to &lt;strong&gt;Newspaper3k&lt;/strong&gt; improved extraction quality, but some websites blocked scraping entirely. In total, we managed to collect only around 1,000 samples.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;Version 2: Moving to Newsapi.ai&lt;/h3&gt;
+&lt;p&gt;We switched to &lt;strong&gt;Newsapi.ai&lt;/strong&gt; to overcome the limitations of Newsdata.io. Luckily, Newsapi.ai provides data from the past month, and the full text of the articles can be downloaded.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;New issue:&lt;/strong&gt;&lt;br&gt;
+However, keyword search remained imprecise. Although the dataset expands to 13k articles, most were unofficial announcements. These are mostly news reports or analyst commentaries on mergers and acquisitions, which can lead to duplication and information noise.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;Version 3: Exploring Hugging Face with Custom Filtering&lt;/h3&gt;
+&lt;p&gt;To access older data and gain more control over filtering, we turned to &lt;strong&gt;Hugging Face&lt;/strong&gt; datasets. This time, we successfully obtained news data spanning multiple years, and came up with a moderate data volume (~5k). While this scale was sufficient for initial exploration, the process revealed significant limitations in data quality and required substantial manual intervention in filtering.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Cons:&lt;/strong&gt;&lt;br&gt;
+We had to design our own multi-stage filtering logic:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Dataset selection&lt;/strong&gt; – We shortlisted about 50 potentially relevant datasets using broad keywords including “news”, “financial news”, and “M&amp;amp;A”.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Sample filtering&lt;/strong&gt; – We then scanned these datasets using transaction‑focused keywords such as “acquire”, “acquired”, and “acquisition” to extract candidate texts related to mergers and acquisitions.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Result:&lt;/strong&gt;&lt;br&gt;
+Even after filtering, the data remained noisy. Most retrieved texts were news discussions or commentaries on M&amp;amp;A events, rather than the formal, official company announcements we needed for our analysis just like version 2.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;Version 4: Abandoning News APIs – Moving to SEC Filings&lt;/h3&gt;
+&lt;p&gt;Facing persistent noise in news‑based data, we evaluated two improved strategies:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Option A:&lt;/strong&gt; Refine Hugging Face samples using a pretrained classification model. However, this would require substantial computational resources for local inference and did not align with our immediate priorities.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Option B:&lt;/strong&gt; Source information directly from its original, official channel – the &lt;strong&gt;U.S. Securities and Exchange Commission (SEC)&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We selected &lt;strong&gt;Option B&lt;/strong&gt; as the more reliable and efficient path.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Current status:&lt;/strong&gt;
+Using the &lt;strong&gt;SEC API&lt;/strong&gt;, we collected all &lt;strong&gt;DEFM14A&lt;/strong&gt;((merger-related proxy statement) filings since 2001 as our primary textual dataset. The resulting volume is appropriate and sufficient for our research objectives.&lt;/p&gt;
+&lt;p&gt;The following code shows a function retrieving the direct link to a &lt;strong&gt;DEFM14A&lt;/strong&gt; from the SEC EDGAR database. Using a company's &lt;strong&gt;CIK&lt;/strong&gt; and &lt;strong&gt;accession number&lt;/strong&gt;, it constructs the URL for the filing's index page, fetches the HTML, and parses the document table using &lt;strong&gt;BeautifulSoup&lt;/strong&gt;.
+The script iterates through the filing's attachments to find a match for the specific "DEFM14A" document type. Once found, it converts the relative path into a full absolute URL and returns it. It also includes built-in delays to comply with SEC rate-limiting policies, ensuring a reliable and automated way to extract key legal documents from financial filings.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;find_doc_from_index_page&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cik&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;accession&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+   &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;cik&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;accession&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+       &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
+
+
+   &lt;span class="n"&gt;acc_nd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;accession&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;-&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="n"&gt;base_dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;SEC_BASE&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/Archives/edgar/data/&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;cik&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;acc_nd&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+   &lt;span class="n"&gt;index_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;base_dir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;accession&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;-index.htm&amp;quot;&lt;/span&gt;
+
+
+   &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+       &lt;span class="n"&gt;resp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;index_url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;HEADERS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;30&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+       &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;DELAY&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestException&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+       &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
+   &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+       &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
+
+
+   &lt;span class="n"&gt;soup&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;BeautifulSoup&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;lxml&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="n"&gt;table&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;soup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;table&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;class_&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;tableFile&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;table&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+       &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
+
+   &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;abs_url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+       &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;http&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+           &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;href&lt;/span&gt;
+       &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+           &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;SEC_BASE&lt;/span&gt;&lt;span class="si"&gt;}{&lt;/span&gt;&lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+       &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;base_dir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+   &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;table&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;tr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:]:&lt;/span&gt;
+       &lt;span class="n"&gt;cells&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;td&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+       &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cells&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+           &lt;span class="n"&gt;ftype&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cells&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_text&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;upper&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+           &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;ftype&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;DEFM14A&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+               &lt;span class="n"&gt;link&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cells&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;a&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+               &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;href&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                   &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;abs_url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;href&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+   &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Here is a sample of our downloaded news data, with tile, date, and full text.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Picture showing Powell" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Sentiment-Arbitrage_01_SEC-API-Output.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Remaining challenge:&lt;/strong&gt;&lt;br&gt;
+The SEC timestamps are only accurate to the day. Since we plan to study stock price reactions at a high frequency (minute or hour level), we are now working to improve timestamp granularity to align with financial market data, which could possibly solved by extracting the full &lt;strong&gt;acceptance datetime&lt;/strong&gt; from EDGAR’s original filing metadata. This field records the exact hour, minute, and second (in Eastern Time) at which each disclosure is officially received and published by the SEC.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Part II: Retrieving Financial Data&lt;/h2&gt;
+&lt;p&gt;With the announcement texts and dates in hand, the next step was to retrieve stock price data for the companies involved. This follows feature engineering, where we used Named Entity Recognition (NER) to identify target companies and their corresponding announcement dates. We chose to develop our data collection method proactively to avoid last‑minute bottlenecks.&lt;/p&gt;
+&lt;h3&gt;Initial Choice: AlphaVantage&lt;/h3&gt;
+&lt;p&gt;We first selected &lt;strong&gt;AlphaVantage&lt;/strong&gt; for its stable API, which promised consistent and reliable data feeds. However, the intraday and extended historical data required for our analysis was only available through a paid tier. With no viable free access, we had to pivot.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;Alternative: yfinance (Yahoo Finance)&lt;/h3&gt;
+&lt;p&gt;We adopted &lt;strong&gt;yfinance&lt;/strong&gt;, an unofficial Python library that interfaces with Yahoo Finance. It proved efficient and user‑friendly for retrieving daily stock data.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Workflow:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# --------------------------&lt;/span&gt;
+&lt;span class="c1"&gt;# 2. DOWNLOAD ALL DATA&lt;/span&gt;
+&lt;span class="c1"&gt;# --------------------------&lt;/span&gt;
+&lt;span class="n"&gt;all_data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;  &lt;span class="c1"&gt;# Store ALL stock data here&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;idx&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;df_tickers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;iterrows&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;ticker&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ticker&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;start_date&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;end&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;end_date&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Downloading: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; | &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; to &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Download stock data&lt;/span&gt;
+    &lt;span class="n"&gt;stock&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;yf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Ticker&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;stock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;history&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;interval&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;1d&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;actions&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Add ticker column so you know which stock it is&lt;/span&gt;
+    &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Ticker&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ticker&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Add to master list&lt;/span&gt;
+    &lt;span class="n"&gt;all_data&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Combine all stocks into ONE DataFrame&lt;/span&gt;
+&lt;span class="n"&gt;final_df&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;concat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;all_data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;With just a few lines of code, we retrieved all essential trading metrics: opening price, daily high, daily low, closing price, and trading volume.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;Capabilities and Limitations of Daily Data&lt;/h3&gt;
+&lt;p&gt;This approach effectively meets basic analytical needs for daily price data. When an M&amp;amp;A announcement is made after market close, we can assess market reaction by comparing the previous day's closing price to the next day's opening price. The gap reflects overnight market sentiment influenced by the news.&lt;/p&gt;
+&lt;p&gt;However, daily data has clear limitations:
+- An announcement made &lt;strong&gt;during trading hours&lt;/strong&gt; can trigger immediate price swings and volatility that daily data fails to capture.
+- &lt;strong&gt;1‑minute interval data&lt;/strong&gt; is crucial for monitoring rapid price changes and assessing real‑time market reactions&lt;/p&gt;
+&lt;p&gt;Unfortunately, Yahoo Finance (accessed via yfinance) imposes strict limitations on historical intraday data: 1‑minute intraday data is only available for the last 30 days, and hourly interval data is restricted to the past 730 days. Thus, for comprehensive, long‑term high‑frequency analysis, this is insufficient. Alternatives like AlphaVantage and Polygon offer more granular data, but both require paid subscriptions—a less ideal fit for our current setup.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Conclusion and Next Steps&lt;/h2&gt;
+&lt;p&gt;Our journey took us from commercial news APIs to open‑source datasets and finally to official regulatory filings. We have solved the core issues of data availability and authenticity. The next step is to refine the timestamp resolution. Also, we have decided to adopt &lt;strong&gt;Wind&lt;/strong&gt; as our primary financial data platform going forward. We will begin testing it next week. With Wind, we aim to obtain high‑frequency intraday data (minute‑level) over extended historical periods and align announcement timestamps more precisely with stock price movements.&lt;/p&gt;</content><category term="Reflective Report"/><category term="Sentiment Arbitrage"/></entry><entry><title>Demo Blog Post (by Group "Fintech Disruption")</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/demo-blog-post-by-group-fintech-disruption.html" rel="alternate"/><published>2026-01-10T17:12:00+08:00</published><updated>2026-01-10T17:12:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-01-10:/FINA2350-student-blog-2026-01/demo-blog-post-by-group-fintech-disruption.html</id><summary type="html">&lt;p&gt;By Group "Fintech Disruption"&lt;/p&gt;
 &lt;p&gt;This is a demo blog post. Its purpose is to show how to use the basic
 functionality of Markdown in the context of a blog post.&lt;/p&gt;
 &lt;h2&gt;How to Include a Link and Python Code&lt;/h2&gt;
