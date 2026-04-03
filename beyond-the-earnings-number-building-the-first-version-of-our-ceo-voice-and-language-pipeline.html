@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="FINA2350 Students 2026" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="group NLPPPPP, earnings calls, MAEC, multimodal NLP, finance, preprocessing, Reflective Report, " />
+
+<meta property="og:title" content="Beyond the Earnings Number: Building the First Version of Our CEO Voice-and-Language Pipeline "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/beyond-the-earnings-number-building-the-first-version-of-our-ceo-voice-and-language-pipeline.html" />
+<meta property="og:description" content="By Group &#34;NLPPPPP&#34; Why our first week was about data, not prediction When we gave our first presentation, our research question sounded elegant: can CEO communication style during earnings calls explain short-term market reactions beyond the numbers themselves? Our slide deck translated that idea into three candidate features—personalism, uncertainty …" />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="FINA2350 Students 2026" />
+<meta property="og:article:published_time" content="2026-03-25T18:00:00+08:00" />
+<meta name="twitter:title" content="Beyond the Earnings Number: Building the First Version of Our CEO Voice-and-Language Pipeline ">
+<meta name="twitter:description" content="By Group &#34;NLPPPPP&#34; Why our first week was about data, not prediction When we gave our first presentation, our research question sounded elegant: can CEO communication style during earnings calls explain short-term market reactions beyond the numbers themselves? Our slide deck translated that idea into three candidate features—personalism, uncertainty …">
+
+        <title>Beyond the Earnings Number: Building the First Version of Our CEO Voice-and-Language Pipeline  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/beyond-the-earnings-number-building-the-first-version-of-our-ceo-voice-and-language-pipeline.html">
+                Beyond the Earnings Number: Building the First Version of Our CEO Voice-and-Language Pipeline
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p>By Group "NLPPPPP"</p>
+<h2>Why our first week was about data, not prediction</h2>
+<p>When we gave our first presentation, our research question sounded elegant: <strong>can CEO communication style during earnings calls explain short-term market reactions beyond the numbers themselves?</strong> Our slide deck translated that idea into three candidate features—<strong>personalism</strong>, <strong>uncertainty</strong>, and <strong>vocal stress</strong>—and a later financial model built around realized volatility. That is the polished version of the project. The unpolished version, which is more appropriate for a first blog post, is that we spent our first serious week not doing "Fancy AI" but trying to make the raw data behave.</p>
+<p>That turned out to be exactly the right place to begin.</p>
+<p>The presentation framework is already ambitious. We want to use the <strong>MAEC earnings-call dataset</strong> for transcripts and low-level audio features, and later combine those call-level signals with market data and controls such as fundamentals and earnings surprise. The motivation is clear: investors may react not only to what management says, but also to <strong>how</strong> it is said. Boards may care because communication quality may have market value. Regulators may care because persuasive communication could move prices independently of fundamentals. All of that is interesting. But before any of those arguments can be tested, we need to answer a more basic question:</p>
+<blockquote>
+<p>What exactly is one usable observation in this project?</p>
+</blockquote>
+<p>That question became the center of our first-stage reflection.</p>
+<p><img alt="Figure 1: Early-stage project map" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/nlppppp_01_pipeline-map.png"></p>
+<h2>The first real problem: what counts as one observation?</h2>
+<p>At first glance, MAEC looks simple enough. In <code>MAEC_Dataset</code>, each earnings-call folder contains <code>text.txt</code> and <code>features.csv</code>. The transcript file stores one utterance per line, and the feature file stores one row of acoustic measurements per utterance. At the beginning, we treated this as a counting problem: if the number of transcript lines matched the number of feature rows, then maybe the data was “clean enough.”</p>
+<p>That turned out to be too weak. In the course workflow, this is really a <strong>data-validation</strong> step: not just whether the counts match, but whether those two files can be turned into one <strong>aligned segment-level table</strong> that we can trust.</p>
+<p>If the transcript were one giant document while the audio file were broken into many small segments, then a direct merge would be impossible. A call-level text score and a segment-level audio score do not live on the same observational level. That sounds like a minor data-wrangling nuisance, but in a multimodal project it is actually foundational. If the units do not match, any “voice-and-language” feature table is partly fiction.</p>
+<p>So our first useful piece of code was not a model. It was a compact validation-and-construction step that checks one-to-one alignment and then makes the observational unit explicit.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="k">def</span> <span class="nf">build_segment_table</span><span class="p">(</span><span class="n">call_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">preview_rows</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">call_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">call_dir</span><span class="p">)</span>
+    <span class="n">text_path</span> <span class="o">=</span> <span class="n">call_path</span> <span class="o">/</span> <span class="s2">&quot;text.txt&quot;</span>
+    <span class="n">feat_path</span> <span class="o">=</span> <span class="n">call_path</span> <span class="o">/</span> <span class="s2">&quot;features.csv&quot;</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">(</span><span class="n">text_path</span><span class="p">,</span> <span class="n">feat_path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected file missing: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">text_lines</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="p">]</span>
+    <span class="n">audio_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">feat_path</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">audio_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">audio_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="n">n_text</span><span class="p">,</span> <span class="n">n_audio</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_lines</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_df</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_text</span> <span class="o">!=</span> <span class="n">n_audio</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Alignment failed: </span><span class="si">{</span><span class="n">n_text</span><span class="si">}</span><span class="s2"> non-empty transcript lines vs &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n_audio</span><span class="si">}</span><span class="s2"> feature rows (units must match 1:1).&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">text_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;segment_id&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_text</span><span class="p">),</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text_lines</span><span class="p">})</span>
+    <span class="n">aligned</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">text_df</span><span class="p">,</span> <span class="n">audio_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Segment-level table (</span><span class="si">{</span><span class="n">call_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Each row = one transcript line + one acoustic feature row.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Segments (observations): </span><span class="si">{</span><span class="n">n_text</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Acoustic columns:        </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">audio_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Alignment:               OK (1:1)&quot;</span><span class="p">)</span>
+
+    <span class="n">dur_col</span> <span class="o">=</span> <span class="s2">&quot;Audio Length&quot;</span>
+    <span class="n">preview</span> <span class="o">=</span> <span class="n">aligned</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">preview_rows</span><span class="p">)</span>
+    <span class="n">show</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;segment_id&quot;</span><span class="p">:</span> <span class="n">preview</span><span class="p">[</span><span class="s2">&quot;segment_id&quot;</span><span class="p">]}</span>
+    <span class="k">if</span> <span class="n">dur_col</span> <span class="ow">in</span> <span class="n">preview</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">show</span><span class="p">[</span><span class="s2">&quot;duration_s&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">preview</span><span class="p">[</span><span class="n">dur_col</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Mean pitch&quot;</span><span class="p">,</span> <span class="s2">&quot;Mean intensity&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">preview</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;pitch_hz&quot;</span> <span class="k">if</span> <span class="s2">&quot;pitch&quot;</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;intensity&quot;</span>
+            <span class="n">show</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">preview</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">preview_out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">show</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">preview_rows</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First </span><span class="si">{</span><span class="n">preview_rows</span><span class="si">}</span><span class="s2"> segments (numeric preview only)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">option_context</span><span class="p">(</span><span class="s2">&quot;display.width&quot;</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="s2">&quot;display.show_dimensions&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">preview_out</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">aligned</span>
+
+<span class="n">segments</span> <span class="o">=</span> <span class="n">build_segment_table</span><span class="p">(</span><span class="s2">&quot;MAEC_Dataset/20150226_ADSK&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><em>Example run on call folder <code>20150226_ADSK</code>:</em></p>
+<ul>
+<li>Each row = one transcript line + one acoustic feature row.</li>
+<li>Segments (observations): 60</li>
+<li>Acoustic columns: 29</li>
+<li>Alignment: OK (1:1)</li>
+</ul>
+<p>First five segments (numeric preview only):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">segment_id</th>
+<th style="text-align: right;">duration_s</th>
+<th style="text-align: right;">pitch_hz</th>
+<th style="text-align: right;">intensity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.69</td>
+<td style="text-align: right;">501.21</td>
+<td style="text-align: right;">29.33</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5.29</td>
+<td style="text-align: right;">143.61</td>
+<td style="text-align: right;">59.70</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9.61</td>
+<td style="text-align: right;">124.76</td>
+<td style="text-align: right;">53.61</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1.79</td>
+<td style="text-align: right;">140.12</td>
+<td style="text-align: right;">32.01</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">160.70</td>
+<td style="text-align: right;">53.29</td>
+</tr>
+</tbody>
+</table>
+<p>What changed our understanding was not the equality check by itself. It was the realization that data validation here means making sure one line from <code>text.txt</code> and one row from <code>features.csv</code> can be combined into one usable multimodal observation. At first we thought alignment was mostly a counting problem. Then we realized it was a data-validation problem about the observational unit.</p>
+<p>That matters because later feature engineering becomes much cleaner once the unit is explicit. We can compute text measures on each segment, keep acoustic measures on the same segment, and only then decide how to aggregate upward to the call level. In other words, the dataset becomes multimodal not because two files sit in one folder, but because they can be merged into one observation table without guessing.</p>
+<h2>Cleaner transcripts do not mean cleaner measurement</h2>
+<p>The next improvement came from looking at the person-labeled version of the dataset. In <code>MAEC_Dataset_Person_Label</code>, the transcript is no longer just raw lines in a text file. Instead, <code>text.csv</code> contains at least <code>Person</code> and <code>Sentence</code>, which means the conversation is already split into anonymous speaker turns.</p>
+<p>In course-workflow terms, this sits in the <strong>cleaning / preprocessing</strong> stage. We can strip empty rows, standardize the sentence field, and inspect turn structure much more cleanly than before. But preprocessing the transcript does not automatically solve the harder measurement problem.</p>
+<p>That was genuinely helpful, but it did not solve the problem we first hoped it would solve. The presence of a <code>Person</code> column tells us that the transcript has multi-speaker structure. It does <strong>not</strong> by itself tell us which speaker is the CEO, which one is an analyst, and which one is another manager. We realized pretty quickly that speaker separation is not the same as role separation.</p>
+<p>So the second block of code became a preprocessing-and-inspection step for speaker structure rather than an overconfident “CEO language” measure.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">inspect_person_labeled_call</span><span class="p">(</span>
+    <span class="n">call_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">preview_rows</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">sentence_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">70</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">call_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;text.csv&quot;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sentence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sentence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sentence&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;word_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sentence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">()</span>
+
+    <span class="n">turns</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Person&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Person&quot;</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s2">&quot;word_count&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">summary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;turns&quot;</span><span class="p">:</span> <span class="n">turns</span><span class="p">,</span> <span class="s2">&quot;words&quot;</span><span class="p">:</span> <span class="n">words</span><span class="p">})</span>
+    <span class="n">summary</span><span class="p">[</span><span class="s2">&quot;words/turn&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">summary</span><span class="p">[</span><span class="s2">&quot;words&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">summary</span><span class="p">[</span><span class="s2">&quot;turns&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">summary</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;speaker&quot;</span>
+    <span class="n">total_turns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">n_speakers</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Person&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Non-empty labelled turns: </span><span class="si">{</span><span class="n">total_turns</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Distinct speakers:        </span><span class="si">{</span><span class="n">n_speakers</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+
+<span class="n">speaker_df</span> <span class="o">=</span> <span class="n">inspect_person_labeled_call</span><span class="p">(</span><span class="s2">&quot;MAEC_Dataset/20150226_ADSK&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><em>Example run on call folder <code>20150226_ADSK</code>:</em></p>
+<ul>
+<li>Non-empty labelled turns: 60</li>
+<li>Distinct speakers: 2</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>speaker</th>
+<th style="text-align: right;">turns</th>
+<th style="text-align: right;">words</th>
+<th style="text-align: right;">words/turn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Person0</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">708</td>
+<td style="text-align: right;">14.4</td>
+</tr>
+<tr>
+<td>Person1</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">152</td>
+<td style="text-align: right;">13.8</td>
+</tr>
+</tbody>
+</table>
+<p>Even without assigning economic roles, this already tells us something important. We can see how many distinct speakers appear, who dominates the turn-taking, and how much text each anonymous speaker contributes. That is useful descriptive structure. But it still does not justify calling any early text metric a CEO-only variable.</p>
+<p>This changed how we interpret our own prototype features. If we count pronouns, hedging words, or uncertainty language across all sentences in <code>text.csv</code>, we are probably measuring a <strong>mixed-speaker communication environment</strong>, not a clean CEO construct. A rise in “I” or “maybe” could come from the executive team, from analysts during Q&amp;A, or from the interaction between them. That does not make the feature useless, but it changes what we are allowed to claim.</p>
+<p>So section 2 became less about “cleaning noisy text” in a generic sense and more about measurement discipline. Cleaning and preprocessing help us see the structure of the transcript more clearly, but they do not remove speaker-role ambiguity. That was another small but important shift in our thinking.</p>
+<h2>Averaging is already a modeling decision</h2>
+<p>The presentation proposes a <strong>vocal stress index</strong> built from low-level audio features using Python, pandas, and numpy. Again, the idea sounds straightforward until we look closely at the structure of <code>features.csv</code>.</p>
+<p>The file is not one row per call. It is one row per aligned segment.</p>
+<p>In the course workflow, this is the <strong>data transformation / feature engineering</strong> step. We have to decide how many segment-level rows should become one call-level score. Should every segment get equal weight? Probably not. In our sample call, the shortest usable segment is about <strong>0.2 seconds</strong>, the median is about <strong>4.4 seconds</strong>, and the 95th percentile is about <strong>14.4 seconds</strong>. If we average everything equally, a one-second acknowledgement could influence the final score as much as a much longer substantive answer.</p>
+<p>That is not a statistical detail. It is a design decision.</p>
+<p><img alt="Figure 2: Segment lengths in one sample call" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/nlppppp_01_wfc-segment-lengths.png"></p>
+<p>The histogram above made that issue visually obvious. Once we saw the spread in segment lengths, equal-weight averaging looked much harder to defend. That was a useful reminder that the workflow is iterative: the visualization was not decoration, it changed the aggregation choice.</p>
+<p>So our prototype audio code treats aggregation as a transformation step, validates the key assumptions, and compares equal-weight and duration-weighted versions side by side.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="k">def</span> <span class="nf">vocal_stress_from_features</span><span class="p">(</span><span class="n">features_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">min_components</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">features_path</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="n">audio_len_col</span> <span class="o">=</span> <span class="s2">&quot;Audio Length&quot;</span>
+    <span class="c1"># Higher values → more strain / less stable voice (literature-aligned).</span>
+    <span class="n">positive</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;Jitter local&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Shimmer local&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Fraction of unvoiced&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Mean NHR&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Degree of voice breaks&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="c1"># Higher values → clearer / more periodic voice → subtract after z-scoring.</span>
+    <span class="n">negative</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Mean HNR&quot;</span><span class="p">,</span> <span class="s2">&quot;Mean autocorrelation&quot;</span><span class="p">]</span>
+    <span class="n">feature_cols</span> <span class="o">=</span> <span class="n">positive</span> <span class="o">+</span> <span class="n">negative</span>
+
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">feature_cols</span> <span class="o">+</span> <span class="p">[</span><span class="n">audio_len_col</span><span class="p">]</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing columns: </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">feature_cols</span> <span class="o">+</span> <span class="p">[</span><span class="n">audio_len_col</span><span class="p">]]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
+    <span class="n">z_parts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">positive</span><span class="p">:</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+        <span class="n">mu</span><span class="p">,</span> <span class="n">sig</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">col</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">col</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span> <span class="o">/</span> <span class="n">sig</span> <span class="k">if</span> <span class="n">sig</span> <span class="ow">and</span> <span class="n">sig</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">col</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">z_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">replace</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">negative</span><span class="p">:</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+        <span class="n">mu</span><span class="p">,</span> <span class="n">sig</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">col</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">col</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span> <span class="o">/</span> <span class="n">sig</span> <span class="k">if</span> <span class="n">sig</span> <span class="ow">and</span> <span class="n">sig</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">col</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">z_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="o">.</span><span class="n">replace</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">))</span>
+
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">z_parts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">feature_cols</span><span class="p">)</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">segment_score</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ok</span> <span class="o">=</span> <span class="p">(</span><span class="n">counts</span> <span class="o">&gt;=</span> <span class="n">min_components</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">raw</span><span class="p">[</span><span class="n">audio_len_col</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span>
+    <span class="n">segment_score</span> <span class="o">=</span> <span class="n">segment_score</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ok</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ok</span><span class="p">,</span> <span class="n">audio_len_col</span><span class="p">]</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">lower</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">segment_score</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ok</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">score</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No segments with enough non-missing voice-quality features&quot;</span><span class="p">)</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;segments_in_file&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)),</span>
+        <span class="s2">&quot;segments_scored&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">score</span><span class="p">)),</span>
+        <span class="s2">&quot;min_components_required&quot;</span><span class="p">:</span> <span class="n">min_components</span><span class="p">,</span>
+        <span class="s2">&quot;vocal_strain_index_equal_weight&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+        <span class="s2">&quot;vocal_strain_index_duration_weighted&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">score</span><span class="o">.</span><span class="n">index</span><span class="p">])),</span>
+        <span class="s2">&quot;segment_strain_z&quot;</span><span class="p">:</span> <span class="n">segment_score</span><span class="p">,</span>
+        <span class="s2">&quot;component_columns&quot;</span><span class="p">:</span> <span class="n">feature_cols</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;segments_in_file: </span><span class="si">{</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;segments_in_file&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;segments_scored: </span><span class="si">{</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;segments_scored&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> (need ≥</span><span class="si">{</span><span class="n">min_components</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">feature_cols</span><span class="p">)</span><span class="si">}</span><span class="s2"> components)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;vocal_strain_index (equal-weight over segments): </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;vocal_strain_index_equal_weight&#39;</span><span class="p">],</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;vocal_strain_index (duration-weighted): </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;vocal_strain_index_duration_weighted&#39;</span><span class="p">],</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="n">audio_metrics</span> <span class="o">=</span> <span class="n">vocal_stress_from_features</span><span class="p">(</span><span class="s2">&quot;MAEC_Dataset/20150226_ADSK/features.csv&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><em>Example run on <code>features.csv</code> for <code>20150226_ADSK</code> (minimum 3 of 7 components per segment):</em></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Segments in file</td>
+<td style="text-align: right;">60</td>
+</tr>
+<tr>
+<td>Segments scored</td>
+<td style="text-align: right;">57</td>
+</tr>
+<tr>
+<td>Vocal strain index (equal-weight over segments)</td>
+<td style="text-align: right;">-0.0079</td>
+</tr>
+<tr>
+<td>Vocal strain index (duration-weighted)</td>
+<td style="text-align: right;">-0.0634</td>
+</tr>
+</tbody>
+</table>
+<p>Even this simple prototype taught us two things. First, there can already be a small amount of numeric attrition after coercion and missing-value handling. Second, a call-level audio feature is never “just an average.” It depends on standardization, missing-data rules, weighting, and the theoretical direction assigned to each component.</p>
+<p>At first aggregation looked like bookkeeping. Then we realized it was a transformation and design problem. In other words, feature engineering is already part of the research design, not a later add-on.</p>
+<p><img alt="Figure 3: Why the first blog post matters" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/nlppppp_01_data-frictions.png"></p>
+<h2>What this first stage was really about</h2>
+<p>Looking back, the most important progress we made this week was not building a final model. It was understanding how much of this project depends on careful preprocessing and a clear data workflow.</p>
+<p>At the beginning, the project sounded quite clean: take earnings-call transcripts and audio features, build language and voice measures, and later connect them to market reactions. Once we opened the raw files, the work looked different. We had to:</p>
+<ul>
+<li>check whether text and audio were aligned at the same observational level;</li>
+<li>clarify what speaker labels did and did not tell us; and</li>
+<li>decide how segment-level features should become a call-level variable.</li>
+</ul>
+<p>In that sense, this stage was less about prediction than about making the data usable.</p>
+<p>That shift turned out to be valuable. Preprocessing is not just a routine step before the “real” analysis. Here, it already shapes the analysis: each decision about cleaning, alignment, and aggregation affects what our variables will mean later. This post is a reflection on how the project moved from a broad idea to a more structured workflow.</p>
+<h2>Where we go from here</h2>
+<p>The next step is to keep improving the preprocessing pipeline before moving on to the finance side. Concretely, we plan to:</p>
+<ul>
+<li>address speaker-role ambiguity more carefully;</li>
+<li>strengthen the text-side uncertainty measure; and</li>
+<li>make aggregation rules for the audio features more consistent and easier to justify.</li>
+</ul>
+<p>Once these parts are clearer, we will be in a better position to build a cleaner call-level feature table and connect it to the later financial analysis.</p>
+<p>At this stage, the clearest progress is in the workflow: how raw text and audio should be organized, how one usable observation should be defined, and why preprocessing decisions matter for everything that follows. With that foundation in place, the next step is to keep refining the pipeline and turn these early decisions into a more consistent feature set for the rest of the project.</p>
+<h2>References</h2>
+<ul>
+<li><a href="https://github.com/Earnings-Call-Dataset/MAEC-A-Multimodal-Aligned-Earnings-Conference-Call-Dataset-for-Financial-Risk-Prediction">MAEC dataset repository</a></li>
+<li><a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01">FINA2350 student blog template repository</a></li>
+</ul>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-03-25T18:00:00+08:00">Wed 25 March 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#reflective-report-ref">Reflective Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#earnings-calls-ref">earnings calls
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#finance-ref">finance
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#group-nlppppp-ref">group NLPPPPP
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#maec-ref">MAEC
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#multimodal-nlp-ref">multimodal NLP
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#preprocessing-ref">preprocessing
+                    <span class="superscript">1</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
