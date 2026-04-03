@@ -1,6 +1,6 @@
 ---
 Title: Demo Blog Post (by Group "Fintech Disruption")
-Date: 2026-01-15 17:12
+Date: 2026-01-10 17:12
 Category: Reflective Report
 Tags: Group Fintech Disruption
 ---
