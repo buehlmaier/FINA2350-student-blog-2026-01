@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="NetFin Group" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="AI, NVDA, Reflective Report, " />
+
+<meta property="og:title" content="Defining T=0 – Cleaning AI News for NVDA Event Study "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/netfin-01-nvda-t0.html" />
+<meta property="og:description" content="How we defined T=0 and cleaned AI news data for our NVDA event study." />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="NetFin Group" />
+<meta property="og:article:published_time" content="2026-03-28T15:06:00+08:00" />
+<meta name="twitter:title" content="Defining T=0 – Cleaning AI News for NVDA Event Study ">
+<meta name="twitter:description" content="How we defined T=0 and cleaned AI news data for our NVDA event study.">
+
+        <title>Defining T=0 – Cleaning AI News for NVDA Event Study  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/netfin-01-nvda-t0.html">
+                Defining T=0 – Cleaning AI News for NVDA Event Study
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p>By Group NetFin</p>
+<hr>
+<h1>Defining T=0 - Cleaning AI News Data for an NVDA Event Study</h1>
+<p>Our group project explores how major AI-related news affects NVIDIA’s stock return by applying an event study with NLP-based sentiment analysis from Alpha Vantage’s <code>NEWS_SENTIMENT</code> API. In this blog post, one of the decisions that proved to be unexpectedly tricky for us was how to properly define T=0 and clean AI news data so that each event has a clear and defensible date associated with it. In theory, defining the event date sounds like a simple task, but when dealing with real-life data and news articles with multiple headlines and non-trading days, it becomes a data cleaning issue rather than a theory-based one.</p>
+<p>At a high level, our event study wants to ask a simple but interesting question: <strong>How does the stock return of NVDA respond to a major AI-related event or product release when it appears in the news?</strong> To do this properly, however, we must convert the messy data of news articles into a clean event study format where T=0 is the day the stock can respond to the event, and T=-1, T=+1, etc., are the days around the event. If our definition of T=0 is incorrect, then our abnormal stock return calculation and our understanding of how AI-related news affects the stock would be directly impacted. </p>
+<h2>Event Taxonomy: Four Shock Categories</h2>
+<p>To build a structured and reproducible event set, we classify AI-related news into four categories, each corresponding to a different economic transmission channel to NVDA returns.</p>
+<ul>
+<li><strong>Capability Shocks</strong> (Model &amp; Algorithmic Milestones)</li>
+<li><strong>Hardware Architecture Shocks</strong> (AI Dedicated Hardware &amp; Chips)</li>
+<li><strong>Policy / Regulatory Shocks</strong> (AI Policy &amp; Geopolitical Controls)</li>
+<li><strong>Corporate Landscape Shocks</strong> (Commercial &amp; Capital Milestones)</li>
+</ul>
+<h2>Problem 1: Multiple news items per event</h2>
+<p>We start from a curated list of 20 AI-related events per news category (shown as above). For each of these events, we used Alpha Vantage to pull a labelled news feed, which returns multiple headlines, each with fields like:</p>
+<ul>
+<li><code>publish_date</code>  </li>
+<li><code>title</code>  </li>
+<li><code>source</code>  </li>
+<li><code>nvda_relevance</code>  </li>
+<li><code>nvda_sentiment_score</code>  </li>
+<li><code>overall_sentiment_score</code>  </li>
+<li><code>url</code>  </li>
+<li><code>summary</code>  </li>
+</ul>
+<p>Here, <code>nvda_relevance</code> is a ticker-specific relevance score indicating how strongly the article is related to NVDA, and <code>nvda_sentiment_score</code> is the sentiment polarity for the NVDA ticker extracted from the article.  The <code>overall_sentiment_score</code> summarizes the overall tone of the article across all tickers.</p>
+<p>When we examined the downloaded CSV, we found that the news we fetched may have different <code>publish_date</code> values under what we considered the same conceptual AI event. As an example, the DeepSeek event appears many times in our Alpha Vantage news feed. Several headlines across different dates all describe essentially the same AI evnet:</p>
+<table>
+<thead>
+<tr>
+<th>publish_date</th>
+<th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-01-27 16:18:00</td>
+<td>Nvidia loses nearly 600 billion in market value after Chinese AI startup bursts onto scene</td>
+</tr>
+<tr>
+<td>2025-02-12 04:32:21</td>
+<td>DeepSeek Shows There Is No Longer One AI Trade, but Many (version 1)</td>
+</tr>
+<tr>
+<td>2025-02-12 04:32:21</td>
+<td>DeepSeek Shows There Is No Longer One AI Trade, but Many (duplicate row)</td>
+</tr>
+<tr>
+<td>2025-02-15 04:05:12</td>
+<td>Is Broadridge, Verint testing new Chinese chatbot DeepSeek for automation, efficiency</td>
+</tr>
+<tr>
+<td>2025-02-27 10:56:00</td>
+<td>Tencent fires up AI race with model it says outdoes DeepSeek</td>
+</tr>
+</tbody>
+</table>
+<p>This creates a problem for event definition. If we treat every headline as a separate event, we artificially inflate our sample size and double-count what is essentially the same AI announcement.  On the other hand, if we simply choose the first headline by time, we might introduce bias in the sentiment we associate with that event, especially if later articles focus more explicitly on NVDA’s role. </p>
+<p>To resolve this, we decided to use the news item with the highest <code>nvda_relevance</code> score for NVDA, using the ticker-specific relevance fields that Alpha Vantage provides.  In other words, for each conceptual AI event, we select the article where NVDA is most central to the content, rather than one that merely mentions the news in passing. This “max relevance per event” rule gave us a transparent, reproducible way to map multiple raw news items into a single event-level observation. </p>
+<hr>
+<h2>Problem 2: Non-trading publish dates</h2>
+<p>After we selected one article per conceptual event, the next concern was how we should map the <code>publish_date</code> of the article to T=0. Our first approach was to use a naive rule and let T=0 be the calendar date on which the article was published. Unfortunately, this approach does not work well when the article is published over a weekend or on a market holiday. NVDA does not trade on Sundays, which means we do not have any return data available for that date, but the news is already out, and the stock might start reacting as soon as the market opens. </p>
+<p>While the event study literature generally defines the event date as the time the information is made available to the market, in empirical implementation we must work with trading days, not raw calendar days.  As a consequence, we followed a standard approach and defined <code>trade_date</code>, which is the next available US trading day, as T=0 for our returns. For example: </p>
+<ul>
+<li>If the article is published on a Sunday, then T=0 will be Monday.  </li>
+<li>If the article is published on a market-holiday Monday, then T=0 will be Tuesday.  </li>
+</ul>
+<p>In this way, we guarantee that T=0 is always a trading day when the stock of NVDA might actually start reacting to the news.</p>
+<p>The code we use is as follows:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Convert publish_date -&gt; trade_date:</span>
+    <span class="c1">#   if publish_date is a weekday, keep that date;</span>
+    <span class="c1">#   if it&#39;s weekend, roll forward to next weekday.</span>
+    <span class="k">def</span> <span class="nf">to_trade_date</span><span class="p">(</span><span class="n">ts</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">:</span>
+        <span class="c1"># Drop time; we only care about the date</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+        <span class="c1"># Weekday: Monday=0, Sunday=6</span>
+        <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">weekday</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="c1"># Already a weekday: treat as trade_date</span>
+            <span class="k">return</span> <span class="n">d</span>
+        <span class="c1"># Weekend: add 1 business day (next Mon–Fri)</span>
+        <span class="k">return</span> <span class="n">d</span> <span class="o">+</span> <span class="n">bday</span>
+
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;trade_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;publish_date&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">to_trade_date</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+</code></pre></div>
+
+<p>In our dataset, we therefore use three related dates:</p>
+<ul>
+<li><code>event_date</code>: the conceptual AI event or milestone date from our curated list.  </li>
+<li><code>publish_date</code>: the timestamp when the representative article was published in the news feed.  </li>
+<li><code>trade_date</code>: the next available trading day in the US market, which we use as T=0 in the event study.  </li>
+</ul>
+<p>The timeline can be summarized as:</p>
+<p><img alt="Timeline Picture" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/NetFin_01_timeline.png"></p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-03-28T15:06:00+08:00">Sat 28 March 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#reflective-report-ref">Reflective Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#ai-ref">AI
+                    <span class="superscript">2</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#nvda-ref">NVDA
+                    <span class="superscript">2</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

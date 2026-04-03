@@ -71,7 +71,373 @@ To summarize our observation from this comparison:
 &lt;p&gt;Our case study highlights a clear trend that LLM-based sentiment analysis offers a significant improvement in understanding and interpretability, especially in complex domains like crypto. By leveraging tools like Ollama and FastAPI, it is now possible to build powerful, local-first sentiment systems with minimal infrastructure, and data privacy could be better secured.
 Despite its advantages, the LLM approach is not perfect. It requires much more computational resources and time, making it slower than rule-based systems and less suitable for high-frequency trading. LLM outputs can vary a lot depending on prompt design, requiring rigorous prompt fine-tuning to ensure consistent scoring. Additionally, confidence scores are often heuristic rather than statistically grounded, unlike those from trained ML models, which must be handled with caution in risk management.
 For real-world applications, a hybrid approach combining speed with interpretability may be ideal. Firstly use rule-based models like VADER for rapid initial lightweight filtering, and then route high-impact or ambiguous news to LLMs for deep contextual reasoning.
-Our next phase will involve manually labelling a few texts from each data source and comparing them to how the price of cryptocurrencies moved at the time the articles were published. We will use this information to iteratively improve our model by implementing more preprocessing and data cleaning steps if necessary as well as improving LLM prompting to get more optimal results. We may also fine tune our LLM since cryptocurrencies and their uses evolve rapidly, thus, our model needs to adapt accordingly as well.&lt;/p&gt;</content><category term="Reflective Report"/><category term="Group Cryptollama"/></entry><entry><title>Event-Driven NLP Analysis of M&amp;A Announcements and Stock Price Reactions</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/event-driven-nlp-analysis-of-ma-announcements-and-stock-price-reactions.html" rel="alternate"/><published>2026-01-15T17:12:00+08:00</published><updated>2026-01-15T17:12:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-01-15:/FINA2350-student-blog-2026-01/event-driven-nlp-analysis-of-ma-announcements-and-stock-price-reactions.html</id><summary type="html">&lt;p&gt;By Group "Sentiment Arbitrage"&lt;/p&gt;
+Our next phase will involve manually labelling a few texts from each data source and comparing them to how the price of cryptocurrencies moved at the time the articles were published. We will use this information to iteratively improve our model by implementing more preprocessing and data cleaning steps if necessary as well as improving LLM prompting to get more optimal results. We may also fine tune our LLM since cryptocurrencies and their uses evolve rapidly, thus, our model needs to adapt accordingly as well.&lt;/p&gt;</content><category term="Reflective Report"/><category term="Group Cryptollama"/></entry><entry><title>FinBERT vs Alpha Vantage - Rethinking Our Sentiment Signal</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/netfin-02-nvda-sentiment.html" rel="alternate"/><published>2026-03-28T20:19:00+08:00</published><updated>2026-03-28T20:19:00+08:00</updated><author><name>NetFin Group</name></author><id>tag:buehlmaier.github.io,2026-03-28:/FINA2350-student-blog-2026-01/netfin-02-nvda-sentiment.html</id><summary type="html">&lt;p&gt;Why we questioned Alpha Vantage’s sentiment scores, compared them with FinBERT, and ended up keeping Alpha Vantage while planning for our own sentiment layer.&lt;/p&gt;</summary><content type="html">&lt;hr&gt;
+&lt;p&gt;By Group NetFin&lt;/p&gt;
+&lt;h1&gt;FinBERT vs Alpha Vantage – Rethinking Our Sentiment Signal&lt;/h1&gt;
+&lt;p&gt;At the beginning of our project, we decided to use Alpha Vantage’s NEWS_SENTIMENT API to deliver us the specific NVDA-related scores for our event study. However, due to our project scope is relatively small and considering the leveraging effect of hte AI-related events news annoucement, we doubted about whether AlphaVantage’s score was accurate and suitable for our specific project scope. &lt;/p&gt;
+&lt;p&gt;To address this issue, we decided to conduct a cross-validation between Alpha Vantage’s scores and FinBERT as our academic benchmark. We selected 35 NVDA‑related news articles from our dataset and constructed a small sample size to investigate the sentiment behaviour in both models. &lt;/p&gt;
+&lt;h2&gt;Lower-Granularity FinBERT Scores vs. Continuous Alpha Vantage Scores&lt;/h2&gt;
+&lt;p&gt;After running the 35 articles (including body text) through our local FinBERT model, we realized that the scores delivered by the model were highly concentrated around three values: -1, 0, and +1. Fundamentally, FinBERT is used like a &lt;strong&gt;three-class classifier&lt;/strong&gt; (negative, neutral, or positive). A slightly negative headline would deliver the same score as a highly negative one, and vice versa for positive content.&lt;/p&gt;
+&lt;p&gt;On the other hand, Alpha Vantage’s NVDA Sentiment Scores are delivered on a continuous scale but are limited to a specific range. There is a range of “slightly negative,” “strongly negative,” “cautiously positive,” and “very bullish.” Has a &lt;strong&gt;gradation on a smaller scale&lt;/strong&gt;. This is more beneficial for event studies and factor construction for our product scope. &lt;/p&gt;
+&lt;h2&gt;Correlation Check: FinBERT vs. Alpha Vantage&lt;/h2&gt;
+&lt;p&gt;To see how the two systems correlate with each other, we computed the Pearson correlation between FinBERT’s document‑level scores and Alpha Vantage’s NVDA sentiment scores on the 35‑article sample. The scatter plot, as shown below (see Figure 1) reflected a moderate positive correlation of about (r = 0.49). This indicates that when Alpha Vantage reports more positive sentiment for Nvidia, FinBERT tends to report in the same direction, but there is still substantial dispersion around the trend line (points far away from the trendline). &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Correlation" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/NetFin_02_correlation_purified_signals.png"&gt;&lt;/p&gt;
+&lt;p&gt;In Figure above, the red shaded area around the fitted line represents the 95% confidence interval, indicating the uncertainty range of the estimated linear relationship.&lt;/p&gt;
+&lt;p&gt;This pattern aligns with our expectations when comparing a lower-granularity three-class classifier with a continuous score. The correlation proves that Alpha Vantage is not “random” with respect to FinBERT, but both models are measuring a broadly similar concept of good/bad news. Moreover, as (r) is not close to 1, it further discloses that the two models are not interchangeable, and Alpha Vantage provides additional nuance that could not be represented by FinBERT’s -1/0/+1 labels on their own.&lt;/p&gt;
+&lt;h2&gt;Why We Chose Alpha Vantage (For Now)&lt;/h2&gt;
+&lt;p&gt;We decided to keep Alpha Vantage as the primary sentiment input for this phase of the project with reasons as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;FinBERT’s outputs in our current setup are too &lt;strong&gt;"chunky"&lt;/strong&gt; at −1, 0, and +1, which limits granularity and makes it harder to detect minor changes in news tone.  &lt;/li&gt;
+&lt;li&gt;Alpha Vantage provides a &lt;strong&gt;continuous&lt;/strong&gt;, more nuanced sentiment score that varies smoothly across articles and time, which is better aligned with our event‑study design and regression‑based analysis.&lt;/li&gt;
+&lt;li&gt;The moderate positive correlation ( r = 0.49 ) between the two systems confirms that Alpha Vantage is directionally sensible while still offering extra detail beyond FinBERT’s three-class labels.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Methodological Justification&lt;/h2&gt;
+&lt;p&gt;Sentiment Measurement: We use Alpha Vantage sentiment scores rather than FinBERT classifications. FinBERT outputs coarse three-class sentiment labels (−1, 0, +1), which are less granular for quantitative analysis. Alpha Vantage provides continuous sentiment scores, offering finer differentiation and greater statistical power for event study regressions.&lt;/p&gt;
+&lt;h2&gt;Why Our Data Workflow Is Not Linear&lt;/h2&gt;
+&lt;p&gt;This analysis fundamentally changed how we view our data pipeline. We initially imagined a &lt;strong&gt;sequential workflow&lt;/strong&gt;: download Alpha Vantage sentiment, merge it with price data, run the event study, and interpret the results. However, our doubts about accuracy—and the subsequent FinBERT correlation study—forced us to loop back and reconsider what "sentiment" we actually want to capture.&lt;/p&gt;
+&lt;p&gt;The result is an &lt;strong&gt;iterative&lt;/strong&gt;, &lt;strong&gt;non-linear&lt;/strong&gt; process. While we’re sticking with Alpha Vantage for now due to its continuity, we now view this as a design checkpoint rather than a final destination.&lt;/p&gt;
+&lt;p&gt;It reminds us that building a reliable sentiment factor in the real world isn't about following a one-way map; it’s about having the &lt;strong&gt;flexibility&lt;/strong&gt; to revisit your assumptions when the data reveals a gap in nuance. We might eventually build a hybrid engine that captures the best of both models, but that evolution is only possible because we took the time to look under the hood today.&lt;/p&gt;</content><category term="Reflective Report"/><category term="AI"/><category term="NVDA"/></entry><entry><title>Defining T=0 – Cleaning AI News for NVDA Event Study</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/netfin-01-nvda-t0.html" rel="alternate"/><published>2026-03-28T15:06:00+08:00</published><updated>2026-03-28T15:06:00+08:00</updated><author><name>NetFin Group</name></author><id>tag:buehlmaier.github.io,2026-03-28:/FINA2350-student-blog-2026-01/netfin-01-nvda-t0.html</id><summary type="html">&lt;p&gt;How we defined T=0 and cleaned AI news data for our NVDA event study.&lt;/p&gt;</summary><content type="html">&lt;p&gt;By Group NetFin&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1&gt;Defining T=0 - Cleaning AI News Data for an NVDA Event Study&lt;/h1&gt;
+&lt;p&gt;Our group project explores how major AI-related news affects NVIDIA’s stock return by applying an event study with NLP-based sentiment analysis from Alpha Vantage’s &lt;code&gt;NEWS_SENTIMENT&lt;/code&gt; API. In this blog post, one of the decisions that proved to be unexpectedly tricky for us was how to properly define T=0 and clean AI news data so that each event has a clear and defensible date associated with it. In theory, defining the event date sounds like a simple task, but when dealing with real-life data and news articles with multiple headlines and non-trading days, it becomes a data cleaning issue rather than a theory-based one.&lt;/p&gt;
+&lt;p&gt;At a high level, our event study wants to ask a simple but interesting question: &lt;strong&gt;How does the stock return of NVDA respond to a major AI-related event or product release when it appears in the news?&lt;/strong&gt; To do this properly, however, we must convert the messy data of news articles into a clean event study format where T=0 is the day the stock can respond to the event, and T=-1, T=+1, etc., are the days around the event. If our definition of T=0 is incorrect, then our abnormal stock return calculation and our understanding of how AI-related news affects the stock would be directly impacted. &lt;/p&gt;
+&lt;h2&gt;Event Taxonomy: Four Shock Categories&lt;/h2&gt;
+&lt;p&gt;To build a structured and reproducible event set, we classify AI-related news into four categories, each corresponding to a different economic transmission channel to NVDA returns.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Capability Shocks&lt;/strong&gt; (Model &amp;amp; Algorithmic Milestones)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hardware Architecture Shocks&lt;/strong&gt; (AI Dedicated Hardware &amp;amp; Chips)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Policy / Regulatory Shocks&lt;/strong&gt; (AI Policy &amp;amp; Geopolitical Controls)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Corporate Landscape Shocks&lt;/strong&gt; (Commercial &amp;amp; Capital Milestones)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Problem 1: Multiple news items per event&lt;/h2&gt;
+&lt;p&gt;We start from a curated list of 20 AI-related events per news category (shown as above). For each of these events, we used Alpha Vantage to pull a labelled news feed, which returns multiple headlines, each with fields like:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;publish_date&lt;/code&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;title&lt;/code&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;source&lt;/code&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nvda_relevance&lt;/code&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nvda_sentiment_score&lt;/code&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;overall_sentiment_score&lt;/code&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;url&lt;/code&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;summary&lt;/code&gt;  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here, &lt;code&gt;nvda_relevance&lt;/code&gt; is a ticker-specific relevance score indicating how strongly the article is related to NVDA, and &lt;code&gt;nvda_sentiment_score&lt;/code&gt; is the sentiment polarity for the NVDA ticker extracted from the article.  The &lt;code&gt;overall_sentiment_score&lt;/code&gt; summarizes the overall tone of the article across all tickers.&lt;/p&gt;
+&lt;p&gt;When we examined the downloaded CSV, we found that the news we fetched may have different &lt;code&gt;publish_date&lt;/code&gt; values under what we considered the same conceptual AI event. As an example, the DeepSeek event appears many times in our Alpha Vantage news feed. Several headlines across different dates all describe essentially the same AI evnet:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;publish_date&lt;/th&gt;
+&lt;th&gt;title&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;2025-01-27 16:18:00&lt;/td&gt;
+&lt;td&gt;Nvidia loses nearly 600 billion in market value after Chinese AI startup bursts onto scene&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2025-02-12 04:32:21&lt;/td&gt;
+&lt;td&gt;DeepSeek Shows There Is No Longer One AI Trade, but Many (version 1)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2025-02-12 04:32:21&lt;/td&gt;
+&lt;td&gt;DeepSeek Shows There Is No Longer One AI Trade, but Many (duplicate row)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2025-02-15 04:05:12&lt;/td&gt;
+&lt;td&gt;Is Broadridge, Verint testing new Chinese chatbot DeepSeek for automation, efficiency&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2025-02-27 10:56:00&lt;/td&gt;
+&lt;td&gt;Tencent fires up AI race with model it says outdoes DeepSeek&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;This creates a problem for event definition. If we treat every headline as a separate event, we artificially inflate our sample size and double-count what is essentially the same AI announcement.  On the other hand, if we simply choose the first headline by time, we might introduce bias in the sentiment we associate with that event, especially if later articles focus more explicitly on NVDA’s role. &lt;/p&gt;
+&lt;p&gt;To resolve this, we decided to use the news item with the highest &lt;code&gt;nvda_relevance&lt;/code&gt; score for NVDA, using the ticker-specific relevance fields that Alpha Vantage provides.  In other words, for each conceptual AI event, we select the article where NVDA is most central to the content, rather than one that merely mentions the news in passing. This “max relevance per event” rule gave us a transparent, reproducible way to map multiple raw news items into a single event-level observation. &lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Problem 2: Non-trading publish dates&lt;/h2&gt;
+&lt;p&gt;After we selected one article per conceptual event, the next concern was how we should map the &lt;code&gt;publish_date&lt;/code&gt; of the article to T=0. Our first approach was to use a naive rule and let T=0 be the calendar date on which the article was published. Unfortunately, this approach does not work well when the article is published over a weekend or on a market holiday. NVDA does not trade on Sundays, which means we do not have any return data available for that date, but the news is already out, and the stock might start reacting as soon as the market opens. &lt;/p&gt;
+&lt;p&gt;While the event study literature generally defines the event date as the time the information is made available to the market, in empirical implementation we must work with trading days, not raw calendar days.  As a consequence, we followed a standard approach and defined &lt;code&gt;trade_date&lt;/code&gt;, which is the next available US trading day, as T=0 for our returns. For example: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If the article is published on a Sunday, then T=0 will be Monday.  &lt;/li&gt;
+&lt;li&gt;If the article is published on a market-holiday Monday, then T=0 will be Tuesday.  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In this way, we guarantee that T=0 is always a trading day when the stock of NVDA might actually start reacting to the news.&lt;/p&gt;
+&lt;p&gt;The code we use is as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Convert publish_date -&amp;gt; trade_date:&lt;/span&gt;
+    &lt;span class="c1"&gt;#   if publish_date is a weekday, keep that date;&lt;/span&gt;
+    &lt;span class="c1"&gt;#   if it&amp;#39;s weekend, roll forward to next weekday.&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;to_trade_date&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ts&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Timestamp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Timestamp&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="c1"&gt;# Drop time; we only care about the date&lt;/span&gt;
+        &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ts&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;normalize&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="c1"&gt;# Weekday: Monday=0, Sunday=6&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;weekday&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="c1"&gt;# Already a weekday: treat as trade_date&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;
+        &lt;span class="c1"&gt;# Weekend: add 1 business day (next Mon–Fri)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;bday&lt;/span&gt;
+
+    &lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;trade_date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;publish_date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;to_trade_date&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;df&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In our dataset, we therefore use three related dates:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;event_date&lt;/code&gt;: the conceptual AI event or milestone date from our curated list.  &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;publish_date&lt;/code&gt;: the timestamp when the representative article was published in the news feed.  &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;trade_date&lt;/code&gt;: the next available trading day in the US market, which we use as T=0 in the event study.  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The timeline can be summarized as:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Timeline Picture" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/NetFin_01_timeline.png"&gt;&lt;/p&gt;</content><category term="Reflective Report"/><category term="AI"/><category term="NVDA"/></entry><entry><title>From Initial Data Collection to a GARCH-Ready Dataset (by Group "The Gold Diggers")</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/from-initial-data-collection-to-a-garch-ready-dataset-by-group-the-gold-diggers.html" rel="alternate"/><published>2026-03-28T12:00:00+08:00</published><updated>2026-03-28T12:00:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-03-28:/FINA2350-student-blog-2026-01/from-initial-data-collection-to-a-garch-ready-dataset-by-group-the-gold-diggers.html</id><summary type="html">&lt;p&gt;By Group "The Gold Diggers"&lt;/p&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Our project explores whether text-based information can help explain gold market volatility beyond what traditional market data alone can capture. 
+We focus on gold volatility because gold is often treated not only as a financial asset, but also as a market that reacts strongly …&lt;/p&gt;</summary><content type="html">&lt;p&gt;By Group "The Gold Diggers"&lt;/p&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Our project explores whether text-based information can help explain gold market volatility beyond what traditional market data alone can capture. 
+We focus on gold volatility because gold is often treated not only as a financial asset, but also as a market that reacts strongly to monetary signals, macro uncertainty, and geopolitical tension. 
+While our proposal focused on the broader motivation behind this topic, this blog post focuses on the process of building the data pipeline that made our analysis possible.&lt;/p&gt;
+&lt;p&gt;As the project developed, we realized that collecting relevant sources was only the first step. 
+The harder challenge was turning those materials into a dataset that could support volatility modeling and later narrative interpretation. 
+In that sense, the data pipeline itself became an important part of the project.&lt;/p&gt;
+&lt;h2&gt;Our Initial Data Collection&lt;/h2&gt;
+&lt;p&gt;At the beginning of the project, our team divided the topic into three broad areas: monetary, fiscal, and geopolitical. 
+This gave us a practical way to organize the project and identify the types of narratives that might influence gold volatility.&lt;/p&gt;
+&lt;p&gt;Using this framework, we collected materials and organized them into shared folders. 
+This early dataset was useful because it helped us understand the topic, identify recurring themes, and build a broad picture of the information environment surrounding the gold market. 
+In that sense, the first stage of collection worked well as an exploratory resource.&lt;/p&gt;
+&lt;p&gt;However, this initial collection was designed mainly for topic understanding rather than for direct time-series modeling. 
+That distinction became important once we moved into the next stage.&lt;/p&gt;
+&lt;h2&gt;The Limitation We Encountered&lt;/h2&gt;
+&lt;p&gt;As our project shifted from exploration to analysis, we needed a baseline model for capturing gold volatility more formally. 
+This led us to GARCH, which is widely used in financial time-series analysis because it allows volatility to vary over time instead of assuming that it remains constant.&lt;/p&gt;
+&lt;p&gt;At this point, we encountered a key limitation. 
+A model such as GARCH does not just require relevant information. 
+It requires observations that are sufficiently dense, consistently aligned across trading days, and structured in a way that supports estimation over time. 
+The materials we had initially collected were useful for understanding the topic, but they were not yet organized in a format that could directly support this kind of modeling.&lt;/p&gt;
+&lt;p&gt;This was the point where our workflow had to change. 
+Instead of relying on the initial collection alone, we needed to build a new dataset specifically designed for modeling.&lt;/p&gt;
+&lt;h2&gt;Building a New Modeling-Ready Dataset&lt;/h2&gt;
+&lt;p&gt;To construct a dataset suitable for volatility analysis, the first challenge was identifying a denser and more systematic set of news sources. 
+This step was carried out with BigQuery. 
+In practice, finding the “right” sources was not only about quantity. 
+The sources also had to be free and accessible enough for us to actually build the dataset ourselves. 
+Many potential sources were ruled out because they were gated behind paywalls or were otherwise difficult to extract from in a scalable way.&lt;/p&gt;
+&lt;p&gt;The first few BigQuery attempts did not work well: some searches returned too much data to be manageable, while others returned too little to provide sufficient coverage. 
+As a result, source discovery became an iterative process of refinement. 
+It is also important to note that BigQuery did not provide the article text itself. 
+Instead, it helped identify the URLs of potentially relevant sources, after which a separate extraction script was needed to pull the actual text from those URLs.&lt;/p&gt;
+&lt;p&gt;After repeated adjustments, the search strategy produced a more reasonable source pool. 
+The resulting curated list contained more than 6,400 macroeconomic and financial-news URLs. 
+From there, the task shifted from identifying possible sources to extracting clean article text from them.&lt;/p&gt;
+&lt;p&gt;In practice, the source-selection stage was guided by three practical criteria:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the source had to provide a sufficient number of relevant news items,&lt;/li&gt;
+&lt;li&gt;the source had to be free or at least accessible enough for us to work with at scale,&lt;/li&gt;
+&lt;li&gt;the source had to be usable in a pipeline where URLs could be identified first and article text could then be extracted separately.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This extraction stage became one of the most meaningful technical parts of the project. 
+News webpages often contain paywalls, boilerplate text, or incomplete article bodies, so collecting URLs alone was not enough. 
+To solve this, the workflow used browser impersonation and article parsing tools to retrieve the core text from raw webpages.
+After filtering out very short or unusable outputs, the pipeline retained 3,252 full-text articles across a 36-month period.&lt;/p&gt;
+&lt;p&gt;A simplified version of this extraction logic is shown below.
+Although the actual implementation was more detailed, this example captures the core idea of retrieving a webpage, parsing the article, and keeping only texts that were substantial enough to be useful for later analysis.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;curl_cffi&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;newspaper&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Article&lt;/span&gt;
+
+&lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;https://example.com/article&amp;quot;&lt;/span&gt;
+
+&lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;impersonate&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;chrome&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;article&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Article&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;article&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_html&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;article&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;article&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Usable article extracted&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This step reflects an important idea in the project: raw online information is not automatically ready for analysis. 
+A meaningful part of the work lies in converting messy webpages into usable text.&lt;/p&gt;
+&lt;h2&gt;From Master Data to a RAG-Ready Output&lt;/h2&gt;
+&lt;p&gt;Once the article texts had been extracted and filtered, the next challenge was to align them with market data in a consistent daily format. 
+The text-side information was organized into three thematic variables — Monetary, Fiscal, and Geopolitics — while a News_Context field preserved the broader narrative information for each trading day. 
+This was then merged with Yahoo Finance data for GC=F gold futures, including close prices and log returns.&lt;/p&gt;
+&lt;p&gt;This produced a daily master dataset that could support volatility modeling. 
+On top of this dataset, Baseline GARCH(1,1) and NLP-Augmented GARCH-X(1,1) models were fitted, generating two comparable volatility series. 
+These outputs were then merged into the final file, fina2350_master_dataset_for_rag.csv, which contains market variables, thematic text features, contextual text, and both model-based volatility measures in one place.&lt;/p&gt;
+&lt;p&gt;This final dataset is important because it acts as a bridge between two stages of the project: statistical volatility modeling and downstream RAG-based interpretation.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Conditional Volatility Comparison" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/the-gold-diggers_01_volatility-comparison.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Figure 1. Comparison of conditional volatility from the baseline GARCH and NLP-augmented GARCH-X models.&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;What We Learned&lt;/h2&gt;
+&lt;p&gt;This process taught us that exploratory data collection and modeling-ready data construction are not the same task. 
+At the beginning of the project, it was easy to assume that gathering relevant sources would be the hardest part. 
+In practice, the more difficult challenge was creating a dataset with the right level of continuity, alignment, and structure for time-series analysis.&lt;/p&gt;
+&lt;p&gt;More broadly, the project showed us that data engineering is not just a supporting step before analysis begins. 
+In our case, source identification, text extraction, filtering, daily aggregation, market-data alignment, and volatility modeling were all necessary parts of the analytical design itself. 
+The result of this process is more than a cleaned spreadsheet: it is a dataset that connects quantitative volatility estimates with narrative context, making the next stage of RAG-based interpretation possible.
+In the near future, we plan to use this final dataset for RAG-based interpretation of major volatility episodes. 
+By doing so, we hope to move beyond measuring volatility and begin explaining it through the narrative context captured in the underlying news data.&lt;/p&gt;</content><category term="Reflective Report"/><category term="Group The Gold Diggers"/></entry><entry><title>Starting with Language: Our Early Shift in Building an LBO Candidate Model (by Group "Project ICE")</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/starting-with-language-our-early-shift-in-building-an-lbo-candidate-model-by-group-project-ice.html" rel="alternate"/><published>2026-03-28T00:00:00+08:00</published><updated>2026-03-28T00:00:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-03-28:/FINA2350-student-blog-2026-01/starting-with-language-our-early-shift-in-building-an-lbo-candidate-model-by-group-project-ice.html</id><summary type="html">&lt;h1&gt;Starting with Language: Our Early Shift in Building an LBO Candidate Model&lt;/h1&gt;
+&lt;p&gt;When we first planned this project, the idea seemed pretty clear. We wanted to build a model that could identify potential LBO candidates by combining two things: financial feasibility and text-based signals of strategic stagnation. The logic was …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Starting with Language: Our Early Shift in Building an LBO Candidate Model&lt;/h1&gt;
+&lt;p&gt;When we first planned this project, the idea seemed pretty clear. We wanted to build a model that could identify potential LBO candidates by combining two things: financial feasibility and text-based signals of strategic stagnation. The logic was to split it evenly, approximately a 50/50 weighted score. The finance side would tell us whether a company could realistically support leverage, and the NLP side would tell us whether the company seemed strategically stagnant before the financial metrics show it.&lt;/p&gt;
+&lt;p&gt;However, as we kept developing the project, we realized that approach probably was not the best fit for the class or for what makes the project genuinely interesting. Since the course puts a strong emphasis on textual analysis, it started to feel like making NLP just one half of the model was underselling the most distinctive part of what we were doing. So we made a shift in the project’s direction by starting with the language itself and building the stagnation signals first instead.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Initial project direction" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Group-ProjectICE_01_figure1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Figure 1:&lt;/strong&gt; Our initial project direction&lt;/p&gt;
+&lt;p&gt;&lt;img alt="New project direction" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Group-ProjectICE_01_figure2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Figure 2:&lt;/strong&gt; Our new project direction&lt;/p&gt;
+&lt;p&gt;So right now, the front end of the project is fully NLP-centered. The financial side still matters and will absolutely come in later, but at this stage we are first trying to answer a more focused question: Can a company’s language reveal strategic stagnation before the numbers fully do? &lt;/p&gt;
+&lt;p&gt;That shift makes sense academically, but it also creates an obvious practical tension. If we begin with text first, we might spend time analyzing companies that are not even good LBO candidates financially. A company may sound stagnant in its disclosures and still be too levered or too unstable to take private. So from an actual deal or financial perspective, an NLP-first process is not the most efficient, but from a research perspective, it is useful because it lets us isolate whether language itself has anything to contribute to identifying strategic stagnation within firms. Frankly, that tradeoff has become one of the most interesting parts of the project as we are researching whether our linguistic metrics, constructed without any knowledge of whether a buyout occurred, are statistically associated with eventual acquisition.&lt;/p&gt;
+&lt;h2&gt;Operationalizing "Stagnation": Easier Said Than Done&lt;/h2&gt;
+&lt;p&gt;Once we committed to NLP-first, the next question is: What does strategic stagnation actually look like in text?&lt;/p&gt;
+&lt;p&gt;This was actually way harder than we thought. Our first instinct was to utilize the Management Confidence Signal by looking for negative or uncertain language in MD&amp;amp;A, particularly pessimistic words and hedges. However, we realized that a company which says &lt;em&gt;"we face significant headwinds but have launched three new product lines to address them"&lt;/em&gt; is using uncertain language while being strategically active. Meanwhile, a company that is confident and suggesting strategies but has a high textual similarity across annual reports, with no new vocabulary, decreasing specificity and repeats the same strategic priorities word year after year, is in fact stagnating.&lt;/p&gt;
+&lt;p&gt;Our first instinct came directly from existing literature, particularly Price et al. (2012), who found that uncertain and negative tone in earnings calls predicted future stock returns. We naturally assumed the same logic would apply to MD&amp;amp;A text. However, earnings calls are spontaneous and unfiltered while MD&amp;amp;A goes through weeks of legal review before filing. By the time it reaches EDGAR, genuine uncertainty has already been replaced with carefully worded neutral language. As a result, negativity and uncertainty may not accurately reflect a stagnating company, but rather vagueness in language.&lt;/p&gt;
+&lt;p&gt;Realizing that pessimistic words or uncertainty in MD&amp;amp;A do not necessarily signify stagnation, we had to change our approach. We moved from focusing solely on negative and uncertain language to a more advanced filter by separating &lt;strong&gt;hollow confidence&lt;/strong&gt; (seemingly confident language that contains no concrete information and commits to no specific actions) from &lt;strong&gt;genuine strategic decisiveness&lt;/strong&gt; (commitment to actual strategic actions).&lt;/p&gt;
+&lt;p&gt;To make the idea practical, we aim to build two lists of phrases: one capturing hollow confidence markers and one capturing genuine strategic decisiveness (specific capital allocations, named initiatives, and measurable targets with timelines). Once these lists are established, we aim to track how the ratio between the two indicators shifts within the same company over time. A firm whose MD&amp;amp;A is gradually replacing specific commitments with vague reassurances is exhibiting the strategic stagnation we aim to use as a signal for LBO candidacy.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Hollow confidence&lt;/th&gt;
+&lt;th&gt;Genuine strategic decisiveness&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;“We remain well-positioned to capture growth opportunities”&lt;/td&gt;
+&lt;td&gt;“We launched three new product lines targeting the mid-market”&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;“We are committed to our strategic priorities”&lt;/td&gt;
+&lt;td&gt;“We allocated $200M to R&amp;amp;D, up 18% year-on-year”&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;“We are committed to delivering long-term shareholder value”&lt;/td&gt;
+&lt;td&gt;“We will invest $500M in Southeast Asia operations by 2026”&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;em&gt;Table 1: Sample list of phrases in each indicator&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;Technical Journey&lt;/h2&gt;
+&lt;p&gt;While we changed our direction to research in the NLP component before taking into consideration  the financial feasibility as mentioned above, we had built a financial data collection model using &lt;strong&gt;yfinance&lt;/strong&gt; prior to that already. This is a function that pulls annual financial statement data for a given ticker and tries to construct key metrics such as EBITDA and free cash flow.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;yfinance&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;yf&lt;/span&gt;
+
+&lt;span class="n"&gt;stock&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;yf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Ticker&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# ----- Get financial statements -----&lt;/span&gt;
+&lt;span class="n"&gt;income&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;stock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;financials&lt;/span&gt;
+&lt;span class="n"&gt;balance&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;stock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;balance_sheet&lt;/span&gt;
+&lt;span class="n"&gt;cashflow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;stock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cashflow&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;However, one major issue we ran into was inconsistent field names. When our prototype tried to reference specific financial metrics like total debt or free cash flow, the script would sometimes fail because yfinance returned those fields under alternative label names depending on the company’s choice of words. While one company may report it as "Total Debt", another may split into "Long Term Debt" and "Current Debt" separately. Prior to experiencing this issue, we had assumed that pulling data from a single standardized source would be the straightforward easy part of the project. However, we learnt the hard way that financial data in the real world is not clean or standardized. Even when it comes from a single source like yfinance, different companies report on different fiscal year schedules, use different line item names, and sometimes omit fields entirely. &lt;/p&gt;
+&lt;p&gt;To combat this issue, we first went for a simple approach to detect whether a field actually exists in the company’s report, if not then the code should skip it and record that it is missing, rather than crashing entirely. However, we aim to clean up the data even better and in a more standardized way by building a label mapping dictionary that attempts to search for alternative field names when the expected one is missing. For example, if "Total Debt" is not found, the code would automatically look for  "Long Term Debt" and "Short Term Debt" and sum them together. We intend to refine our model to be able to handle the inconsistencies across large samples of companies through a generalized cleaning process. It is crucial that our model be able to extract financial metrics consistently as our financial feasibility stage depends entirely on how consistently we can extract metrics across companies. If key fields like total debt or free cash flow are mistreated or mislabeled, those companies may be incorrectly screened, thus undermining our model before the NLP analysis even began.&lt;/p&gt;
+&lt;p&gt;One thing that became much clearer as we worked through this is that text selection matters a lot. We are not using 10-K MD&amp;amp;A sections just because they are convenient to scrape. We are using them because they sit right in the middle of regulation, strategy, and comparability. Companies are required to produce them consistently, they usually follow a recognizable structure, and they include both explanations of what happened and signals about where management says the company is going. &lt;/p&gt;
+&lt;p&gt;Later on, we still want to expand into earnings call transcripts because we believe they may capture tone and pressure more naturally than annual filings. But for now, 10-K MD&amp;amp;A gives us a much cleaner starting point.&lt;/p&gt;
+&lt;p&gt;Below shows how 10-K MD&amp;amp;A sections are extracted. &lt;/p&gt;
+&lt;h3&gt;Extracting 10-K Filings&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;edgar&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Extract 10-K filings in the last n years&lt;/span&gt;
+&lt;span class="n"&gt;company&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Company&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;filings_n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;company&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_filings&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;10-K&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;latest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3&gt;Getting HTML Content&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;bs4&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;BeautifulSoup&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+
+&lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;filing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filing_url&lt;/span&gt;
+&lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;html_content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+&lt;span class="n"&gt;soup&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;BeautifulSoup&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;html_content&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;html.parser&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;soup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_text&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;separator&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3&gt;Extracting the MD&amp;amp;A Section&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;start_patterns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;item[\s]*7\.?[ \t]*management&amp;#39;s&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;item[\s]*7\.?[ \t]*-[ \t]*management&amp;#39;s&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="n"&gt;end_patterns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;item[\s]*7a\.?[ \t]*quantitative&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;item[\s]*8\.?[ \t]*financial\s+statements&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;item[\s]*8\.?[ \t]*-[ \t]*financial\s+statements&amp;quot;&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;But then, we realized that the program returned “None”, suggesting it could not find the pattern. After careful investigation, we realized that some symbols in the text collected did not follow the ASCII standard encoding that our pattern matching assumed. For instance, non-breaking spaces that look identical to regular spaces were breaking our pattern matching. So, we wrote a function to normalize the text to standardize these characters and facilitate the pattern finding above and text processing. It was of significant importance that we ensure our NLP analysis runs on non-corrupted input so that the model does not reflect a broken extraction rather than a genuine linguistic stagnation signal. Therefore, even a minor bug like this was crucially important to fix in order to lay a foundation for the validity of our entire approach. This is when we learnt that text cleaning was not an initial one-time preprocessing step, but rather an ongoing process of discovering issues that only reveal themselves when the code fails. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Normalize text for reliable pattern matching&lt;/span&gt;
+&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u00A0&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39; &amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;                    &lt;span class="c1"&gt;# non-breaking spaces&lt;/span&gt;
+&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;’&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;#39;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;‘&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;#39;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;`&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;#39;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;At this point, the project is in an interesting place. We are no longer  simply trying to build a balanced model combining financial feasibility and NLP analysis to identify LBO candidates. Instead, we have shifted to an NLP-first approach by  prioritizing the research question of whether corporate language can reveal strategic stagnation before financial metrics do.&lt;/p&gt;
+&lt;p&gt;Along the way, we encountered difficulties in conceptually setting up stagnation metrics and technical coding issues. However, reflecting on these challenges has made us realise that building a model is rarely straightforward and we aim to overcome these challenges. Once we are confident the stagnation signals are reliable, we will reintegrate the financial feasibility layer to produce a complete LBO screening model. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;References&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Price, S. M., Doran, J. S., Peterson, D. R., &amp;amp; Bliss, B. A. (2012). Earnings conference calls and stock returns: The incremental informativeness of textual tone. &lt;em&gt;Journal of Banking &amp;amp; Finance&lt;/em&gt;, 36(4), 992–1011. https://doi.org/10.1016/j.jbankfin.2011.10.013
+```&lt;/p&gt;</content><category term="Reflective Report"/><category term="Group Project ICE"/></entry><entry><title>Building a Pre-IPO Hype Index: Social Sentiment as a Predictor of IPO Underpricing - Blog #1 (by Group Gen the Alpha)</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/building-a-pre-ipo-hype-index-social-sentiment-as-a-predictor-of-ipo-underpricing-blog-1-by-group-gen-the-alpha.html" rel="alternate"/><published>2026-03-27T12:00:00+08:00</published><updated>2026-03-27T12:00:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-03-27:/FINA2350-student-blog-2026-01/building-a-pre-ipo-hype-index-social-sentiment-as-a-predictor-of-ipo-underpricing-blog-1-by-group-gen-the-alpha.html</id><summary type="html">&lt;p&gt;By Group "Gen the Alpha"&lt;/p&gt;
+&lt;h1&gt;Background&lt;/h1&gt;
+&lt;p&gt;In our modern financial markets, most financial analysts and investors rely on historic stock prices and patterns when devising their investment strategies on existing stocks. However, there are no historical stock data for new IPOs, making predictions and trend analysis near impossible. We aim …&lt;/p&gt;</summary><content type="html">&lt;p&gt;By Group "Gen the Alpha"&lt;/p&gt;
+&lt;h1&gt;Background&lt;/h1&gt;
+&lt;p&gt;In our modern financial markets, most financial analysts and investors rely on historic stock prices and patterns when devising their investment strategies on existing stocks. However, there are no historical stock data for new IPOs, making predictions and trend analysis near impossible. We aim to address this by providing sentiment analysis of upcoming IPOs to help predict immediate returns at listing by analysing online and public discussions during the preceding period. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Sentiment on Stock" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Gen-the-Alpha-01-The-Role-of-Market-Sentiment-in-Stock-Price-Movements.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;After an IPO is announced, investors will start online discussions about a company’s potential, financial news will cover the company's movements, and pre-IPO documents, such as SEC filings, will be available online. By leveraging NLP (natural language processing) to extract and analyse these valuable sources and textual data, we can dissect the sentiment conveyed by those texts and then use statistical methods to make predictions.&lt;/p&gt;
+&lt;p&gt;For our project, we will perform backtesting on IPOs from 2023 to 2024 to determine whether we can use hype on social media and in financial news to predict IPOs' first-day return trends. In the following blog posts, data sources for social media posts, news, and financial data, as well as selection criteria for IPOs and our methodologies, will be discussed. &lt;/p&gt;
+&lt;p&gt;In this blog post, we will detail our selected social media data sources and journey in developing an accessible data collection method. &lt;/p&gt;
+&lt;h1&gt;Group Introduction&lt;/h1&gt;
+&lt;p&gt;Group Members and Team Introduction&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Brian (Actuarial Science)&lt;/strong&gt;: Focuses on defining the study's core variables from a market-structure perspective, deciding which IPOs to include, how to define the event windows (announcement to listing), and leading the preprocessing and cleaning of social media posts. Brian is also involved in designing and running the financial back-testing to see how well our sentiment signals would have performed historically.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Brandon (Fintech)&lt;/strong&gt;: Concentrates on the financial side of variable selection. Determines what market and accounting data should be collected (e.g., prices, volumes, returns, and other fundamentals) and takes charge of cleaning and organising news articles. Also contributes to the financial back-testing framework, comparing sentiment-driven strategies against benchmark performance.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Hugo (IBGM)&lt;/strong&gt;: Responsible for the social media data workstream, including identifying and setting up reliable data sources for social media posts (such as specific platforms and APIs), then collecting and validating that data. Also works on transforming raw posts into usable features and contributes to building the initial sentiment and prediction models.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Stephen (Fintech)&lt;/strong&gt;: Focuses on the news and media data pipeline. Identifies suitable news sources and APIs, collects and validates those datasets, and engineers features that capture news tone and timing. Also involved in integrating these features into the modelling process and evaluating how news sentiment interacts with social media sentiment. Additionally, supports the collection and development of social media data and sentiment analysis features. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kelvin (Fintech)&lt;/strong&gt;: In charge of the financial market data stream. He determines where and how to source reliable financial data (prices, IPO information, and trading metrics), performs quality checks, and constructs the variables needed for empirical analysis. Also works closely on feature construction and model building, ensuring that sentiment measures can be meaningfully linked to actual IPO performance. Additionally, supports the collection and development of news and media data, as well as sentiment analysis features.&lt;/p&gt;
+&lt;h1&gt;Data Sources&lt;/h1&gt;
+&lt;p&gt;To determine how market sentiment affects IPO underpricing, we are pulling in three different types of data: social media and news data to measure public sentiment, and financial data to actually backtest our findings.&lt;/p&gt;
+&lt;h1&gt;Social Media Data&lt;/h1&gt;
+&lt;h2&gt;1. The Initial Plan - Twitter (X) and Reddit&lt;/h2&gt;
+&lt;p&gt;Our initial plan was to pull data from Twitter and Reddit. These platforms are widely regarded as the most popular online discussion platforms. They have massive, highly active forums and communities dedicated to stock market chatter.&lt;/p&gt;
+&lt;p&gt;However, during our development, we have encountered the following obstacles.&lt;/p&gt;
+&lt;p&gt;For Twitter (X), formal developer access must be requested in advance. According to online users, the new approval process is reported to take weeks if not months, affecting our timeline in completing the project. &lt;/p&gt;
+&lt;p&gt;Similarly, for Reddit’s API, a developer app must be registered on their site to obtain the necessary credentials (Client ID and Secret), then navigate through their OAuth 2.0 setup. &lt;/p&gt;
+&lt;p&gt;We have applied for access to both social media platforms’ APIs, but are uncertain whether and when we will be granted access, especially given the timeline of our project. &lt;/p&gt;
+&lt;h2&gt;2. Our Pivot - BlueSky&lt;/h2&gt;
+&lt;p&gt;Considering the need to progress, we have explored alternative options and decided to pivot to BlueSky. BlueSky is an American microblogging social media service similar to Twitter, with a growing number of users and feeds focused on investing. Most importantly, BlueSky’s API is completely open and free, with no application process or waiting period. &lt;/p&gt;
+&lt;p&gt;The API lets us grab up to 100 posts per request, along with designated parameters. Here is a quick look at the code we used to set up the API request, with an example looking into posts related to the Reddit IPO during a specified period:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# === CONFIGURATION - REPLACE WITH YOUR CREDENTIALS ===&lt;/span&gt;
+   &lt;span class="n"&gt;BLUESKY_HANDLE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;xxxxxxx&amp;quot;&lt;/span&gt;
+   &lt;span class="n"&gt;BLUESKY_APP_PASSWORD&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;xxxxxx&amp;quot;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Search parameters&lt;/span&gt;
+   &lt;span class="n"&gt;QUERY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Reddit IPO&amp;quot;&lt;/span&gt;
+   &lt;span class="n"&gt;START_DATE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2024-03-01&amp;quot;&lt;/span&gt;
+   &lt;span class="n"&gt;END_DATE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2024-03-21&amp;quot;&lt;/span&gt;
+   &lt;span class="n"&gt;MAX_POSTS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;
+
+&lt;span class="c1"&gt;# === COLLECT POSTS ===&lt;/span&gt;
+   &lt;span class="n"&gt;posts_data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;collect_posts&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;QUERY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;START_DATE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;END_DATE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;MAX_POSTS&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;posts_data&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+       &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;No posts found matching criteria&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+       &lt;span class="k"&gt;return&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;3. Testing the Setup&lt;/h2&gt;
+&lt;p&gt;Through the API, we have fetched post data containing the raw text, exact timestamp, and engagement metrics such as the number of likes. We’ve managed to compile all of this into a single CSV file.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;   &lt;span class="c1"&gt;# === SAVE CSV ===&lt;/span&gt;
+   &lt;span class="n"&gt;df&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;posts_data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="n"&gt;filename&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;bluesky_reddit_ipo_&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;START_DATE&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;_to_&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;END_DATE&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.csv&amp;quot;&lt;/span&gt;
+   &lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot; Saved &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; posts to &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Still, the data collected so far is messy and unclean, potentially containing duplicates and unreadable text, including Unicode and emojis. Our next step is to perform data cleaning, preprocessing, and noise filtering so that high-quality data can be provided to our NLP models and accurate, reliable sentiment scoring can be achieved.&lt;/p&gt;
+&lt;h1&gt;Conclusion and Next Steps&lt;/h1&gt;
+&lt;p&gt;As of now, we have defined and selected the types of data we will need to collect and their sources. News and financial data sources will be covered in a separate blog post.&lt;/p&gt;
+&lt;p&gt;We have decided to focus on 10 IPOs and will define our selection criteria, select variables for analysis, and collect textual data, including social media posts from Blueow, as well as news and financial data. To analyse correlations and build a reliable prediction model, we will run sentiment and text analytics on the collected textual data and backtest against financial data. &lt;/p&gt;
+&lt;p&gt;At this stage, in addition to defining the main variables and data sources, we have set up the basic codes, APIs, and methods to collect the necessary data from the appropriate sources. &lt;/p&gt;
+&lt;p&gt;The next step will be to collect the textual and financial data for the 10 IPOs. Then, data cleaning and preprocessing will take place, where we remove duplicates and unreadable content, ensure high-quality input to our model, and validate the finalised data before running it through our model for further sentiment analysis. Simultaneously, an appropriate sentiment analysis package and model will need to be selected and developed, along with the features and code that allow us to input our cleaned data and produce meaningful outputs and insights, as well as a comparison model and method for comparing against financial data for backtesting purposes to evaluate the accuracy of our model. &lt;/p&gt;</content><category term="Reflective Report"/><category term="Group Gen the Alpha"/></entry><entry><title>Event-Driven NLP Analysis of M&amp;A Announcements and Stock Price Reactions</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/event-driven-nlp-analysis-of-ma-announcements-and-stock-price-reactions.html" rel="alternate"/><published>2026-01-15T17:12:00+08:00</published><updated>2026-01-15T17:12:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-01-15:/FINA2350-student-blog-2026-01/event-driven-nlp-analysis-of-ma-announcements-and-stock-price-reactions.html</id><summary type="html">&lt;p&gt;By Group "Sentiment Arbitrage"&lt;/p&gt;
 &lt;h2&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;In our NLP project, we aim to analyze how M&amp;amp;A announcements affect stock prices by combining announcement texts with financial data. However, we quickly ran into a major hurdle: finding reliable, high-quality data. Below is a log of our exploration and the lessons learned …&lt;/p&gt;</summary><content type="html">&lt;p&gt;By Group "Sentiment Arbitrage"&lt;/p&gt;
 &lt;h2&gt;Introduction&lt;/h2&gt;

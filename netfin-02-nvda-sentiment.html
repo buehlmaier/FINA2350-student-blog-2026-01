@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="NetFin Group" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="AI, NVDA, Reflective Report, " />
+
+<meta property="og:title" content="FinBERT vs Alpha Vantage - Rethinking Our Sentiment Signal "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/netfin-02-nvda-sentiment.html" />
+<meta property="og:description" content="Why we questioned Alpha Vantage’s sentiment scores, compared them with FinBERT, and ended up keeping Alpha Vantage while planning for our own sentiment layer." />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="NetFin Group" />
+<meta property="og:article:published_time" content="2026-03-28T20:19:00+08:00" />
+<meta name="twitter:title" content="FinBERT vs Alpha Vantage - Rethinking Our Sentiment Signal ">
+<meta name="twitter:description" content="Why we questioned Alpha Vantage’s sentiment scores, compared them with FinBERT, and ended up keeping Alpha Vantage while planning for our own sentiment layer.">
+
+        <title>FinBERT vs Alpha Vantage - Rethinking Our Sentiment Signal  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/netfin-02-nvda-sentiment.html">
+                FinBERT vs Alpha Vantage - Rethinking Our Sentiment Signal
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <hr>
+<p>By Group NetFin</p>
+<h1>FinBERT vs Alpha Vantage – Rethinking Our Sentiment Signal</h1>
+<p>At the beginning of our project, we decided to use Alpha Vantage’s NEWS_SENTIMENT API to deliver us the specific NVDA-related scores for our event study. However, due to our project scope is relatively small and considering the leveraging effect of hte AI-related events news annoucement, we doubted about whether AlphaVantage’s score was accurate and suitable for our specific project scope. </p>
+<p>To address this issue, we decided to conduct a cross-validation between Alpha Vantage’s scores and FinBERT as our academic benchmark. We selected 35 NVDA‑related news articles from our dataset and constructed a small sample size to investigate the sentiment behaviour in both models. </p>
+<h2>Lower-Granularity FinBERT Scores vs. Continuous Alpha Vantage Scores</h2>
+<p>After running the 35 articles (including body text) through our local FinBERT model, we realized that the scores delivered by the model were highly concentrated around three values: -1, 0, and +1. Fundamentally, FinBERT is used like a <strong>three-class classifier</strong> (negative, neutral, or positive). A slightly negative headline would deliver the same score as a highly negative one, and vice versa for positive content.</p>
+<p>On the other hand, Alpha Vantage’s NVDA Sentiment Scores are delivered on a continuous scale but are limited to a specific range. There is a range of “slightly negative,” “strongly negative,” “cautiously positive,” and “very bullish.” Has a <strong>gradation on a smaller scale</strong>. This is more beneficial for event studies and factor construction for our product scope. </p>
+<h2>Correlation Check: FinBERT vs. Alpha Vantage</h2>
+<p>To see how the two systems correlate with each other, we computed the Pearson correlation between FinBERT’s document‑level scores and Alpha Vantage’s NVDA sentiment scores on the 35‑article sample. The scatter plot, as shown below (see Figure 1) reflected a moderate positive correlation of about (r = 0.49). This indicates that when Alpha Vantage reports more positive sentiment for Nvidia, FinBERT tends to report in the same direction, but there is still substantial dispersion around the trend line (points far away from the trendline). </p>
+<p><img alt="Correlation" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/NetFin_02_correlation_purified_signals.png"></p>
+<p>In Figure above, the red shaded area around the fitted line represents the 95% confidence interval, indicating the uncertainty range of the estimated linear relationship.</p>
+<p>This pattern aligns with our expectations when comparing a lower-granularity three-class classifier with a continuous score. The correlation proves that Alpha Vantage is not “random” with respect to FinBERT, but both models are measuring a broadly similar concept of good/bad news. Moreover, as (r) is not close to 1, it further discloses that the two models are not interchangeable, and Alpha Vantage provides additional nuance that could not be represented by FinBERT’s -1/0/+1 labels on their own.</p>
+<h2>Why We Chose Alpha Vantage (For Now)</h2>
+<p>We decided to keep Alpha Vantage as the primary sentiment input for this phase of the project with reasons as follows:</p>
+<ul>
+<li>FinBERT’s outputs in our current setup are too <strong>"chunky"</strong> at −1, 0, and +1, which limits granularity and makes it harder to detect minor changes in news tone.  </li>
+<li>Alpha Vantage provides a <strong>continuous</strong>, more nuanced sentiment score that varies smoothly across articles and time, which is better aligned with our event‑study design and regression‑based analysis.</li>
+<li>The moderate positive correlation ( r = 0.49 ) between the two systems confirms that Alpha Vantage is directionally sensible while still offering extra detail beyond FinBERT’s three-class labels.</li>
+</ul>
+<h2>Methodological Justification</h2>
+<p>Sentiment Measurement: We use Alpha Vantage sentiment scores rather than FinBERT classifications. FinBERT outputs coarse three-class sentiment labels (−1, 0, +1), which are less granular for quantitative analysis. Alpha Vantage provides continuous sentiment scores, offering finer differentiation and greater statistical power for event study regressions.</p>
+<h2>Why Our Data Workflow Is Not Linear</h2>
+<p>This analysis fundamentally changed how we view our data pipeline. We initially imagined a <strong>sequential workflow</strong>: download Alpha Vantage sentiment, merge it with price data, run the event study, and interpret the results. However, our doubts about accuracy—and the subsequent FinBERT correlation study—forced us to loop back and reconsider what "sentiment" we actually want to capture.</p>
+<p>The result is an <strong>iterative</strong>, <strong>non-linear</strong> process. While we’re sticking with Alpha Vantage for now due to its continuity, we now view this as a design checkpoint rather than a final destination.</p>
+<p>It reminds us that building a reliable sentiment factor in the real world isn't about following a one-way map; it’s about having the <strong>flexibility</strong> to revisit your assumptions when the data reveals a gap in nuance. We might eventually build a hybrid engine that captures the best of both models, but that evolution is only possible because we took the time to look under the hood today.</p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-03-28T20:19:00+08:00">Sat 28 March 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#reflective-report-ref">Reflective Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#ai-ref">AI
+                    <span class="superscript">2</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#nvda-ref">NVDA
+                    <span class="superscript">2</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

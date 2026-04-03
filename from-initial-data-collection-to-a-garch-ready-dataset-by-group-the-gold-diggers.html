@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="FINA2350 Students 2026" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Group The Gold Diggers, Reflective Report, " />
+
+<meta property="og:title" content="From Initial Data Collection to a GARCH-Ready Dataset (by Group &#34;The Gold Diggers&#34;) "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/from-initial-data-collection-to-a-garch-ready-dataset-by-group-the-gold-diggers.html" />
+<meta property="og:description" content="By Group &#34;The Gold Diggers&#34; Introduction Our project explores whether text-based information can help explain gold market volatility beyond what traditional market data alone can capture. We focus on gold volatility because gold is often treated not only as a financial asset, but also as a market that reacts strongly …" />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="FINA2350 Students 2026" />
+<meta property="og:article:published_time" content="2026-03-28T12:00:00+08:00" />
+<meta name="twitter:title" content="From Initial Data Collection to a GARCH-Ready Dataset (by Group &#34;The Gold Diggers&#34;) ">
+<meta name="twitter:description" content="By Group &#34;The Gold Diggers&#34; Introduction Our project explores whether text-based information can help explain gold market volatility beyond what traditional market data alone can capture. We focus on gold volatility because gold is often treated not only as a financial asset, but also as a market that reacts strongly …">
+
+        <title>From Initial Data Collection to a GARCH-Ready Dataset (by Group &#34;The Gold Diggers&#34;)  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/from-initial-data-collection-to-a-garch-ready-dataset-by-group-the-gold-diggers.html">
+                From Initial Data Collection to a GARCH-Ready Dataset (by Group "The Gold Diggers")
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p>By Group "The Gold Diggers"</p>
+<h2>Introduction</h2>
+<p>Our project explores whether text-based information can help explain gold market volatility beyond what traditional market data alone can capture. 
+We focus on gold volatility because gold is often treated not only as a financial asset, but also as a market that reacts strongly to monetary signals, macro uncertainty, and geopolitical tension. 
+While our proposal focused on the broader motivation behind this topic, this blog post focuses on the process of building the data pipeline that made our analysis possible.</p>
+<p>As the project developed, we realized that collecting relevant sources was only the first step. 
+The harder challenge was turning those materials into a dataset that could support volatility modeling and later narrative interpretation. 
+In that sense, the data pipeline itself became an important part of the project.</p>
+<h2>Our Initial Data Collection</h2>
+<p>At the beginning of the project, our team divided the topic into three broad areas: monetary, fiscal, and geopolitical. 
+This gave us a practical way to organize the project and identify the types of narratives that might influence gold volatility.</p>
+<p>Using this framework, we collected materials and organized them into shared folders. 
+This early dataset was useful because it helped us understand the topic, identify recurring themes, and build a broad picture of the information environment surrounding the gold market. 
+In that sense, the first stage of collection worked well as an exploratory resource.</p>
+<p>However, this initial collection was designed mainly for topic understanding rather than for direct time-series modeling. 
+That distinction became important once we moved into the next stage.</p>
+<h2>The Limitation We Encountered</h2>
+<p>As our project shifted from exploration to analysis, we needed a baseline model for capturing gold volatility more formally. 
+This led us to GARCH, which is widely used in financial time-series analysis because it allows volatility to vary over time instead of assuming that it remains constant.</p>
+<p>At this point, we encountered a key limitation. 
+A model such as GARCH does not just require relevant information. 
+It requires observations that are sufficiently dense, consistently aligned across trading days, and structured in a way that supports estimation over time. 
+The materials we had initially collected were useful for understanding the topic, but they were not yet organized in a format that could directly support this kind of modeling.</p>
+<p>This was the point where our workflow had to change. 
+Instead of relying on the initial collection alone, we needed to build a new dataset specifically designed for modeling.</p>
+<h2>Building a New Modeling-Ready Dataset</h2>
+<p>To construct a dataset suitable for volatility analysis, the first challenge was identifying a denser and more systematic set of news sources. 
+This step was carried out with BigQuery. 
+In practice, finding the “right” sources was not only about quantity. 
+The sources also had to be free and accessible enough for us to actually build the dataset ourselves. 
+Many potential sources were ruled out because they were gated behind paywalls or were otherwise difficult to extract from in a scalable way.</p>
+<p>The first few BigQuery attempts did not work well: some searches returned too much data to be manageable, while others returned too little to provide sufficient coverage. 
+As a result, source discovery became an iterative process of refinement. 
+It is also important to note that BigQuery did not provide the article text itself. 
+Instead, it helped identify the URLs of potentially relevant sources, after which a separate extraction script was needed to pull the actual text from those URLs.</p>
+<p>After repeated adjustments, the search strategy produced a more reasonable source pool. 
+The resulting curated list contained more than 6,400 macroeconomic and financial-news URLs. 
+From there, the task shifted from identifying possible sources to extracting clean article text from them.</p>
+<p>In practice, the source-selection stage was guided by three practical criteria:</p>
+<ul>
+<li>the source had to provide a sufficient number of relevant news items,</li>
+<li>the source had to be free or at least accessible enough for us to work with at scale,</li>
+<li>the source had to be usable in a pipeline where URLs could be identified first and article text could then be extracted separately.</li>
+</ul>
+<p>This extraction stage became one of the most meaningful technical parts of the project. 
+News webpages often contain paywalls, boilerplate text, or incomplete article bodies, so collecting URLs alone was not enough. 
+To solve this, the workflow used browser impersonation and article parsing tools to retrieve the core text from raw webpages.
+After filtering out very short or unusable outputs, the pipeline retained 3,252 full-text articles across a 36-month period.</p>
+<p>A simplified version of this extraction logic is shown below.
+Although the actual implementation was more detailed, this example captures the core idea of retrieving a webpage, parsing the article, and keeping only texts that were substantial enough to be useful for later analysis.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">curl_cffi</span> <span class="kn">import</span> <span class="n">requests</span>
+<span class="kn">from</span> <span class="nn">newspaper</span> <span class="kn">import</span> <span class="n">Article</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://example.com/article&quot;</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">impersonate</span><span class="o">=</span><span class="s2">&quot;chrome&quot;</span><span class="p">)</span>
+<span class="n">article</span> <span class="o">=</span> <span class="n">Article</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">article</span><span class="o">.</span><span class="n">set_html</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+<span class="n">article</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="n">article</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Usable article extracted&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>This step reflects an important idea in the project: raw online information is not automatically ready for analysis. 
+A meaningful part of the work lies in converting messy webpages into usable text.</p>
+<h2>From Master Data to a RAG-Ready Output</h2>
+<p>Once the article texts had been extracted and filtered, the next challenge was to align them with market data in a consistent daily format. 
+The text-side information was organized into three thematic variables — Monetary, Fiscal, and Geopolitics — while a News_Context field preserved the broader narrative information for each trading day. 
+This was then merged with Yahoo Finance data for GC=F gold futures, including close prices and log returns.</p>
+<p>This produced a daily master dataset that could support volatility modeling. 
+On top of this dataset, Baseline GARCH(1,1) and NLP-Augmented GARCH-X(1,1) models were fitted, generating two comparable volatility series. 
+These outputs were then merged into the final file, fina2350_master_dataset_for_rag.csv, which contains market variables, thematic text features, contextual text, and both model-based volatility measures in one place.</p>
+<p>This final dataset is important because it acts as a bridge between two stages of the project: statistical volatility modeling and downstream RAG-based interpretation.</p>
+<p><img alt="Conditional Volatility Comparison" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/the-gold-diggers_01_volatility-comparison.png"></p>
+<p><em>Figure 1. Comparison of conditional volatility from the baseline GARCH and NLP-augmented GARCH-X models.</em></p>
+<h2>What We Learned</h2>
+<p>This process taught us that exploratory data collection and modeling-ready data construction are not the same task. 
+At the beginning of the project, it was easy to assume that gathering relevant sources would be the hardest part. 
+In practice, the more difficult challenge was creating a dataset with the right level of continuity, alignment, and structure for time-series analysis.</p>
+<p>More broadly, the project showed us that data engineering is not just a supporting step before analysis begins. 
+In our case, source identification, text extraction, filtering, daily aggregation, market-data alignment, and volatility modeling were all necessary parts of the analytical design itself. 
+The result of this process is more than a cleaned spreadsheet: it is a dataset that connects quantitative volatility estimates with narrative context, making the next stage of RAG-based interpretation possible.
+In the near future, we plan to use this final dataset for RAG-based interpretation of major volatility episodes. 
+By doing so, we hope to move beyond measuring volatility and begin explaining it through the narrative context captured in the underlying news data.</p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-03-28T12:00:00+08:00">Sat 28 March 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#reflective-report-ref">Reflective Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#group-the-gold-diggers-ref">Group The Gold Diggers
+                    <span class="superscript">1</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
