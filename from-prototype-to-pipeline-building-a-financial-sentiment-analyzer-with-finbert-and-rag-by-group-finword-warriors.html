@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="FINA2350 Students 2026" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Group Finword Warriors, Reflective Report, " />
+
+<meta property="og:title" content="From Prototype to Pipeline: Building a Financial Sentiment Analyzer with FinBERT and RAG (by Group &#34;Finword Warriors&#34;) "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/from-prototype-to-pipeline-building-a-financial-sentiment-analyzer-with-finbert-and-rag-by-group-finword-warriors.html" />
+<meta property="og:description" content="By Group Finword Warriors Introduction Emotions are natural instincts for every human being, which becomes crucial in the stock market too. Negative news will create panic feelings about a company&#39;s future, such as the ongoing Middle East crisis involving the U.S., Israel, and Iran, which pushes the selling pressure …" />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="FINA2350 Students 2026" />
+<meta property="og:article:published_time" content="2026-03-28T17:12:00+08:00" />
+<meta name="twitter:title" content="From Prototype to Pipeline: Building a Financial Sentiment Analyzer with FinBERT and RAG (by Group &#34;Finword Warriors&#34;) ">
+<meta name="twitter:description" content="By Group Finword Warriors Introduction Emotions are natural instincts for every human being, which becomes crucial in the stock market too. Negative news will create panic feelings about a company&#39;s future, such as the ongoing Middle East crisis involving the U.S., Israel, and Iran, which pushes the selling pressure …">
+
+        <title>From Prototype to Pipeline: Building a Financial Sentiment Analyzer with FinBERT and RAG (by Group &#34;Finword Warriors&#34;)  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/from-prototype-to-pipeline-building-a-financial-sentiment-analyzer-with-finbert-and-rag-by-group-finword-warriors.html">
+                From Prototype to Pipeline: Building a Financial Sentiment Analyzer with FinBERT and RAG (by Group "Finword Warriors")
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p>By Group Finword Warriors</p>
+<h2>Introduction</h2>
+<p>Emotions are natural instincts for every human being, which becomes crucial in the stock market too. Negative news will create panic feelings about a company's future, such as the ongoing Middle East crisis involving the U.S., Israel, and Iran, which pushes the selling pressure and stock price drops, resulting in market risk aversion. Observing more uncertainties and news overflowing on the Internet, it is necessary to develop a professional sentiment analyzer to interpret news trends and market feelings, for better tradings on trends.</p>
+<p>In this blog, we would like to share about our sentiment analyzer – Sentiment Sage, including why we would like to make this app and the basic working principles and improvement we would do throughout the project.</p>
+<h2>Motivation</h2>
+<p><strong>Sentiment is the new 'trillion dollar question'</strong></p>
+<p>Living in a volatile and continuously-changing society, basic analysis of a company is not always the optimal strategy nowadays. Looking at Hang Seng Tech dropping over 10% in a month and the global market situation, like reciprocal tariffs last year, it is assured that a single quote by political leaders carrying different emotions can drive the market trends up and down like a roller coaster. Sentiments will be the major pillar of short-term trades and options. Observed from recent chaotic situations like wars and a Citrini post criticizing the AI bubble and intelligent crisis, pushing down the Dow Jones index of over 2%, we can further confirm that sentiment is the new fundamental analysis, it matters like a 'trillion dollar question'. Integrating with so much information by different news companies overflowing around the world, a normal Gemini or Grok would not be able to correctly interpret the current situation, that's why we develop this sentiment analyzer that aims to provide users with reliable and data-driven sentiment insights.</p>
+<p>More AI apps are published these days like Bevel and Backbone AI to analyze market emotions, but they still have certain advantages. For example, their news information is not updated in real time compared to our up-to-date news thanks to the newsAPI key, which matters a lot for an information overload world nowadays. Besides, those AI are not specific to interpret financial terms like 'bear' and 'default', which might lead to huge mistakes.</p>
+<p>That's why we believe our model would stand out. Targeting the pain points of generic AI and apps, SentimentSage addresses the reliability gap in retail financial tech, ensuring that AI-generated insights are both timely and grounded in reality.</p>
+<h2>Approaches</h2>
+<p>The development of SentimentSage will follow a structured approach focused on accuracy, usability, and scalability. The project will begin with a prototype using FinBERT, a pre-trained NLP model specifically designed for financial news sentiment analysis. FinBERT is chosen over other general models because of its deep understanding of financial terminology and context, resulting in more reliable sentiment classification.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_finbert_pipeline</span><span class="p">():</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">BertForSequenceClassification</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;yiyanghkust/finbert-tone&quot;</span><span class="p">)</span>
+    <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;yiyanghkust/finbert-tone&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">&quot;sentiment-analysis&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">)</span>
+</code></pre></div>
+
+<p>To enhance the quality of results, Retrieval-Augmented Generation (RAG) is integrated into the system, combining information retrieval with generative LLM AI. To initiate this process, the system automatically translates the user-provided company ticker into optimized search queries for the News API. This ensures that the RAG pipeline operates on the most recent and contextually relevant financial headlines, bridging the gap between raw market data and actionable intelligence.</p>
+<p>These retrieved articles are then processed and passed as context to the LLM, ensuring that the generated summaries are strictly grounded in real-time data. By synthesizing these diverse information sources, the system can provide a comprehensive market analysis that goes far beyond the capabilities of a standalone language model.</p>
+<div class="highlight"><pre><span></span><code><span class="n">loader</span> <span class="o">=</span> <span class="n">TextLoader</span><span class="p">(</span><span class="s2">&quot;temp_articles.txt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+<span class="n">documents</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+<span class="n">splitter</span> <span class="o">=</span> <span class="n">CharacterTextSplitter</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">docs</span> <span class="o">=</span> <span class="n">splitter</span><span class="o">.</span><span class="n">split_documents</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">OpenAIEmbeddings</span><span class="p">()</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">FAISS</span><span class="o">.</span><span class="n">from_documents</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">)</span>
+</code></pre></div>
+
+<p>The system accepts user input in the form of a company ticker, retrieves recent news articles, analyzes sentiment using FinBERT, and generates a comprehensive summary with actionable insights.</p>
+<p>For deployment, the application will be migrated to Streamlit Cloud, providing a clean user interface. API keys for LLM and News API must be obtained and managed using Streamlit's secrets management section.</p>
+<p>The project achieves a sophisticated synergy by combining FinBERT's quantitative sentiment scores with the LLM's qualitative reasoning. By treating the sentiment probabilities as structured features for the LLM, SentimentSage transitions from simple emotion detection to a "rational" synthesis, providing users with a comprehensive summary grounded in both market mood and factual evidence.</p>
+<h2>Challenges and Limitation</h2>
+<p><strong>Single LLM API Key?</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">OpenAI</span><span class="p">,</span> <span class="n">OpenAIEmbeddings</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;your-openai-key&quot;</span>
+
+<span class="n">llm</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>    <span class="c1"># 硬编码 OpenAI</span>
+
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">OpenAIEmbeddings</span><span class="p">()</span>
+</code></pre></div>
+
+<p>We first used OpenAI's API for convenience when we initially constructed our RAG pipeline. It worked, but it can be inconvenient for those who cannot use or are not willing to use OpenAI's API. Moreover, it could be inflexible to tie our project to a single API supplier. Therefore, we realized we should modify the LLM interface if we wanted to use a self-hosted model or a free substitute like Kimi. Instead of using langchain_openai directly, the model name, API key, and base URL should be read from environment variables in the LLM interface. In other words, any base URL and API key provider that are compatible with LLM interface can be used.</p>
+<h2>Evolutions</h2>
+<p><strong>Replacing and Integrating More LLM API Keys</strong></p>
+<p>Here's the simplified setup we added:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">ChatOpenAI</span>
+
+<span class="k">def</span> <span class="nf">get_llm</span><span class="p">():</span>
+
+    <span class="k">return</span> <span class="n">ChatOpenAI</span><span class="p">(</span>
+
+    <span class="n">model</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;LLM_MODEL&quot;</span><span class="p">,</span> <span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">),</span>
+
+    <span class="n">openai_api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;OPENAIA_PI_KEY&quot;</span><span class="p">),</span>
+
+    <span class="n">openai_api_base</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;OPENAIA_API_BASE&quot;</span><span class="p">,</span> <span class="s2">&quot;https://api.openai.com/v1&quot;</span><span class="p">),</span>
+
+    <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span>
+
+    <span class="p">)</span>
+
+<span class="c1"># Kimi as an example</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;your_api_key&quot;</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENAI_API_BASE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;https://api.moonshot.cn/v1&quot;</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;LLM_MODEL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;moonshot-v1-8k&quot;</span>
+
+<span class="c1"># Testing</span>
+
+<span class="n">llm</span> <span class="o">=</span> <span class="n">get_llm</span><span class="p">()</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="s2">&quot;Introduce yourself&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>  <span class="c1"># Sucessful</span>
+</code></pre></div>
+
+<p>We only need to set three environment variables in order to use Kimi or another service. No modifications to the code.</p>
+<p>The biggest obstacle was to ensure the response format complied with LangChain's requirements. Slightly different JSON structures returned by some non-OpenAI endpoints may raise an error. So we have another choice, which is the ChatOpenAI class, adaptable enough to work with the majority of OpenAI-compatible APIs. Our project became future-proof thanks to this minor refactor, which also allowed us to experiment with different LLMs without having to rewrite any code. It serves as a lesson in creating modular, adaptable systems from the outset.</p>
+<h2>Reference</h2>
+<p>Citrini (22 Feb 2026) The 2028 Global Intelligence Crisis https://www.citriniresearch.com/p/2028gic</p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-03-28T17:12:00+08:00">Sat 28 March 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#reflective-report-ref">Reflective Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#group-finword-warriors-ref">Group Finword Warriors
+                    <span class="superscript">1</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
