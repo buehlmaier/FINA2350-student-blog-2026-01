@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="FINA2350 Students 2026" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Group SENTIBRENT, Reflective Report, " />
+
+<meta property="og:title" content="A Streaming NLP Analysis of U.S.–Iran Conflict News and Brent Crude Futures Blog Post (by Group &#34;SENTIBRENT&#34;) "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/a-streaming-nlp-analysis-of-us-iran-conflict-news-and-brent-crude-futures-blog-post-by-group-sentibrent.html" />
+<meta property="og:description" content="By Group &#34;SENTIBRENT&#34; Brent Oil Price Data Collection In this post, I walk through a Python workflow for collecting and analyzing historical Brent crude oil futures data. The script retrieves price data, segments it into regular intervals (e.g., every three days), calculates price changes, and exports the results to …" />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="FINA2350 Students 2026" />
+<meta property="og:article:published_time" content="2026-03-28T10:00:00+08:00" />
+<meta name="twitter:title" content="A Streaming NLP Analysis of U.S.–Iran Conflict News and Brent Crude Futures Blog Post (by Group &#34;SENTIBRENT&#34;) ">
+<meta name="twitter:description" content="By Group &#34;SENTIBRENT&#34; Brent Oil Price Data Collection In this post, I walk through a Python workflow for collecting and analyzing historical Brent crude oil futures data. The script retrieves price data, segments it into regular intervals (e.g., every three days), calculates price changes, and exports the results to …">
+
+        <title>A Streaming NLP Analysis of U.S.–Iran Conflict News and Brent Crude Futures Blog Post (by Group &#34;SENTIBRENT&#34;)  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/a-streaming-nlp-analysis-of-us-iran-conflict-news-and-brent-crude-futures-blog-post-by-group-sentibrent.html">
+                A Streaming NLP Analysis of U.S.–Iran Conflict News and Brent Crude Futures Blog Post (by Group "SENTIBRENT")
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p>By Group "SENTIBRENT"</p>
+<h2>Brent Oil Price Data Collection</h2>
+<p>In this post, I walk through a Python workflow for collecting and analyzing historical Brent crude oil futures data. The script retrieves price data, segments it into regular intervals (e.g., every three days), calculates price changes, and exports the results to a CSV file. It can also optionally send the processed data to an external API for further use.</p>
+<p>To ensure flexibility and reproducibility, the script is designed to prioritize the official Trading Economics API when available, while also providing a fallback to generated sample data. This allows the full workflow to be tested even without API access.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Python</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># 1. Configuration parameters</span>
+<span class="n">SLICE_DAYS</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Slice interval (days)</span>
+<span class="n">OUTPUT_CSV</span> <span class="o">=</span> <span class="s2">&quot;brent_crude_3day_slices.csv&quot;</span>
+<span class="n">TRADING_ECONOMICS_API_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TRADING_ECONOMICS_API_KEY&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">TRADING_ECONOMICS_API_KEY</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Brent crude Fluctuation.txt&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">TRADING_ECONOMICS_API_KEY</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+<span class="c1"># 2. Define data retrieval functions (API first, scraping fallback)</span>
+<span class="k">def</span> <span class="nf">fetch_brent_data_via_api</span><span class="p">(</span><span class="n">api_key</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="mi">06</span><span class="o">/</span><span class="mi">29</span><span class="o">/</span><span class="mi">2025</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="mi">03</span><span class="o">/</span><span class="mi">22</span><span class="o">/</span><span class="mi">2026</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetch Brent crude oil daily data via Trading Economics API</span>
+<span class="sd">    Documentation: https://api.tradingeconomics.com/documentation</span>
+<span class="sd">    A free API key is required (daily limit applies)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">api_key</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No API key provided. Please apply for one and set TRADING_ECONOMICS_API_KEY&quot;</span><span class="p">)</span>
+
+    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.tradingeconomics.com/historical/country/commodity?c=</span><span class="si">{</span><span class="n">api_key</span><span class="si">}</span><span class="s2">&amp;symbol=COMBRENT&amp;format=json&quot;</span>
+    <span class="k">if</span> <span class="n">start_date</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&amp;d1=</span><span class="si">{</span><span class="n">start_date</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="n">end_date</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&amp;d2=</span><span class="si">{</span><span class="n">end_date</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;DateTime&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="s1">&#39;Close&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Close&#39;</span><span class="p">:</span> <span class="s1">&#39;price&#39;</span><span class="p">})</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;Date&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">df</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;API request failed: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">fetch_brent_data_via_scrape</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fallback: scrape from a public website or generate simulated data for demonstration.</span>
+<span class="sd">    Note: In production, use a reliable data source and respect the website&#39;s robots.txt.</span>
+<span class="sd">    Here we create a sample dataset to illustrate the processing logic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fallback mode: generating simulated daily data for the past year&quot;</span><span class="p">)</span>
+    <span class="c1"># Generate simulated data (for demonstration only)</span>
+    <span class="n">end_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+    <span class="n">start_date</span> <span class="o">=</span> <span class="n">end_date</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
+    <span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end_date</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Simulate Brent crude oil prices ($80-95 with a slight upward trend)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="mi">85</span>
+    <span class="n">trend</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dates</span><span class="p">))</span>
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dates</span><span class="p">))</span>
+    <span class="n">prices</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">trend</span> <span class="o">+</span> <span class="n">noise</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Date&#39;</span><span class="p">:</span> <span class="n">dates</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">prices</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+<span class="c1"># 3. Retrieve real data (try official API; if fails, use fallback)</span>
+<span class="k">def</span> <span class="nf">get_brent_data</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">TRADING_ECONOMICS_API_KEY</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">fetch_brent_data_via_api</span><span class="p">(</span><span class="n">TRADING_ECONOMICS_API_KEY</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully retrieved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> records via API&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">df</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No API key provided&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;API method failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Switching to fallback...&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fetch_brent_data_via_scrape</span><span class="p">()</span>
+
+<span class="c1"># 4. Slice data at intervals and calculate price volatility</span>
+<span class="k">def</span> <span class="nf">slice_data_and_calc_volatility</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">slice_days</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For every slice_days days, take a price point and calculate the percentage change</span>
+<span class="sd">    from the previous slice.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Ensure data is sorted by date</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;Date&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Determine slice dates: start from the earliest date, step by slice_days</span>
+    <span class="n">start_date</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">slice_dates</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">current</span> <span class="o">=</span> <span class="n">start_date</span>
+    <span class="k">while</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">slice_dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+        <span class="n">current</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">slice_days</span><span class="p">)</span>
+
+    <span class="c1"># For each target date, find the closest available price (previous trading day)</span>
+    <span class="n">slice_prices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">actual_dates</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">target_date</span> <span class="ow">in</span> <span class="n">slice_dates</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">target_date</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">actual_dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s1">&#39;Date&#39;</span><span class="p">])</span>
+            <span class="n">slice_prices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">continue</span>  <span class="c1"># No data available (should not happen)</span>
+
+    <span class="c1"># Build the slice DataFrame</span>
+    <span class="n">slice_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s1">&#39;slice_date&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">actual_dates</span><span class="p">],</span>
+        <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">slice_prices</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Calculate price changes (percentage and absolute)</span>
+    <span class="n">slice_df</span><span class="p">[</span><span class="s1">&#39;price_change_pct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">slice_df</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="n">slice_df</span><span class="p">[</span><span class="s1">&#39;price_abs_change&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">slice_df</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">slice_df</span>
+</code></pre></div>
+
+<h3>Why This Matters</h3>
+<p><strong>Brent crude oil</strong> is one of the most important global benchmarks. Analysts often need to examine price movements over fixed periods – for instance, to compute volatility or feed into a trading model. This script automates the data retrieval and transformation steps, saving time and ensuring reproducibility.</p>
+<h3>Code Overview</h3>
+<p><strong>1. Configuration</strong></p>
+<p>We begin by defining key parameters, including the slicing interval (SLICE_DAYS = 3) and the output CSV filename.</p>
+<p>This design allows for easy customization—you can adjust the interval to 7, 10, or any number of days depending on your analysis needs.</p>
+<p><strong>2. Data Retrieval</strong></p>
+<p>The script supports two methods for obtaining Brent crude oil data:</p>
+<ul>
+<li>
+<p><strong>fetch_brent_data_via_api</strong> uses the Trading Economics API. You’ll need a free API key from tradingeconomics.com/api. The function constructs the appropriate URL, makes a GET request, and returns a cleaned DataFrame with dates and closing prices.</p>
+</li>
+<li>
+<p><strong>fetch_brent_data_via_scrape</strong> is a fallback that generates realistic simulated data (a year of daily prices with a mild upward trend and random noise). In a real deployment, you could replace this with a proper web scraping routine (e.g., using <strong>requests</strong> and <strong>BeautifulSoup</strong>), but the simulation ensures the rest of the pipeline runs smoothly for demonstration.</p>
+</li>
+</ul>
+<p>The main function <strong>get_brent_data()</strong> attempts to use the API first; if that fails (no key or network issues), it silently switches to the simulated data.</p>
+<p><strong>3. Slicing and Volatility Calculation</strong></p>
+<p><strong>slice_data_and_calc_volatility</strong> takes the daily price DataFrame and slices it at intervals of slice_days. For each target date, it finds the most recent available price (useful because weekends or holidays might have no data). It then computes:
+- <strong>price_change_pct</strong>: percentage change from the previous slice.
+- <strong>price_abs_change</strong>: absolute change.
+The result is a clean DataFrame with one row per slice, plus the derived columns.</p>
+<p><strong>4.  Export</strong></p>
+<p><strong>export_to_csv</strong> saves the sliced DataFrame to a CSV file with UTF-8 encoding (compatible with Excel).</p>
+<p><strong>5. External API Call (Optional)</strong></p>
+<p><strong>send_to_api</strong> demonstrates how you could push the sliced data to an external endpoint. It builds a JSON payload and prepares headers. You can uncomment the actual <strong>requests.post</strong> line and supply your own endpoint and token.</p>
+<h3>Result</h3>
+<p><img alt="Oil Price" src="images/Group-SENTIBRENT_01-image-Oil_Price.png"></p>
+<h2>News Data Collection Process</h2>
+<p>To ensure a systematic and reliable dataset for our analysis, we designed a three-step data collection process using ProQuest as our primary news source. Our goal is to capture how geopolitical events influence oil prices, while maintaining strong quality control and minimizing selection bias.</p>
+<h3>Step 1: Defining Key Event Days (Quality Control)</h3>
+<p>As a first step, we identify Key Event Days to anchor our analysis. For quality control, we select 8 major event days that represent significant shifts in geopolitical tension between the United States and Iran.
+We define an Event Day as a date when there is a sudden escalation, de-escalation, or turning point in conflict intensity or diplomatic stance. These moments are critical because they generate clear market reactions, allowing us to better observe the relationship between geopolitical shocks and oil price movements.</p>
+<p>Our selected Key Event Days are:
+- Event 1 (Apr 12, 2025): Nuclear Talks Begin
+- Event 2 (June 13, 2025): Major Airstrikes Begin
+- Event 3 (June 22, 2025): Direct Military Action Reported
+- Event 4 (Feb 17, 2026): Increased Tensions in the Strait of Hormuz
+- Event 5 (Feb 28, 2026): Onset of Military Conflict
+- Event 6 (Mar 1, 2026): Immediate Response Phase
+- Event 7 (Mar 13, 2026): Military Activity Reported at Kharg Island
+- Event 8 (Mar 18, 2026): Escalation of Tensions in the Strait of Hormuz</p>
+<p>By focusing on these high-impact dates, we improve signal clarity and reduce noise from less relevant periods.</p>
+<h3>Step 2: Keyword Filtering and Source Selection</h3>
+<p>Next, we collect news articles from <a href="https://www.proquest.com/">ProQuest.com</a> and using ProQuest’s built-in filtering tools.
+•   Primary keyword: “US-Iran War”
+•   Source type filter: Newspapers only</p>
+<p><img alt="Keyword Filter" src="images/Group-SENTIBRENT_01_image-ProQuest_Filter.png"></p>
+<p>Because ProQuest aggregates a wide range of content (e.g., reports, blogs, and magazines), restricting our dataset to newspaper articles ensures:
+•   higher credibility
+•   consistent journalistic standards
+•   timely reporting of events
+This step ensures that our dataset remains both relevant and reliable.</p>
+<h3>Step 3: Random Sampling to Reduce Bias</h3>
+<p>To capture the immediate market reaction to each event, we define a 3-day event period following each Key Event Day. This approach captures both the initial announcement and the short-term reactions reflected in the news.
+For each event period:
+•   We retrieve the top 100 most relevant articles ranked by ProQuest
+•   We then apply a Python-based random sampling method to select 5 articles</p>
+<p>The code we use is as follows:</p>
+<div class="highlight"><pre><span></span><code><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">101</span><span class="p">),</span><span class="mi">5</span><span class="p">)</span>
+</code></pre></div>
+
+<p><img alt="Random Selection" src="images/Group-SENTIBRENT_01_image-Random_Selection.png"></p>
+<p>Then we collect the PDF version of the news for later Data Cleaning and Analysis 
+This process ensures that our selection is not influenced by subjective judgment or algorithmic ranking bias.
+By combining relevance ranking with random selection, we:
+•   reduce the risk of cherry-picking extreme narratives
+•   maintain a representative sample of news coverage
+•   improve the robustness and validity of our sentiment analysis</p>
+<h2>Text Analysis</h2>
+<p>After collecting the data, we began by conducting a pilot text analysis on a single news article from Event 6. This initial step allowed us to test our workflow before scaling the analysis to a larger dataset.</p>
+<p>One of the first challenges we encountered was related to data access. Because our team relied on university access through ProQuest, we were unable to directly specify file paths to the articles without downloading them. To resolve this issue and ensure consistency across team members, we decided to save all selected articles as PDF files for local processing.</p>
+<p>Next, we compared two approaches to measuring escalation language: zero-shot classification and a dictionary-based method. Using the same article as a test case, both methods produced similar results. Despite this consistency, we chose to retain both approaches. From a research perspective, applying multiple methods can improve robustness and provide complementary insights. As our later analysis confirmed, this decision proved valuable.</p>
+<p>The Code we use as follow:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 5. Escalatory Language Assessment</span>
+<span class="c1"># Using Zero-Shot Classification to look for specific signs of escalation</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading model for escalation assessment...&quot;</span><span class="p">)</span>
+<span class="n">zero_shot_pipeline</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">&quot;zero-shot-classification&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;facebook/bart-large-mnli&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">assess_escalation</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;NEUTRAL&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+
+    <span class="c1"># Restrict text length for the model</span>
+    <span class="n">short_text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">400</span><span class="p">])</span>
+
+    <span class="c1"># Labels we want to check for</span>
+    <span class="n">candidate_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;escalatory&quot;</span><span class="p">,</span> <span class="s2">&quot;threatening&quot;</span><span class="p">,</span> <span class="s2">&quot;aggressive&quot;</span><span class="p">,</span> <span class="s2">&quot;calm&quot;</span><span class="p">,</span> <span class="s2">&quot;neutral&quot;</span><span class="p">,</span> <span class="s2">&quot;peaceful&quot;</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># The model will return labels sorted by probability</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">zero_shot_pipeline</span><span class="p">(</span><span class="n">short_text</span><span class="p">,</span> <span class="n">candidate_labels</span><span class="p">)</span>
+
+        <span class="c1"># Taking the label with the highest probability</span>
+        <span class="n">top_label</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">top_score</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;scores&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">top_label</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">top_score</span><span class="p">}</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analysis error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+</code></pre></div>
+
+<h3>Word Cloud Creation</h3>
+<p>Next, we created word clouds. We thought it might be useful to generate a separate word cloud containing only verbs, as higher levels of escalation in the news might be reflected more clearly through action-oriented language. However, this step was mainly exploratory and served as a space for experimentation.</p>
+<p><img alt="Word Cloud 1" src="images/Group-SENTIBRENT_01_image-Word_Cloud_1.png"></p>
+<p><img alt="Word Cloud 2" src="images/Group-SENTIBRENT_01_image-Word_Cloud_2.png"></p>
+<h3>Comparing Escalation Signals Across Methods</h3>
+<p>To analyze all news articles related to Event 6, we applied two different approaches: <strong>a dictionary-based method</strong> and <strong>a zero-shot classification model</strong>. Our goal was to compare how each method captures escalation language and to identify any meaningful differences between them.</p>
+<p>The code we use as follow:</p>
+<div class="highlight"><pre><span></span><code><span class="n">df_all</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">all_docs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✅ Extracted valid text from </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_all</span><span class="p">)</span><span class="si">}</span><span class="s2"> files.&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">df_all</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+    <span class="c1"># 3. Sentiment Analysis</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🔍 Running Sentiment Analysis on all documents...&quot;</span><span class="p">)</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Sentiment_Result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">analyze_sentiment</span><span class="p">)</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Sentiment_Label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Sentiment_Result&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">])</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Sentiment_Score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Sentiment_Result&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">])</span>
+
+    <span class="c1"># 4. Thematic Analysis</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🔍 Running Thematic Analysis on all documents...&quot;</span><span class="p">)</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Theme_Result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">combined_assess_theme</span><span class="p">)</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Top_Theme&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Theme_Result&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">])</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Theme_Confidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Theme_Result&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">])</span>
+
+    <span class="c1"># 5. Zero-Shot Escalation Assessment</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🔍 Running Zero-Shot Escalation Assessment on all documents...&quot;</span><span class="p">)</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Esc_Result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">combined_assess_escalation</span><span class="p">)</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;ZeroShot_Escalation_Label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Esc_Result&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">])</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;ZeroShot_Escalation_Confidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Esc_Result&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">])</span>
+
+    <span class="c1"># 6. Dictionary-based Escalation Index</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🔍 Running Dictionary-Based Escalation Assessment on all documents...&quot;</span><span class="p">)</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Dict_Esc_Result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">combined_assess_escalation_dictionary</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">escalation_lexicon_combined</span><span class="p">))</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Dict_Escalation_Index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Dict_Esc_Result&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;escalation_index&#39;</span><span class="p">])</span>
+    <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Dict_Escalation_Level&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Dict_Escalation_Index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">combined_escalation_level</span><span class="p">)</span>
+
+    <span class="c1"># Clean up intermediate cols</span>
+    <span class="n">df_all</span> <span class="o">=</span> <span class="n">df_all</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sentiment_Result&#39;</span><span class="p">,</span> <span class="s1">&#39;Theme_Result&#39;</span><span class="p">,</span> <span class="s1">&#39;Esc_Result&#39;</span><span class="p">,</span> <span class="s1">&#39;Dict_Esc_Result&#39;</span><span class="p">])</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🎉 --- COMPILED ANALYSIS RESULTS ---&quot;</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">df_all</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Text&#39;</span><span class="p">]))</span>
+</code></pre></div>
+
+<p>The figure below show the classification results and highlights the differences between the two approaches across selected documents.</p>
+<p><img alt="Two Methods Result" src="images/Group-SENTIBRENT_01-image-Method_Difference.png"></p>
+<p><img alt="Two Methods Result" src="images/Group-SENTIBRENT_01-image-ZS_result.png"></p>
+<p>The metric <strong>ZS_Top_Escalation_Score</strong> represents the model’s confidence in its most likely predicted label.</p>
+<p>We also can see that escalation level from dictionary based and zero-shot model differs for event 6 (99). This might suggest that we should reconsider the escalation_lexicon parameter. </p>
+<p>Additionally, our preliminary findings indicate that sentiment scores and escalation indices are not directly correlated. For example, a piece of news can contain highly escalatory language while maintaining a neutral tone. While this observation is intuitive, we plan to validate it more rigorously using statistical methods in later stages of the analysis.</p>
+<p>Typical potential scenarios for news:</p>
+<ul>
+<li><strong>Low Sentiment (-0.5) + High Escalation threatening (0.9)</strong>: The text describes a serious impending crisis, threats, or aggressive statements.</li>
+<li><strong>Neutral Sentiment (~0.0) + Low  Escalation (&lt;0.5)</strong>: A standard, dry news report; no strong emotions and no obvious signs of escalation.</li>
+<li><strong>High Sentiment (+0.6) + High Escalation peaceful (0.8)</strong> : The discussion focuses on de-escalation, signing a peace treaty, successful negotiations, or providing humanitarian aid.</li>
+</ul>
+<h3>Data Cleaning Challenges in Visualization</h3>
+<p>During the construction of word clouds for Event 6, we encountered a data-cleaning issue: the word “<strong>quest</strong>” appeared frequently due to ProQuest document stamps rather than actual article content.</p>
+<p>To address this, we added “quest” to our stopword list, ensuring that the visualization more accurately reflects meaningful linguistic patterns.</p>
+<p><img alt="Two Methods Result" src="images/Group-SENTIBRENT_01-image-Word_Cloud_03.png"> </p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-03-28T10:00:00+08:00">Sat 28 March 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#reflective-report-ref">Reflective Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#group-sentibrent-ref">Group SENTIBRENT
+                    <span class="superscript">1</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
