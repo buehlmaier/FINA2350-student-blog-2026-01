@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="FINA2350 Students 2026" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Group Finword Warriors, Reflective Report, " />
+
+<meta property="og:title" content="Trust the Sentiment Sage Process (by Group &#34;Finword Warriors&#34;) "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/trust-the-sentiment-sage-process-by-group-finword-warriors.html" />
+<meta property="og:description" content="By Group &#34;Finword Warriors&#34; Introduction In this blog, we would like to share about the methodology and work progress of our sentiment analyzer – Sentiment Sage, including what we have done in these 2 months with code snippets, and how we integrate with an online application Streamlit, and what we still …" />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="FINA2350 Students 2026" />
+<meta property="og:article:published_time" content="2026-05-13T23:32:00+08:00" />
+<meta name="twitter:title" content="Trust the Sentiment Sage Process (by Group &#34;Finword Warriors&#34;) ">
+<meta name="twitter:description" content="By Group &#34;Finword Warriors&#34; Introduction In this blog, we would like to share about the methodology and work progress of our sentiment analyzer – Sentiment Sage, including what we have done in these 2 months with code snippets, and how we integrate with an online application Streamlit, and what we still …">
+
+        <title>Trust the Sentiment Sage Process (by Group &#34;Finword Warriors&#34;)  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/trust-the-sentiment-sage-process-by-group-finword-warriors.html">
+                Trust the Sentiment Sage Process (by Group "Finword Warriors")
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p>By Group "Finword Warriors"</p>
+<h2>Introduction</h2>
+<p>In this blog, we would like to share about the methodology and work progress of our sentiment analyzer – Sentiment Sage, including what we have done in these 2 months with code snippets, and how we integrate with an online application Streamlit, and what we still can improve for this model. </p>
+<h2>Overview of our online application</h2>
+<p>To bring our project to applicable stuff, we built the SentimentSage application using <strong>Streamlit Community Cloud</strong>, an open-source framework that allowed us to transform our Python scripts into a sleek, interactive command center. By syncing the app directly with our GitHub repository, we created a platform where users can obtain detailed sentiment and information with a few clicks.</p>
+<p><img alt="Streamlit app" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_overview-app.png"></p>
+<p>The SentimentSage application streamlines market monitoring by utilizing <strong>NewsAPI</strong> to fetch the most recent and relevant headlines across a wide range of companies in real-time. These headlines are analyzed using an integrated <strong>FinBERT model</strong>, a specialized transformer architecture designed to comprehend intricate financial terminology and sentiment. To ensure instant clarity for the user, sentiment scores—ranging from 0 to 1—and confidence levels are visualized through interactive pie and bar charts.</p>
+<p><img alt="Sentiment Analysis" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_sentiment-scores.png">
+<img alt="Confidence Analysis" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_confidence.png"></p>
+<p>Under the hood, the platform implements a <strong>Retrieval-Augmented Generation (RAG)</strong> architecture using LangChain and AI API keys. This framework ensures that generated investment summaries are strictly grounded in the specific news articles retrieved during the current session, effectively mitigating the risk of AI hallucinations. These summaries offer more than just a surface-level overview; they provide detailed sentiment and risk assessments alongside practical trading strategies—such as specific short-price targets and long-option suggestions—to help users interpret stock price trends and apply findings with ease. </p>
+<p><img alt="AI Summary" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_summary1.png">
+<img alt="Investment" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_Investment.png"></p>
+<p>The platform emphasizes <strong>high customizability</strong>, ensuring the architecture remains flexible to meet diverse user requirements. While the demonstration features presets for Nvidia AI and NewsAPI, the system is designed to be provider-agnostic, allowing users to switch to other services such as OpenAI. Furthermore, the integration of premium or paid API keys is fully supported, enabling access to more powerful models for deeper analysis and ensuring that the tool's intelligence can scale alongside the user’s needs.</p>
+<h2>Some room to improve</h2>
+<p>While SentimentSage marks a major step forward in bridging the gap between quantitative metrics and qualitative intelligence, the development journey was defined by several critical "learning moments." A primary technical hurdle involved navigating <strong>strict token restrictions</strong>; the RAG pipeline frequently encountered 400-level errors when processing long-form financial content that exceeded the 512-token maximum. This necessitated a more precise and sophisticated text-splitting logic to ensure data integrity without triggering system failures.  </p>
+<p>Furthermore, <strong>data availability</strong> proved inconsistent across different market segments. While major entities like the "Magnificent Seven" yielded an abundance of articles, niche companies—particularly those in Asian regions not listed on the NYSE—often faced a significant lack of real-time news data. This issue was compounded by a heavy dependence on specific API keys and the high degree of specificity required for company name identification, which remains a persistent challenge in data retrieval.</p>
+<p>Beyond data collection, the project also addressed a significant <strong>validation gap</strong>. Although sentiment precision remains high, these scores have not yet been backtested against actual market price movements. Consequently, the AI-generated trading strategies should be viewed as hypothetical, laggy indicators rather than immediate financial advice. Finally, the reliance on <strong>free-tier APIs</strong> introduced moderate latency and a heightened sensitivity to prompt engineering, serving as a constant reminder that achieving true system robustness is an unending pursuit.</p>
+<h2>FinBERT model training</h2>
+<p>Instead of using the pretrained FinBERT model, we chose to fine-tune the model to increase the performance.</p>
+<h3>1. Dataset</h3>
+<p>The dataset used is “Sentiment analysis of commodity news” by ANKUR SINHA on Kaggle, giving us 2804 news along with sentiment labels. The dataset was split into a training set (75%), a validation set (15%), and a test set (10%).</p>
+<p><img alt="Dataset" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_Dataset.png"></p>
+<h3>2. Training Configuration</h3>
+<p>The model was initialized from “yiyanghkust/finbert-tone” and fine-tuned for 3 epochs, using AdamW optimizer with a learning rate of 2e-5 and linear warmup scheduling. Input texts were tokenized and truncated to a maximum length of 128 tokens with a batch size of 16.</p>
+<h3>3. Results</h3>
+<p>Compared to 44.8% accuracy and 0.407 weighted F1 for the pretrained model, the fine-tuned model achieved a test accuracy of 57.7% and a weighted F1-score of 0.549, representing a consistent improvement across all metrics. Per-class evaluation shows the highest gain on the positive class, with recall improving by 36.5 percentage points.</p>
+<p><img alt="Finetune" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_finetune1.jpeg">
+<img alt="F1 score" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_f1score.jpeg">
+<img alt="Overall Performance" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_overall.jpeg"></p>
+<h2>Methodology</h2>
+<h3>1. Overall workflow</h3>
+<p>The SentimentSage system operates through a three-stage pipeline:
+Workflow steps:</p>
+<p><strong>Step1: News Fetching</strong>
+-       User inputs a company ticker (e.g. AAPL, TSLA)
+-       System calls NewsAPI to retrieve 20 most recent financial articles
+-       Articles are cached</p>
+<p><strong>Step2: Sentiment Analysis with FinBERT</strong>
+-       Each article is passed through FinBERT
+-       Model outputs: sentiment label + confidence score
+-       Results are aggregated and visualized in pie charts and histograms</p>
+<p><strong>Step3: RAG-Powered Q&amp;A</strong>
+-       Articles are split into character chunks with overlap
+-       Chunks are embedded via embedding tool and stored in FAISS database
+-       User’s question triggers retrieval of relevant chunks
+-       Retrieved context + question are sent to LLM to generate summary
+Output: Sentiment distribution charts + AI-generated investment recommendations grounded in actual news data.</p>
+<h3>2. Sentiment Analysis with FinBERT Function</h3>
+<p>SentimentSage uses FinBERT, a BERT variant pre-trained on financial communications, for specialized sentiment analysis. This model classifies each financial news article as positive, negative, or neutral with a confidence score.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">analyze_sentiment</span><span class="p">(</span><span class="n">articles</span><span class="p">,</span> <span class="n">pipe</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze sentiment of articles using FinBERT&quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">progress_bar</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">articles</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sentiment</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">(</span><span class="n">text</span><span class="p">[:</span><span class="mi">512</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span> 
+                <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">sentiment</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> 
+                <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">sentiment</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span>
+            <span class="p">})</span>
+            <span class="n">progress_bar</span><span class="o">.</span><span class="n">progress</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">articles</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error analyzing article </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+    <span class="n">progress_bar</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">results</span>
+</code></pre></div>
+
+<h3>3. RAG Pipeline Function</h3>
+<p>For contextual Q &amp; A, a Retrieval-Augmented Generation pipeline is implemented. Articles are chunked, embedded via embedding tool, and stored in a FAISS vector index database. When a question is asked, relevant chunks are retrieved and passed to LLM (e.g. Kimi, GPT) for context-aware answers.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_rag_pipeline</span><span class="p">(</span><span class="n">articles</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build RAG pipeline for question answering&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">articles</span><span class="p">))</span>
+            <span class="n">temp_file</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="n">loader</span> <span class="o">=</span> <span class="n">TextLoader</span><span class="p">(</span><span class="n">temp_file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="n">documents</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+        <span class="n">splitter</span> <span class="o">=</span> <span class="n">CharacterTextSplitter</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">docs</span> <span class="o">=</span> <span class="n">splitter</span><span class="o">.</span><span class="n">split_documents</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="n">OpenAIEmbeddings</span><span class="p">()</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">FAISS</span><span class="o">.</span><span class="n">from_documents</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">)</span>
+
+        <span class="n">llm</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1">#For NVidia API</span>
+        <span class="c1">#embeddings = NVIDIAEmbeddings(model=&quot;nvidia/nv-embedqa-e5-v5&quot;) </span>
+
+        <span class="c1">#db = FAISS.from_documents(docs, embeddings)</span>
+
+        <span class="c1"># --- CHANGE 2: Use NVIDIA Chat Model ---</span>
+        <span class="c1"># You can choose models like &quot;meta/llama-3.1-405b-instruct&quot; or &quot;nvidia/nemotron-4-340b-instruct&quot;</span>
+        <span class="c1">#llm = ChatNVIDIA(model=&quot;meta/llama-3.1-8b-instruct&quot;, temperature=0.2)</span>
+
+        <span class="c1"># 定義提示詞模板</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="o">.</span><span class="n">from_template</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        Answer the following question based only on the provided financial news context:</span>
+<span class="s2">        &lt;context&gt;</span>
+<span class="s2">        </span><span class="si">{context}</span>
+<span class="s2">        &lt;/context&gt;</span>
+<span class="s2">        Question: </span><span class="si">{input}</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+
+
+        <span class="n">combine_docs_chain</span> <span class="o">=</span> <span class="n">create_stuff_documents_chain</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">prompt</span><span class="p">)</span>
+
+
+        <span class="n">qa_chain</span> <span class="o">=</span> <span class="n">create_retrieval_chain</span><span class="p">(</span>
+            <span class="n">retriever</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">as_retriever</span><span class="p">(),</span>
+            <span class="n">combine_docs_chain</span><span class="o">=</span><span class="n">combine_docs_chain</span>
+        <span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">temp_file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">qa_chain</span> 
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error building RAG pipeline: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+
+<h3>4. News Fetching Function</h3>
+<p>Real-time news is aggregated via NewsAPI.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@st</span><span class="o">.</span><span class="n">cache_data</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_news</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">NEWS_API_KEY</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fetch financial news articles&quot;&quot;&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://newsapi.org/v2/everything?q=</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&amp;sortBy=publishedAt&amp;language=en&amp;pageSize=20&amp;apiKey=</span><span class="si">{</span><span class="n">api_key</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="n">articles</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;articles&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">articles</span> <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]]</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error fetching news: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span>
+</code></pre></div>
+
+<h2>Conclusions</h2>
+<p>SentimentSage marks an integration of domain-specific NLP and modern web technologies. By bridging the gap between quantitative sentiment metrics and qualitative investment intelligence, we have provided a unified platform for deeper market understanding. Some of the key successing pillars are:</p>
+<ul>
+<li><strong>FinBERT Core:</strong> High-precision capture of nuanced market sentiments using a specialized financial language model.</li>
+<li><strong>RAG Architecture:</strong> Ensuring AI summaries are grounded in real-time, retrieved news data through Retrieval-Augmented Generation for maximum reliability.</li>
+<li><strong>Comprehensive Insights:</strong> A synergistic approach that combines FinBERT’s quantitative precision with the descriptive, contextual power of RAG-powered analysis.</li>
+</ul>
+<h2>Limitations</h2>
+<p>Despite the successful implementation, our development journey highlighted several technical and operational constraints that we aim to address in future iterations:</p>
+<ul>
+<li><strong>Technical Bottlenecks:</strong> We encountered significant token restrictions and occasional RAG pipeline errors when processing long-form financial content.</li>
+<li><strong>API &amp; Data Quality:</strong> The system currently relies on free-tier APIs, which exhibit moderate performance and high sensitivity to prompt engineering.</li>
+<li><strong>Market Scope:</strong> There are inherent difficulties in fetching consistent and relevant news for small-cap companies or niche market entities.</li>
+<li><strong>Validation Gap:</strong> Currently, the sentiment scores are standalone and have not yet been backtested against actual historical price movements.</li>
+</ul>
+<h2>Future Improvements: What’s Next?</h2>
+<p>To transform SentimentSage into a more robust professional tool, our roadmap focuses on expanding data horizons and enhancing system stability:</p>
+<ul>
+<li><strong>Multi-source Integration:</strong> Incorporating alternative data streams, including social media platforms (Reddit/X) and professional analyst reports.</li>
+<li><strong>Temporal Analysis:</strong> Implementing features to track the evolution of sentiment and identify key trend shifts over time.</li>
+<li><strong>System Robustness:</strong> Enhancing RAG logic to better handle token overflows and high-volume data streams effectively.</li>
+<li><strong>Interactive Dashboard:</strong> Developing a more immersive user experience with real-time alerts and cross-market correlation visualizations.</li>
+</ul>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-05-13T23:32:00+08:00">Wed 13 May 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#reflective-report-ref">Reflective Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#group-finword-warriors-ref">Group Finword Warriors
+                    <span class="superscript">2</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

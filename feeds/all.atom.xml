@@ -1,5 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>FINA2350 Student Blog 2026</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/" rel="alternate"/><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" rel="self"/><id>https://buehlmaier.github.io/FINA2350-student-blog-2026-01/</id><updated>2026-05-03T15:30:00+08:00</updated><entry><title>Optimising Prompts For LLM Analysis</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/optimising-prompts-for-llm-analysis.html" rel="alternate"/><published>2026-05-03T15:30:00+08:00</published><updated>2026-05-03T15:30:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-05-03:/FINA2350-student-blog-2026-01/optimising-prompts-for-llm-analysis.html</id><summary type="html">&lt;p&gt;By Group "Cryptollama"&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>FINA2350 Student Blog 2026</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/" rel="alternate"/><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" rel="self"/><id>https://buehlmaier.github.io/FINA2350-student-blog-2026-01/</id><updated>2026-05-13T23:32:00+08:00</updated><entry><title>Trust the Sentiment Sage Process (by Group "Finword Warriors")</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/trust-the-sentiment-sage-process-by-group-finword-warriors.html" rel="alternate"/><published>2026-05-13T23:32:00+08:00</published><updated>2026-05-13T23:32:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-05-13:/FINA2350-student-blog-2026-01/trust-the-sentiment-sage-process-by-group-finword-warriors.html</id><summary type="html">&lt;p&gt;By Group "Finword Warriors"&lt;/p&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In this blog, we would like to share about the methodology and work progress of our sentiment analyzer – Sentiment Sage, including what we have done in these 2 months with code snippets, and how we integrate with an online application Streamlit, and what we still …&lt;/p&gt;</summary><content type="html">&lt;p&gt;By Group "Finword Warriors"&lt;/p&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In this blog, we would like to share about the methodology and work progress of our sentiment analyzer – Sentiment Sage, including what we have done in these 2 months with code snippets, and how we integrate with an online application Streamlit, and what we still can improve for this model. &lt;/p&gt;
+&lt;h2&gt;Overview of our online application&lt;/h2&gt;
+&lt;p&gt;To bring our project to applicable stuff, we built the SentimentSage application using &lt;strong&gt;Streamlit Community Cloud&lt;/strong&gt;, an open-source framework that allowed us to transform our Python scripts into a sleek, interactive command center. By syncing the app directly with our GitHub repository, we created a platform where users can obtain detailed sentiment and information with a few clicks.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Streamlit app" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_overview-app.png"&gt;&lt;/p&gt;
+&lt;p&gt;The SentimentSage application streamlines market monitoring by utilizing &lt;strong&gt;NewsAPI&lt;/strong&gt; to fetch the most recent and relevant headlines across a wide range of companies in real-time. These headlines are analyzed using an integrated &lt;strong&gt;FinBERT model&lt;/strong&gt;, a specialized transformer architecture designed to comprehend intricate financial terminology and sentiment. To ensure instant clarity for the user, sentiment scores—ranging from 0 to 1—and confidence levels are visualized through interactive pie and bar charts.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Sentiment Analysis" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_sentiment-scores.png"&gt;
+&lt;img alt="Confidence Analysis" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_confidence.png"&gt;&lt;/p&gt;
+&lt;p&gt;Under the hood, the platform implements a &lt;strong&gt;Retrieval-Augmented Generation (RAG)&lt;/strong&gt; architecture using LangChain and AI API keys. This framework ensures that generated investment summaries are strictly grounded in the specific news articles retrieved during the current session, effectively mitigating the risk of AI hallucinations. These summaries offer more than just a surface-level overview; they provide detailed sentiment and risk assessments alongside practical trading strategies—such as specific short-price targets and long-option suggestions—to help users interpret stock price trends and apply findings with ease. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="AI Summary" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_summary1.png"&gt;
+&lt;img alt="Investment" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_Investment.png"&gt;&lt;/p&gt;
+&lt;p&gt;The platform emphasizes &lt;strong&gt;high customizability&lt;/strong&gt;, ensuring the architecture remains flexible to meet diverse user requirements. While the demonstration features presets for Nvidia AI and NewsAPI, the system is designed to be provider-agnostic, allowing users to switch to other services such as OpenAI. Furthermore, the integration of premium or paid API keys is fully supported, enabling access to more powerful models for deeper analysis and ensuring that the tool's intelligence can scale alongside the user’s needs.&lt;/p&gt;
+&lt;h2&gt;Some room to improve&lt;/h2&gt;
+&lt;p&gt;While SentimentSage marks a major step forward in bridging the gap between quantitative metrics and qualitative intelligence, the development journey was defined by several critical "learning moments." A primary technical hurdle involved navigating &lt;strong&gt;strict token restrictions&lt;/strong&gt;; the RAG pipeline frequently encountered 400-level errors when processing long-form financial content that exceeded the 512-token maximum. This necessitated a more precise and sophisticated text-splitting logic to ensure data integrity without triggering system failures.  &lt;/p&gt;
+&lt;p&gt;Furthermore, &lt;strong&gt;data availability&lt;/strong&gt; proved inconsistent across different market segments. While major entities like the "Magnificent Seven" yielded an abundance of articles, niche companies—particularly those in Asian regions not listed on the NYSE—often faced a significant lack of real-time news data. This issue was compounded by a heavy dependence on specific API keys and the high degree of specificity required for company name identification, which remains a persistent challenge in data retrieval.&lt;/p&gt;
+&lt;p&gt;Beyond data collection, the project also addressed a significant &lt;strong&gt;validation gap&lt;/strong&gt;. Although sentiment precision remains high, these scores have not yet been backtested against actual market price movements. Consequently, the AI-generated trading strategies should be viewed as hypothetical, laggy indicators rather than immediate financial advice. Finally, the reliance on &lt;strong&gt;free-tier APIs&lt;/strong&gt; introduced moderate latency and a heightened sensitivity to prompt engineering, serving as a constant reminder that achieving true system robustness is an unending pursuit.&lt;/p&gt;
+&lt;h2&gt;FinBERT model training&lt;/h2&gt;
+&lt;p&gt;Instead of using the pretrained FinBERT model, we chose to fine-tune the model to increase the performance.&lt;/p&gt;
+&lt;h3&gt;1. Dataset&lt;/h3&gt;
+&lt;p&gt;The dataset used is “Sentiment analysis of commodity news” by ANKUR SINHA on Kaggle, giving us 2804 news along with sentiment labels. The dataset was split into a training set (75%), a validation set (15%), and a test set (10%).&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Dataset" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_Dataset.png"&gt;&lt;/p&gt;
+&lt;h3&gt;2. Training Configuration&lt;/h3&gt;
+&lt;p&gt;The model was initialized from “yiyanghkust/finbert-tone” and fine-tuned for 3 epochs, using AdamW optimizer with a learning rate of 2e-5 and linear warmup scheduling. Input texts were tokenized and truncated to a maximum length of 128 tokens with a batch size of 16.&lt;/p&gt;
+&lt;h3&gt;3. Results&lt;/h3&gt;
+&lt;p&gt;Compared to 44.8% accuracy and 0.407 weighted F1 for the pretrained model, the fine-tuned model achieved a test accuracy of 57.7% and a weighted F1-score of 0.549, representing a consistent improvement across all metrics. Per-class evaluation shows the highest gain on the positive class, with recall improving by 36.5 percentage points.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Finetune" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_finetune1.jpeg"&gt;
+&lt;img alt="F1 score" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_f1score.jpeg"&gt;
+&lt;img alt="Overall Performance" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Finword-Warriors_02_overall.jpeg"&gt;&lt;/p&gt;
+&lt;h2&gt;Methodology&lt;/h2&gt;
+&lt;h3&gt;1. Overall workflow&lt;/h3&gt;
+&lt;p&gt;The SentimentSage system operates through a three-stage pipeline:
+Workflow steps:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step1: News Fetching&lt;/strong&gt;
+-       User inputs a company ticker (e.g. AAPL, TSLA)
+-       System calls NewsAPI to retrieve 20 most recent financial articles
+-       Articles are cached&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step2: Sentiment Analysis with FinBERT&lt;/strong&gt;
+-       Each article is passed through FinBERT
+-       Model outputs: sentiment label + confidence score
+-       Results are aggregated and visualized in pie charts and histograms&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step3: RAG-Powered Q&amp;amp;A&lt;/strong&gt;
+-       Articles are split into character chunks with overlap
+-       Chunks are embedded via embedding tool and stored in FAISS database
+-       User’s question triggers retrieval of relevant chunks
+-       Retrieved context + question are sent to LLM to generate summary
+Output: Sentiment distribution charts + AI-generated investment recommendations grounded in actual news data.&lt;/p&gt;
+&lt;h3&gt;2. Sentiment Analysis with FinBERT Function&lt;/h3&gt;
+&lt;p&gt;SentimentSage uses FinBERT, a BERT variant pre-trained on financial communications, for specialized sentiment analysis. This model classifies each financial news article as positive, negative, or neutral with a confidence score.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;analyze_sentiment&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;articles&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pipe&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Analyze sentiment of articles using FinBERT&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="n"&gt;progress_bar&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;st&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;progress&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;enumerate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;articles&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;sentiment&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pipe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;])[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+            &lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+                &lt;span class="s2"&gt;&amp;quot;text&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+                &lt;span class="s2"&gt;&amp;quot;label&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;sentiment&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;label&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; 
+                &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;sentiment&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;score&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+            &lt;span class="p"&gt;})&lt;/span&gt;
+            &lt;span class="n"&gt;progress_bar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;progress&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;articles&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;st&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;warning&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Error analyzing article &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;continue&lt;/span&gt;
+
+    &lt;span class="n"&gt;progress_bar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;empty&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;results&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3&gt;3. RAG Pipeline Function&lt;/h3&gt;
+&lt;p&gt;For contextual Q &amp;amp; A, a Retrieval-Augmented Generation pipeline is implemented. Articles are chunked, embedded via embedding tool, and stored in a FAISS vector index database. When a question is asked, relevant chunks are retrieved and passed to LLM (e.g. Kimi, GPT) for context-aware answers.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;build_rag_pipeline&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;articles&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Build RAG pipeline for question answering&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;tempfile&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;NamedTemporaryFile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;w&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;delete&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;suffix&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;.txt&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;encoding&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;utf-8&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\n\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;articles&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+            &lt;span class="n"&gt;temp_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;
+
+        &lt;span class="n"&gt;loader&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TextLoader&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;temp_file&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;encoding&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;utf-8&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;documents&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;load&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+        &lt;span class="n"&gt;splitter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;CharacterTextSplitter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;chunk_size&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;chunk_overlap&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;docs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;splitter&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split_documents&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;documents&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="n"&gt;embeddings&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;OpenAIEmbeddings&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;db&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;FAISS&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;from_documents&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;docs&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;embeddings&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="n"&gt;llm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;OpenAI&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;temperature&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="c1"&gt;#For NVidia API&lt;/span&gt;
+        &lt;span class="c1"&gt;#embeddings = NVIDIAEmbeddings(model=&amp;quot;nvidia/nv-embedqa-e5-v5&amp;quot;) &lt;/span&gt;
+
+        &lt;span class="c1"&gt;#db = FAISS.from_documents(docs, embeddings)&lt;/span&gt;
+
+        &lt;span class="c1"&gt;# --- CHANGE 2: Use NVIDIA Chat Model ---&lt;/span&gt;
+        &lt;span class="c1"&gt;# You can choose models like &amp;quot;meta/llama-3.1-405b-instruct&amp;quot; or &amp;quot;nvidia/nemotron-4-340b-instruct&amp;quot;&lt;/span&gt;
+        &lt;span class="c1"&gt;#llm = ChatNVIDIA(model=&amp;quot;meta/llama-3.1-8b-instruct&amp;quot;, temperature=0.2)&lt;/span&gt;
+
+        &lt;span class="c1"&gt;# 定義提示詞模板&lt;/span&gt;
+        &lt;span class="n"&gt;prompt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ChatPromptTemplate&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;from_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;        Answer the following question based only on the provided financial news context:&lt;/span&gt;
+&lt;span class="s2"&gt;        &amp;lt;context&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;        &lt;/span&gt;&lt;span class="si"&gt;{context}&lt;/span&gt;
+&lt;span class="s2"&gt;        &amp;lt;/context&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;        Question: &lt;/span&gt;&lt;span class="si"&gt;{input}&lt;/span&gt;
+&lt;span class="s2"&gt;        &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;combine_docs_chain&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;create_stuff_documents_chain&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;llm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;prompt&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;qa_chain&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;create_retrieval_chain&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+            &lt;span class="n"&gt;retriever&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as_retriever&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+            &lt;span class="n"&gt;combine_docs_chain&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;combine_docs_chain&lt;/span&gt;
+        &lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;unlink&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;temp_file&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;qa_chain&lt;/span&gt; 
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;st&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Error building RAG pipeline: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3&gt;4. News Fetching Function&lt;/h3&gt;
+&lt;p&gt;Real-time news is aggregated via NewsAPI.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nd"&gt;@st&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cache_data&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;fetch_news&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;NEWS_API_KEY&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Fetch financial news articles&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;https://newsapi.org/v2/everything?q=&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;sortBy=publishedAt&amp;amp;language=en&amp;amp;pageSize=20&amp;amp;apiKey=&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;raise_for_status&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;articles&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;articles&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[])&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;. &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;description&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;articles&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;description&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;st&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Error fetching news: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Conclusions&lt;/h2&gt;
+&lt;p&gt;SentimentSage marks an integration of domain-specific NLP and modern web technologies. By bridging the gap between quantitative sentiment metrics and qualitative investment intelligence, we have provided a unified platform for deeper market understanding. Some of the key successing pillars are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;FinBERT Core:&lt;/strong&gt; High-precision capture of nuanced market sentiments using a specialized financial language model.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RAG Architecture:&lt;/strong&gt; Ensuring AI summaries are grounded in real-time, retrieved news data through Retrieval-Augmented Generation for maximum reliability.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Comprehensive Insights:&lt;/strong&gt; A synergistic approach that combines FinBERT’s quantitative precision with the descriptive, contextual power of RAG-powered analysis.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Limitations&lt;/h2&gt;
+&lt;p&gt;Despite the successful implementation, our development journey highlighted several technical and operational constraints that we aim to address in future iterations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Technical Bottlenecks:&lt;/strong&gt; We encountered significant token restrictions and occasional RAG pipeline errors when processing long-form financial content.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;API &amp;amp; Data Quality:&lt;/strong&gt; The system currently relies on free-tier APIs, which exhibit moderate performance and high sensitivity to prompt engineering.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Market Scope:&lt;/strong&gt; There are inherent difficulties in fetching consistent and relevant news for small-cap companies or niche market entities.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Validation Gap:&lt;/strong&gt; Currently, the sentiment scores are standalone and have not yet been backtested against actual historical price movements.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Future Improvements: What’s Next?&lt;/h2&gt;
+&lt;p&gt;To transform SentimentSage into a more robust professional tool, our roadmap focuses on expanding data horizons and enhancing system stability:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Multi-source Integration:&lt;/strong&gt; Incorporating alternative data streams, including social media platforms (Reddit/X) and professional analyst reports.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Temporal Analysis:&lt;/strong&gt; Implementing features to track the evolution of sentiment and identify key trend shifts over time.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;System Robustness:&lt;/strong&gt; Enhancing RAG logic to better handle token overflows and high-volume data streams effectively.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Interactive Dashboard:&lt;/strong&gt; Developing a more immersive user experience with real-time alerts and cross-market correlation visualizations.&lt;/li&gt;
+&lt;/ul&gt;</content><category term="Reflective Report"/><category term="Group Finword Warriors"/></entry><entry><title>Optimising Prompts For LLM Analysis</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/optimising-prompts-for-llm-analysis.html" rel="alternate"/><published>2026-05-03T15:30:00+08:00</published><updated>2026-05-03T15:30:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-05-03:/FINA2350-student-blog-2026-01/optimising-prompts-for-llm-analysis.html</id><summary type="html">&lt;p&gt;By Group "Cryptollama"&lt;/p&gt;
 &lt;h1&gt;Hunting Down a "Neutral-but-Bearish" Error: A Reflective Journey Through LLM Sentiment Analysis&lt;/h1&gt;
 &lt;p&gt;We built a crypto news sentiment analyzer using &lt;code&gt;llama3.2&lt;/code&gt; through Ollama. Our results have been good so far although in our intial run through, however, many articles that are supposed to be classified as …&lt;/p&gt;</summary><content type="html">&lt;p&gt;By Group "Cryptollama"&lt;/p&gt;
 &lt;h1&gt;Hunting Down a "Neutral-but-Bearish" Error: A Reflective Journey Through LLM Sentiment Analysis&lt;/h1&gt;
