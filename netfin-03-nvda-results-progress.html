@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="NetFin Group" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="AI, NVDA, Event Study, Sentiment Analysis, Reflective Report, " />
+
+<meta property="og:title" content="Unveiling Our Results- Adapting Methods and Analyzing AI Shocks "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/netfin-03-nvda-results-progress.html" />
+<meta property="og:description" content="An update on our event study progress, showcasing how we adapted our NLP methodologies across different shock categories and what our empirical results actually tell us." />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="NetFin Group" />
+<meta property="og:article:published_time" content="2026-05-01T19:21:00+08:00" />
+<meta name="twitter:title" content="Unveiling Our Results- Adapting Methods and Analyzing AI Shocks ">
+<meta name="twitter:description" content="An update on our event study progress, showcasing how we adapted our NLP methodologies across different shock categories and what our empirical results actually tell us.">
+
+        <title>Unveiling Our Results- Adapting Methods and Analyzing AI Shocks  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/netfin-03-nvda-results-progress.html">
+                Unveiling Our Results- Adapting Methods and Analyzing AI Shocks
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p>By Group NetFin</p>
+<h1>Unveiling Our Results: Adapting Methods and Analyzing AI Shocks</h1>
+<h1>1. Recap</h1>
+<p>In our previous post, we detailed the unexpectedly complex process of cleaning AI news data and properly defining "T=0" for our NVIDIA (NVDA) event study. With a clean, defensible timeline established, we finally moved on to the core of our project: running the regressions to see how AI-related news sentiment actually impacts NVIDIA's Cumulative Abnormal Returns (CAR).</p>
+<p>Before detailing our methodological adaptations, we briefly recap our <strong>news taxonomy</strong>. As established in our previous post, we classified AI-related news affecting NVIDIA into four distinct shock categories based on their underlying economic mechanism. <strong>Category A (Capability Shocks)</strong> captures major AI model launches from competitors like OpenAI and Google, which may signal shifts in GPU demand. <strong>Category B (Hardware Architecture Shocks)</strong> focuses on breakthrough announcements from NVIDIA's direct competitors (AMD, Intel), representing threats to NVIDIA's core market share. <strong>Category C (Policy/Regulatory Shocks)</strong> includes export bans and geopolitical regulations that affect NVIDIA's operational landscape. Finally, <strong>Category D (Corporate Landscape Shocks)</strong> comprises NVIDIA's own earnings calls, where management sentiment directly influences investor expectations. This taxonomy proved essential because each category required fundamentally different data sources and NLP approaches.</p>
+<h1>2. The Problems We Encounter and our Solutions</h1>
+<p>Originally, we designed a uniform pipeline: fetch all our curated events from the Alpha Vantage API, calculate a sentiment score using a single NLP model or using <code>nvda_sentiment_score</code> from the API directly, and run the regressions across the board. However, we quickly learned that treating all AI news equally is inappropriate.</p>
+<p>A major roadblock we encountered was the <strong>conflicting sentiment problem</strong>: for Category B, including both NVIDIA chip launches and competitor breakthroughs meant that positive news for NVIDIA and positive news for AMD had completely opposite effects on NVDA's stock price. We solved this by narrowing the category exclusively to competitor news. Similarly, the <strong>relevance threshold problem</strong> forced us to abandon uniform API pulls—strict relevance filters would capture regulatory news but miss major AI model launches from OpenAI or Google. <strong>An additional issue emerged specifically in Category A (Capability Shocks)</strong>: when filtering for the top 50 most relevant news articles containing "NVIDIA," the API frequently returned opinion pieces and post-hoc analysis published days after the actual AI model launch event. For example, we would pull headlines like "NVIDIA Price Plummeted After DeepSeek R1 Announcement" where the news publication date lagged the actual event by 3-5 days, causing a complete misalignment between our T=0 event date and the true market-moving moment. This introduced look-ahead bias and contaminated our event window. Translating raw, unstructured text into meaningful financial insights required us to rethink our initial assumptions.</p>
+<h2>3. A Methodological Shift: Why Each Category Needed Separate Methods</h2>
+<p>Because of these inherent contradictions, each category needed separate methods—including cases where we did <strong>not</strong> use <code>nvda_sentiment</code> at all. We adapted our news category classification and methodologies as follows:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Category</th>
+<th style="text-align: center;">Focus</th>
+<th style="text-align: center;">Data Source</th>
+<th style="text-align: center;">NLP Model</th>
+<th style="text-align: center;">Uses <code>nvda_sentiment</code>?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>A: Capability Shocks</strong></td>
+<td style="text-align: center;">AI model launches (OpenAI, Google, etc.)</td>
+<td style="text-align: center;">Manually selected</td>
+<td style="text-align: center;">FinBERT</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>B: Hardware Shocks</strong></td>
+<td style="text-align: center;">NVDA competitors (AMD, Intel news)</td>
+<td style="text-align: center;">API fetch (<code>nvda_competitors</code>)</td>
+<td style="text-align: center;">VADER</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>C: Regulatory Shocks</strong></td>
+<td style="text-align: center;">Export bans, geopolitical policies</td>
+<td style="text-align: center;">Manually selected</td>
+<td style="text-align: center;">FinBERT</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>D: Corporate Landscape</strong></td>
+<td style="text-align: center;">NVDA earnings calls</td>
+<td style="text-align: center;">API fetch (NVDA earnings)</td>
+<td style="text-align: center;">FinBERT</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why this matters:</strong> For Categories A and B, we are not analyzing sentiment <em>about</em> NVIDIA directly—we are analyzing sentiment about external events (competitor launches, rival hardware, etc.) and measuring how those exogenous shocks affect NVIDIA's stock. Only Categories C and D uses direct NVIDIA-specific sentiment.</p>
+<p>Thus, we also revised our <strong>project workflow</strong>:</p>
+<p><img alt="Figure 1: Project workflow diagram showing data collection, sentiment analysis, CAR calculation, and regression interpretation." src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/NetFin_03_Workflow.png"></p>
+<p><em>Figure 1: NetFin Project Workflow. This diagram illustrates our end-to-end methodology, from fetching news through four distinct categories to final statistical interpretation.</em></p>
+<h2>4. CAR Calculation Methodology</h2>
+<p>Before diving into the regressions, it is worth noting a crucial technical step we took regarding our data hygiene. Because we were fetching both financial price data and real-time news articles, any discrepancy in time zones could easily map an event to the wrong trading day, which would completely misalign our T=0 calculations. To ensure absolute consistency and accurately reflect the U.S. market's perspective, we routed all our API and data fetching requests through a VPN connected to a New York server. This guaranteed that every timestamp for both news publication and market pricing was cleanly synced to Eastern Time.</p>
+<p>To measure the market impact of each news event, we calculated Cumulative Abnormal Returns (CAR) across four windows: pre-event (CAR -1), immediate shock (CAR 0), intermediate digestion (CAR 1), and incorporation (CAR 2). For beta estimation, we used a single universal NVDA beta estimated from the past 5 years of data and reused that same beta for all events under a market model specification. Below is a pseudocode summary of our implementation:</p>
+<div class="highlight"><pre><span></span><code><span class="n">FUNCTION</span> <span class="n">load_price_series</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">close_name</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">])</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">close_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">])</span>
+    <span class="n">RETURN</span> <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">close_name</span><span class="p">]]</span>
+
+<span class="n">FUNCTION</span> <span class="n">get_event_date</span><span class="p">(</span><span class="n">news_timestamp</span><span class="p">):</span>
+    <span class="c1"># Map news after 4pm ET to next trading day</span>
+    <span class="n">IF</span> <span class="n">news_timestamp</span><span class="o">.</span><span class="n">time</span> <span class="o">&gt;=</span> <span class="mi">16</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span>
+        <span class="n">RETURN</span> <span class="n">news_timestamp</span><span class="o">.</span><span class="n">date</span> <span class="o">+</span> <span class="mi">1</span> <span class="n">day</span>
+    <span class="n">RETURN</span> <span class="n">news_timestamp</span><span class="o">.</span><span class="n">date</span>
+
+<span class="n">FUNCTION</span> <span class="n">estimate_market_beta</span><span class="p">(</span><span class="n">returns_df</span><span class="p">):</span>
+    <span class="n">hist</span> <span class="o">=</span> <span class="n">returns_df</span>   <span class="c1"># use the full 5-year historical sample</span>
+    <span class="n">r_stock</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="s1">&#39;r_nvda&#39;</span><span class="p">]</span>
+    <span class="n">r_market</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="s1">&#39;r_qqq&#39;</span><span class="p">]</span>
+    <span class="n">cov</span> <span class="o">=</span> <span class="n">covariance</span><span class="p">(</span><span class="n">r_stock</span><span class="p">,</span> <span class="n">r_market</span><span class="p">)</span>
+    <span class="n">market_var</span> <span class="o">=</span> <span class="n">variance</span><span class="p">(</span><span class="n">r_market</span><span class="p">)</span>
+    <span class="n">RETURN</span> <span class="n">cov</span> <span class="o">/</span> <span class="n">market_var</span>
+
+<span class="n">FUNCTION</span> <span class="n">abnormal_return</span><span class="p">(</span><span class="n">r_nvda</span><span class="p">,</span> <span class="n">r_qqq</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+    <span class="n">expected_return</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">r_qqq</span>
+    <span class="n">RETURN</span> <span class="n">r_nvda</span> <span class="o">-</span> <span class="n">expected_return</span>
+
+<span class="n">FUNCTION</span> <span class="n">compute_car</span><span class="p">(</span><span class="n">returns_df</span><span class="p">,</span> <span class="n">event_idx</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+    <span class="n">ar</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">FOR</span> <span class="n">day</span> <span class="ow">in</span> <span class="p">[</span><span class="n">event_idx</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">event_idx</span><span class="p">,</span> <span class="n">event_idx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">event_idx</span><span class="o">+</span><span class="mi">2</span><span class="p">]:</span>
+        <span class="n">r_nvda</span> <span class="o">=</span> <span class="n">returns_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">day</span><span class="p">,</span> <span class="s1">&#39;r_nvda&#39;</span><span class="p">]</span>
+        <span class="n">r_qqq</span> <span class="o">=</span> <span class="n">returns_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">day</span><span class="p">,</span> <span class="s1">&#39;r_qqq&#39;</span><span class="p">]</span>
+        <span class="n">ar</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">abnormal_return</span><span class="p">(</span><span class="n">r_nvda</span><span class="p">,</span> <span class="n">r_qqq</span><span class="p">,</span> <span class="n">beta</span><span class="p">))</span>
+
+    <span class="n">car_m1</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">car_0</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ar</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">car_1</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ar</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ar</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">car_2</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ar</span><span class="p">)</span>
+    <span class="n">RETURN</span> <span class="p">(</span><span class="n">car_m1</span><span class="p">,</span> <span class="n">car_0</span><span class="p">,</span> <span class="n">car_1</span><span class="p">,</span> <span class="n">car_2</span><span class="p">)</span>
+
+<span class="n">MAIN</span><span class="p">:</span>
+    <span class="n">nvda</span> <span class="o">=</span> <span class="n">load_price_series</span><span class="p">(</span><span class="s1">&#39;NVDA_5Y.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;Close_NVDA&#39;</span><span class="p">)</span>
+    <span class="n">qqq</span> <span class="o">=</span> <span class="n">load_price_series</span><span class="p">(</span><span class="s1">&#39;QQQ_5Y.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;Close_QQQ&#39;</span><span class="p">)</span>
+    <span class="n">merged</span> <span class="o">=</span> <span class="n">merge</span><span class="p">(</span><span class="n">nvda</span><span class="p">,</span> <span class="n">qqq</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">)</span>
+    <span class="n">merged</span><span class="p">[</span><span class="s1">&#39;r_nvda&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pct_change</span><span class="p">(</span><span class="n">merged</span><span class="p">[</span><span class="s1">&#39;Close_NVDA&#39;</span><span class="p">])</span>
+    <span class="n">merged</span><span class="p">[</span><span class="s1">&#39;r_qqq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pct_change</span><span class="p">(</span><span class="n">merged</span><span class="p">[</span><span class="s1">&#39;Close_QQQ&#39;</span><span class="p">])</span>
+    <span class="n">merged</span> <span class="o">=</span> <span class="n">merged</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">estimate_market_beta</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
+
+    <span class="n">FOR</span> <span class="n">each</span> <span class="n">news</span> <span class="n">event</span><span class="p">:</span>
+        <span class="n">event_date</span> <span class="o">=</span> <span class="n">get_event_date</span><span class="p">(</span><span class="n">news</span><span class="o">.</span><span class="n">publish_date</span><span class="p">)</span>
+        <span class="n">t_idx</span> <span class="o">=</span> <span class="n">index_of</span><span class="p">(</span><span class="n">merged</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">],</span> <span class="n">event_date</span><span class="p">)</span>
+        <span class="n">IF</span> <span class="n">t_idx</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">t_idx</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span> <span class="n">CONTINUE</span>
+        <span class="p">(</span><span class="n">car_m1</span><span class="p">,</span> <span class="n">car_0</span><span class="p">,</span> <span class="n">car_1</span><span class="p">,</span> <span class="n">car_2</span><span class="p">)</span> <span class="o">=</span> <span class="n">compute_car</span><span class="p">(</span><span class="n">merged</span><span class="p">,</span> <span class="n">t_idx</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+        <span class="n">OUTPUT</span> <span class="p">(</span><span class="n">car_m1</span><span class="p">,</span> <span class="n">car_0</span><span class="p">,</span> <span class="n">car_1</span><span class="p">,</span> <span class="n">car_2</span><span class="p">,</span> <span class="n">news</span><span class="o">.</span><span class="n">sentiment</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Key technical details:</strong> We estimate a single universal market-model beta for NVDA using the past 5 years of return data and use the QQQ ETF as our market proxy to filter out AI-irrelevant market movements. News published after 4:00 PM Eastern Time is mapped to the next trading day to ensure proper alignment with market pricing.</p>
+<h2>Conclusion</h2>
+<p>Looking back at the methodologies and analysis of our project, we evolved from a basic, uniform API pull to a highly tailored approach where we match specific NLP tools (FinBERT vs. VADER) to the specific contextual nature of the news, recognizing that each shock category demands its own bespoke methodology.</p>
+<p>More importantly, working through the regressions and receiving feedback has taught us how to interpret our findings responsibly. The regression analysis underscored that different news categories impact NVIDIA's stock price in vastly different ways, and that we must always distinguish between causal narratives and simple correlation. </p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-05-01T19:21:00+08:00">Fri 01 May 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#reflective-report-ref">Reflective Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#ai-ref">AI
+                    <span class="superscript">3</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#event-study-ref">Event Study
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#nvda-ref">NVDA
+                    <span class="superscript">3</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#sentiment-analysis-ref">Sentiment Analysis
+                    <span class="superscript">1</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
