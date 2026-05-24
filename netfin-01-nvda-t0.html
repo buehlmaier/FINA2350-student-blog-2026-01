@@ -150,7 +150,7 @@
 <div class="highlight"><pre><span></span><code><span class="c1"># Convert publish_date -&gt; trade_date:</span>
     <span class="c1">#   if publish_date is a weekday, keep that date;</span>
     <span class="c1">#   if it&#39;s weekend, roll forward to next weekday.</span>
-    <span class="k">def</span> <span class="nf">to_trade_date</span><span class="p">(</span><span class="n">ts</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_trade_date</span><span class="p">(</span><span class="n">ts</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">:</span>
         <span class="c1"># Drop time; we only care about the date</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
         <span class="c1"># Weekday: Monday=0, Sunday=6</span>

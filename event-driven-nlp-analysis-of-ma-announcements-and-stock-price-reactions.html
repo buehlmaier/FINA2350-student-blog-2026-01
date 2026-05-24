@@ -125,7 +125,7 @@ Even after filtering, the data remained noisy. Most retrieved texts were news di
 Using the <strong>SEC API</strong>, we collected all <strong>DEFM14A</strong>((merger-related proxy statement) filings since 2001 as our primary textual dataset. The resulting volume is appropriate and sufficient for our research objectives.</p>
 <p>The following code shows a function retrieving the direct link to a <strong>DEFM14A</strong> from the SEC EDGAR database. Using a company's <strong>CIK</strong> and <strong>accession number</strong>, it constructs the URL for the filing's index page, fetches the HTML, and parses the document table using <strong>BeautifulSoup</strong>.
 The script iterates through the filing's attachments to find a match for the specific "DEFM14A" document type. Once found, it converts the relative path into a full absolute URL and returns it. It also includes built-in delays to comply with SEC rate-limiting policies, ensuring a reliable and automated way to extract key legal documents from financial filings.</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find_doc_from_index_page</span><span class="p">(</span><span class="n">cik</span><span class="p">,</span> <span class="n">accession</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">find_doc_from_index_page</span><span class="p">(</span><span class="n">cik</span><span class="p">,</span> <span class="n">accession</span><span class="p">):</span>
 
 
    <span class="k">if</span> <span class="ow">not</span> <span class="n">cik</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">accession</span><span class="p">:</span>
@@ -151,7 +151,7 @@ The script iterates through the filing's attachments to find a match for the spe
    <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="p">:</span>
        <span class="k">return</span> <span class="kc">None</span>
 
-   <span class="k">def</span> <span class="nf">abs_url</span><span class="p">(</span><span class="n">href</span><span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">abs_url</span><span class="p">(</span><span class="n">href</span><span class="p">):</span>
        <span class="k">if</span> <span class="n">href</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;http&quot;</span><span class="p">):</span>
            <span class="k">return</span> <span class="n">href</span>
        <span class="k">if</span> <span class="n">href</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>

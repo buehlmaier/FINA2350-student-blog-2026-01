@@ -128,8 +128,8 @@ To solve this, the workflow used browser impersonation and article parsing tools
 After filtering out very short or unusable outputs, the pipeline retained 3,252 full-text articles across a 36-month period.</p>
 <p>A simplified version of this extraction logic is shown below.
 Although the actual implementation was more detailed, this example captures the core idea of retrieving a webpage, parsing the article, and keeping only texts that were substantial enough to be useful for later analysis.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">curl_cffi</span> <span class="kn">import</span> <span class="n">requests</span>
-<span class="kn">from</span> <span class="nn">newspaper</span> <span class="kn">import</span> <span class="n">Article</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">curl_cffi</span><span class="w"> </span><span class="kn">import</span> <span class="n">requests</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">newspaper</span><span class="w"> </span><span class="kn">import</span> <span class="n">Article</span>
 
 <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://example.com/article&quot;</span>
 

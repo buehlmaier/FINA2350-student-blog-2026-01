@@ -118,7 +118,7 @@
 <p><em>Table 1: Sample list of phrases in each indicator</em></p>
 <h2>Technical Journey</h2>
 <p>While we changed our direction to research in the NLP component before taking into consideration  the financial feasibility as mentioned above, we had built a financial data collection model using <strong>yfinance</strong> prior to that already. This is a function that pulls annual financial statement data for a given ticker and tries to construct key metrics such as EBITDA and free cash flow.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">yfinance</span> <span class="k">as</span> <span class="nn">yf</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">yfinance</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">yf</span>
 
 <span class="n">stock</span> <span class="o">=</span> <span class="n">yf</span><span class="o">.</span><span class="n">Ticker</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
 
@@ -134,7 +134,7 @@
 <p>Later on, we still want to expand into earnings call transcripts because we believe they may capture tone and pressure more naturally than annual filings. But for now, 10-K MD&amp;A gives us a much cleaner starting point.</p>
 <p>Below shows how 10-K MD&amp;A sections are extracted. </p>
 <h3>Extracting 10-K Filings</h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">edgar</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">edgar</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 
 <span class="c1"># Extract 10-K filings in the last n years</span>
 <span class="n">company</span> <span class="o">=</span> <span class="n">Company</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
@@ -142,8 +142,8 @@
 </code></pre></div>
 
 <h3>Getting HTML Content</h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
-<span class="kn">import</span> <span class="nn">requests</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">bs4</span><span class="w"> </span><span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
 <span class="n">url</span> <span class="o">=</span> <span class="n">filing</span><span class="o">.</span><span class="n">filing_url</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>

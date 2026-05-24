@@ -83,12 +83,12 @@
 <p>In this post, I walk through a Python workflow for collecting and analyzing historical Brent crude oil futures data. The script retrieves price data, segments it into regular intervals (e.g., every three days), calculates price changes, and exports the results to a CSV file. It can also optionally send the processed data to an external API for further use.</p>
 <p>To ensure flexibility and reproducibility, the script is designed to prioritize the official Trading Economics API when available, while also providing a fallback to generated sample data. This allows the full workflow to be tested even without API access.</p>
 <div class="highlight"><pre><span></span><code><span class="n">Python</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="c1"># 1. Configuration parameters</span>
 <span class="n">SLICE_DAYS</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Slice interval (days)</span>
@@ -100,7 +100,7 @@
             <span class="n">TRADING_ECONOMICS_API_KEY</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
 <span class="c1"># 2. Define data retrieval functions (API first, scraping fallback)</span>
-<span class="k">def</span> <span class="nf">fetch_brent_data_via_api</span><span class="p">(</span><span class="n">api_key</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="mi">06</span><span class="o">/</span><span class="mi">29</span><span class="o">/</span><span class="mi">2025</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="mi">03</span><span class="o">/</span><span class="mi">22</span><span class="o">/</span><span class="mi">2026</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_brent_data_via_api</span><span class="p">(</span><span class="n">api_key</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="mi">06</span><span class="o">/</span><span class="mi">29</span><span class="o">/</span><span class="mi">2025</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="mi">03</span><span class="o">/</span><span class="mi">22</span><span class="o">/</span><span class="mi">2026</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fetch Brent crude oil daily data via Trading Economics API</span>
 <span class="sd">    Documentation: https://api.tradingeconomics.com/documentation</span>
@@ -126,7 +126,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;API request failed: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">fetch_brent_data_via_scrape</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_brent_data_via_scrape</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fallback: scrape from a public website or generate simulated data for demonstration.</span>
 <span class="sd">    Note: In production, use a reliable data source and respect the website&#39;s robots.txt.</span>
@@ -149,7 +149,7 @@
     <span class="k">return</span> <span class="n">df</span>
 
 <span class="c1"># 3. Retrieve real data (try official API; if fails, use fallback)</span>
-<span class="k">def</span> <span class="nf">get_brent_data</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_brent_data</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">TRADING_ECONOMICS_API_KEY</span><span class="p">:</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">fetch_brent_data_via_api</span><span class="p">(</span><span class="n">TRADING_ECONOMICS_API_KEY</span><span class="p">)</span>
@@ -162,7 +162,7 @@
         <span class="k">return</span> <span class="n">fetch_brent_data_via_scrape</span><span class="p">()</span>
 
 <span class="c1"># 4. Slice data at intervals and calculate price volatility</span>
-<span class="k">def</span> <span class="nf">slice_data_and_calc_volatility</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">slice_days</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">slice_data_and_calc_volatility</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">slice_days</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For every slice_days days, take a price point and calculate the percentage change</span>
 <span class="sd">    from the previous slice.</span>
@@ -283,7 +283,7 @@ By combining relevance ranking with random selection, we:
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading model for escalation assessment...&quot;</span><span class="p">)</span>
 <span class="n">zero_shot_pipeline</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">&quot;zero-shot-classification&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;facebook/bart-large-mnli&quot;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">assess_escalation</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">assess_escalation</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;NEUTRAL&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
 

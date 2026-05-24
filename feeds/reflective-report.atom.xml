@@ -1,5 +1,302 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>FINA2350 Student Blog 2026 - Reflective Report</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/" rel="alternate"/><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/reflective-report.atom.xml" rel="self"/><id>https://buehlmaier.github.io/FINA2350-student-blog-2026-01/</id><updated>2026-03-28T21:34:00+08:00</updated><entry><title>Comparing Crypto Sentiment Analyzers: A Practical Evaluation Using LLMs</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/comparing-crypto-sentiment-analyzers-a-practical-evaluation-using-llms.html" rel="alternate"/><published>2026-03-28T21:34:00+08:00</published><updated>2026-03-28T21:34:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-03-28:/FINA2350-student-blog-2026-01/comparing-crypto-sentiment-analyzers-a-practical-evaluation-using-llms.html</id><summary type="html">&lt;p&gt;By Group "Cryptollama"&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>FINA2350 Student Blog 2026 - Reflective Report</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/" rel="alternate"/><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/reflective-report.atom.xml" rel="self"/><id>https://buehlmaier.github.io/FINA2350-student-blog-2026-01/</id><updated>2026-05-03T15:30:00+08:00</updated><entry><title>Optimising Prompts For LLM Analysis</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/optimising-prompts-for-llm-analysis.html" rel="alternate"/><published>2026-05-03T15:30:00+08:00</published><updated>2026-05-03T15:30:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-05-03:/FINA2350-student-blog-2026-01/optimising-prompts-for-llm-analysis.html</id><summary type="html">&lt;p&gt;By Group "Cryptollama"&lt;/p&gt;
+&lt;h1&gt;Hunting Down a "Neutral-but-Bearish" Error: A Reflective Journey Through LLM Sentiment Analysis&lt;/h1&gt;
+&lt;p&gt;We built a crypto news sentiment analyzer using &lt;code&gt;llama3.2&lt;/code&gt; through Ollama. Our results have been good so far although in our intial run through, however, many articles that are supposed to be classified as …&lt;/p&gt;</summary><content type="html">&lt;p&gt;By Group "Cryptollama"&lt;/p&gt;
+&lt;h1&gt;Hunting Down a "Neutral-but-Bearish" Error: A Reflective Journey Through LLM Sentiment Analysis&lt;/h1&gt;
+&lt;p&gt;We built a crypto news sentiment analyzer using &lt;code&gt;llama3.2&lt;/code&gt; through Ollama. Our results have been good so far although in our intial run through, however, many articles that are supposed to be classified as "neutral" sentiment are often misclassified as "bearish". This post documents how our group diagnosed and fixed the misclassification issue to the best of our ability.&lt;/p&gt;
+&lt;h2&gt;1. The problem: "neutral-but-bearish"&lt;/h2&gt;
+&lt;p&gt;Our LLM pipeline takes crypto news via RSS feeds from Reddit, CoinTelegraph and CoinDesk, feeds the cleaned text into Ollama with a prompt, parses a numeric score in [-1.0, 1.0], and classifies that score into &lt;code&gt;bearish&lt;/code&gt; / &lt;code&gt;neutral&lt;/code&gt; / &lt;code&gt;bullish&lt;/code&gt; using simple thresholds.&lt;/p&gt;
+&lt;p&gt;Evaluating against a hand-labelled set of 186 articles, the headline numbers looked respectable: &lt;strong&gt;86% accuracy, 0.85 macro-F1&lt;/strong&gt;. Drilling in, the confusion matrix told a less clean story.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Baseline confusion matrix&lt;/strong&gt; (rows = true label, columns = predicted):&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;pred bearish&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;pred neutral&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;pred bullish&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;recall&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;true bearish&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;55&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;3&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.93&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;true neutral&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;13&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;37&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;3&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.70&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;true bullish&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;5&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;68&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.92&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The most striking issue is the 13/50 true neutrals, about a quarter were being labelled bearish. The model was systematically reading neutral content as negative.&lt;/p&gt;
+&lt;p&gt;To find out why, we exported the 13 mis-labelled items and inspected the &lt;em&gt;raw scores&lt;/em&gt; the model gave each one:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="text-align: center;"&gt;Score the LLM produced&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;# items&lt;/th&gt;
+&lt;th&gt;Examples of the actual text&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;&lt;code&gt;-0.900&lt;/code&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;2&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;"2017 &amp;amp; BitConnect — I took that 10K out of bitcoin and put it into Bitconnect…"&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;&lt;code&gt;-0.400&lt;/code&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;3&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;"Crypto Market Pulse: Bitcoin funding rates fell to their most negative levels since 2023…"&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;&lt;code&gt;-0.300&lt;/code&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;8&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;"New to crypto. Hey guys, I am fairly new to crypto and there is a lot of information out there…"&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Retrospectives&lt;/strong&gt; about old failures scored as low as &lt;code&gt;-0.90&lt;/code&gt; because of words like "scam"; &lt;strong&gt;analytical news&lt;/strong&gt; reporting negative facts received around &lt;code&gt;-0.40&lt;/code&gt; even without taking a bearish stance; &lt;strong&gt;concerned-sounding questions&lt;/strong&gt; clustered at exactly &lt;code&gt;-0.30&lt;/code&gt;. At &lt;code&gt;score == -0.30&lt;/code&gt; there were also &lt;strong&gt;12 true-bearish items&lt;/strong&gt; co-located with the 8 neutrals — the model was conflating "skeptical question" with "mild bearish news" at the same numeric output, so no threshold shift could untangle them.&lt;/p&gt;
+&lt;p&gt;The diagnosis crystallised: &lt;code&gt;-0.30&lt;/code&gt; was being used as a "lazy default for mild concern", and the source of that default was sitting in plain sight in the prompt:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;"Questions seeking advice are typically neutral &lt;strong&gt;unless they express concern or excitement&lt;/strong&gt;."&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;That conditional clause is exactly the loophole. Any concerned-sounding question — and crypto Reddit is full of these — qualifies for the exception, and the model dutifully reaches for the &lt;code&gt;-0.3 to -0.1&lt;/code&gt; "Slightly negative: Mild concerns" entry in the prompt's score-scale table.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;2. The journey: what worked and what didn't&lt;/h2&gt;
+&lt;p&gt;Knowing the cause of the failure was easier than fixing it. We ran several rounds of prompt and configuration experiments. Most of them regressed. Below are the four most representative strategies, in roughly the order we tried them.&lt;/p&gt;
+&lt;h3&gt;Strategy 1: Full prompt rewrite&lt;/h3&gt;
+&lt;p&gt;We discarded the original prompt and wrote a new one telling the model to default to 0.0 unless the text described a specific current event. The same rule that pulled neutral-leaning posts to zero also stripped scores from genuinely bullish posts, since most bullish content in this corpus is opinion-style rather than event reporting. Bullish recall collapsed to &lt;strong&gt;0/74&lt;/strong&gt; and accuracy fell to 0.36.&lt;/p&gt;
+&lt;h3&gt;Strategy 2: Two-stage classifier&lt;/h3&gt;
+&lt;p&gt;The next prompt asked the model to first label each text as either "EVENT" or "DISCUSSION" and to score non-zero only when it picked EVENT. The boundary between the two categories proved too fuzzy: posts beginning with a clear bullish signal were often categorised as DISCUSSION because the rest of the post was opinion. Bullish recall fell to 0.58 and accuracy to 0.62.&lt;/p&gt;
+&lt;h3&gt;Strategy 3: Closing reminder&lt;/h3&gt;
+&lt;p&gt;A lighter-touch attempt: leave the prompt almost intact, but append a single closing reminder: &lt;em&gt;"REMINDER: Questions, discussions, and opinions always score 0.0."&lt;/em&gt; The extra instruction destabilised the model rather than focusing it: neutrals mislabelled as bearish &lt;em&gt;doubled&lt;/em&gt; from 13 to 26, and bullish recall dropped from 0.92 to 0.80.&lt;/p&gt;
+&lt;h3&gt;Strategy 4 (the winner): three small, orthogonal changes&lt;/h3&gt;
+&lt;p&gt;After watching elaborate prompt rewrites fail, we tried the opposite approach: change as little as possible. The winning recipe combined three independent edits, none of which alone explained the full gain. Together they lifted accuracy from 0.86 to 0.88 and macro-F1 from 0.85 to 0.87. Each change is described in detail below.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Strategy&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;Accuracy&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;Macro-F1&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Baseline&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.8602&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.8487&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Full prompt rewrite&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.3602&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.2946&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Two-stage classifier&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.6237&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.6090&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Closing reminder&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.7581&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.7398&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Winning approach&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;0.8817&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;0.8698&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4&gt;Change 1: a one-sentence prompt edit&lt;/h4&gt;
+&lt;p&gt;We left the rest of the original prompt untouched and only replaced the loophole line:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gd"&gt;- &amp;quot;Questions seeking advice are typically neutral unless they express concern or excitement&amp;quot;&lt;/span&gt;
+&lt;span class="gi"&gt;+ &amp;quot;Questions, discussions, and advice-seeking posts are NEUTRAL (score 0.0),&lt;/span&gt;
+&lt;span class="gi"&gt;+  regardless of any concerns, skepticism, or negative-sounding words they may contain&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The justification is direct: the original sentence was the &lt;em&gt;cause&lt;/em&gt; of the lazy &lt;code&gt;-0.30&lt;/code&gt; default for concerned questions, so the carve-out was removed. The replacement is unconditional. No new content was added. Only one sentence was swapped because earlier strategies showed that the model's overall calibration is fragile.&lt;/p&gt;
+&lt;h4&gt;Change 2: temperature 0.1 → 0.0 (greedy decoding)&lt;/h4&gt;
+&lt;p&gt;The Ollama API call sets sampling parameters per request:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;httpx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;AsyncClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;OLLAMA_REQUEST_TIMEOUT_SECONDS&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;await&lt;/span&gt; &lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;OLLAMA_BASE_URL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/api/generate&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="s2"&gt;&amp;quot;model&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;model_to_use&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="s2"&gt;&amp;quot;prompt&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;create_sentiment_prompt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+            &lt;span class="s2"&gt;&amp;quot;stream&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="s2"&gt;&amp;quot;options&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="s2"&gt;&amp;quot;temperature&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;    &lt;span class="c1"&gt;# was 0.1 — greedy decoding&lt;/span&gt;
+                &lt;span class="s2"&gt;&amp;quot;top_p&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.95&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="s2"&gt;&amp;quot;top_k&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;40&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="s2"&gt;&amp;quot;repeat_penalty&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="p"&gt;},&lt;/span&gt;
+        &lt;span class="p"&gt;},&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;When the LLM emits a score like &lt;code&gt;"-0.18"&lt;/code&gt; or &lt;code&gt;"0.20"&lt;/code&gt;, it picks each character one token at a time from a softmax distribution. At &lt;code&gt;temperature=0.1&lt;/code&gt; the most-probable token is heavily favoured but not guaranteed; for a continuous score, that small chance of picking a different token can flip a &lt;code&gt;0.15&lt;/code&gt; into a &lt;code&gt;0.20&lt;/code&gt; and across a threshold. &lt;code&gt;temperature=0.0&lt;/code&gt; forces argmax decoding which always pick the single most-confident token. Borderline scores stop oscillating, and &lt;strong&gt;bullish recall jumped from 0.92 to 0.96&lt;/strong&gt; without any change to the prompt.&lt;/p&gt;
+&lt;h4&gt;Change 3: bullish threshold 0.20 → 0.125&lt;/h4&gt;
+&lt;p&gt;After the first two changes were in place, we ran a small offline grid search over the threshold space against the true labels:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pandas&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;numpy&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;np&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;sklearn.metrics&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;accuracy_score&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;f1_score&lt;/span&gt;
+
+&lt;span class="n"&gt;scored&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;evaluate/scored_sentiment_llama3.2.csv&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;truth&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;evaluate/sentiment_true_labels.csv&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;min&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;scored&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;truth&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;scores&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;scored&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;iloc&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;values&lt;/span&gt;
+&lt;span class="n"&gt;y_true&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;truth&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;true_label&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;iloc&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;values&lt;/span&gt;
+
+&lt;span class="n"&gt;best&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;arange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.05&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.025&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;arange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.05&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.025&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;scores&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;bearish&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;scores&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;bullish&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;neutral&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;best&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;f1_score&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;y_true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;average&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;macro&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+                     &lt;span class="n"&gt;accuracy_score&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;y_true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;round&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;round&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;f1m&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;acc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;best&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;reverse&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)[:&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;bear&amp;lt;=&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;gt;6&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; bull&amp;gt;=&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;gt;6&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; acc=&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;acc&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;.4f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; f1=&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;f1m&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;.4f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The data-validated optimum was &lt;code&gt;bearish ≤ -0.20, bullish ≥ 0.125&lt;/code&gt;, only the bullish cut moved. The change recovered true-bullish items the model had been scoring in &lt;code&gt;(0.125, 0.20)&lt;/code&gt;, which correctly recognised as positive but not strongly enough to clear the original &lt;code&gt;0.20&lt;/code&gt; cutoff. The new mapping will be:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;score_to_label&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;score&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;score&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.20&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;bearish&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;score&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.125&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;   &lt;span class="c1"&gt;# was 0.20 in the baseline&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;bullish&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;neutral&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;hr&gt;
+&lt;h2&gt;3. Evaluation: what improved, what didn't, and why&lt;/h2&gt;
+&lt;p&gt;Side-by-side metrics on the same 186-item evaluation set:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Metric&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;Baseline&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;Optimized&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;Δ&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Accuracy&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.8602&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;0.8817&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;+2.15 pp&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Macro-F1&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.8487&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;0.8698&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;+2.11 pp&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Bearish precision&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.7971&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.8209&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;+2.4 pp&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Bearish recall&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.9322&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.9322&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;=&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Bearish F1&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.8594&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.8730&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;+1.4 pp&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Bullish precision&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.9444&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.9467&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;+0.2 pp&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Bullish recall&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.9189&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;0.9595&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;+4.1 pp&lt;/strong&gt; ★&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Bullish F1&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.9315&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.9530&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;+2.2 pp&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Neutral precision&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.8222&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;0.8636&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;+4.1 pp&lt;/strong&gt; ★&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Neutral recall&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.6981&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.7170&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;+1.9 pp&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Neutral F1&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.7551&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;0.7835&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;+2.8 pp&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Confusion-matrix diff (boldface = changed cells):&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="text-align: center;"&gt;Baseline / Optimized&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;pred bearish&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;pred neutral&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;pred bullish&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;true bearish&lt;/strong&gt; (n=59)&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;55 / 55&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;3 / 3&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;1 / 1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;true neutral&lt;/strong&gt; (n=53)&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;13 / 12&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;37 / 38&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;3 / 3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;true bullish&lt;/strong&gt; (n=74)&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;1 / 0&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;5 / 3&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;&lt;strong&gt;68 / 71&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Net effect: 4 more correct predictions out of 186&lt;/strong&gt; (164 → 168). The bearish row was unchanged. Only one of the original 13 neutral→bearish errors was recovered while the other 12 remain stuck because the model scored them at &lt;code&gt;-0.30&lt;/code&gt; or below with high confidence. The largest gains came from the bullish row, where &lt;code&gt;temperature=0.0&lt;/code&gt; and the lower threshold together captured three borderline items and removed the one false-bearish prediction, lifting bullish recall from 0.92 to 0.96 and neutral &lt;em&gt;precision&lt;/em&gt; by 4.1 percentage points.&lt;/p&gt;
+&lt;p&gt;The group had assumed prompt engineering would be the dominant lever but the data said otherwise. Prompt engineering produced one of the smallest gains, &lt;strong&gt;decoder configuration&lt;/strong&gt; produced the largest, and &lt;strong&gt;post-hoc threshold tuning&lt;/strong&gt; produced the most reliable. It could be the case that the prompt was already well-tuned for the Llama model.&lt;/p&gt;
+&lt;p&gt;Across multiple attempts to improve the prompt, only one worked, and it changed almost nothing. With a small model, the lesson we learnt is that the right move sometimes might be to leave the prompt alone and tune the things around it.&lt;/p&gt;</content><category term="Reflective Report"/><category term="Group Cryptollama"/></entry><entry><title>Comparing Crypto Sentiment Analyzers: A Practical Evaluation Using LLMs</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/comparing-crypto-sentiment-analyzers-a-practical-evaluation-using-llms.html" rel="alternate"/><published>2026-03-28T21:34:00+08:00</published><updated>2026-03-28T21:34:00+08:00</updated><author><name>FINA2350 Students 2026</name></author><id>tag:buehlmaier.github.io,2026-03-28:/FINA2350-student-blog-2026-01/comparing-crypto-sentiment-analyzers-a-practical-evaluation-using-llms.html</id><summary type="html">&lt;p&gt;By Group "Cryptollama"&lt;/p&gt;
 &lt;p&gt;As highlighted in our first presentation, the cryptocurrency market is becoming increasingly significant globally, and it shows a unique financial attribute of high correlation with market emotion. Therefore, sentiment analysis has become an indispensable tool for helping the public navigate market trends and make informed investment decisions …&lt;/p&gt;</summary><content type="html">&lt;p&gt;By Group "Cryptollama"&lt;/p&gt;
 &lt;p&gt;As highlighted in our first presentation, the cryptocurrency market is becoming increasingly significant globally, and it shows a unique financial attribute of high correlation with market emotion. Therefore, sentiment analysis has become an indispensable tool for helping the public navigate market trends and make informed investment decisions.
 However, not all sentiment analyzers are created equal. Some are rule-based, others use machine learning, and more recently large language models (LLMs) have entered the space. We built a sentiment analysis API using Ollama and FastAPI in this project.
@@ -109,7 +406,7 @@ Our next phase will involve manually labelling a few texts from each data source
 &lt;p&gt;That's why we believe our model would stand out. Targeting the pain points of generic AI and apps, SentimentSage addresses the reliability gap in retail financial tech, ensuring that AI-generated insights are both timely and grounded in reality.&lt;/p&gt;
 &lt;h2&gt;Approaches&lt;/h2&gt;
 &lt;p&gt;The development of SentimentSage will follow a structured approach focused on accuracy, usability, and scalability. The project will begin with a prototype using FinBERT, a pre-trained NLP model specifically designed for financial news sentiment analysis. FinBERT is chosen over other general models because of its deep understanding of financial terminology and context, resulting in more reliable sentiment classification.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_finbert_pipeline&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;get_finbert_pipeline&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
     &lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;BertForSequenceClassification&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;from_pretrained&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;yiyanghkust/finbert-tone&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="n"&gt;tokenizer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;BertTokenizer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;from_pretrained&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;yiyanghkust/finbert-tone&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;pipeline&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;sentiment-analysis&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tokenizer&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;tokenizer&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -135,9 +432,9 @@ Our next phase will involve manually labelling a few texts from each data source
 &lt;p&gt;The project achieves a sophisticated synergy by combining FinBERT's quantitative sentiment scores with the LLM's qualitative reasoning. By treating the sentiment probabilities as structured features for the LLM, SentimentSage transitions from simple emotion detection to a "rational" synthesis, providing users with a comprehensive summary grounded in both market mood and factual evidence.&lt;/p&gt;
 &lt;h2&gt;Challenges and Limitation&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;Single LLM API Key?&lt;/strong&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;langchain_openai&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;OpenAI&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;OpenAIEmbeddings&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;langchain_openai&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;OpenAI&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;OpenAIEmbeddings&lt;/span&gt;
 
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
 
 &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;OPENAI_API_KEY&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;your-openai-key&amp;quot;&lt;/span&gt;
 
@@ -150,11 +447,11 @@ Our next phase will involve manually labelling a few texts from each data source
 &lt;h2&gt;Evolutions&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;Replacing and Integrating More LLM API Keys&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Here's the simplified setup we added:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
 
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;langchain_openai&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ChatOpenAI&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;langchain_openai&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ChatOpenAI&lt;/span&gt;
 
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_llm&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;get_llm&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
 
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;ChatOpenAI&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
 
@@ -260,7 +557,7 @@ Our next phase will involve manually labelling a few texts from each data source
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Convert publish_date -&amp;gt; trade_date:&lt;/span&gt;
     &lt;span class="c1"&gt;#   if publish_date is a weekday, keep that date;&lt;/span&gt;
     &lt;span class="c1"&gt;#   if it&amp;#39;s weekend, roll forward to next weekday.&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;to_trade_date&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ts&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Timestamp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Timestamp&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;to_trade_date&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ts&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Timestamp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Timestamp&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
         &lt;span class="c1"&gt;# Drop time; we only care about the date&lt;/span&gt;
         &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ts&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;normalize&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
         &lt;span class="c1"&gt;# Weekday: Monday=0, Sunday=6&lt;/span&gt;
@@ -335,8 +632,8 @@ To solve this, the workflow used browser impersonation and article parsing tools
 After filtering out very short or unusable outputs, the pipeline retained 3,252 full-text articles across a 36-month period.&lt;/p&gt;
 &lt;p&gt;A simplified version of this extraction logic is shown below.
 Although the actual implementation was more detailed, this example captures the core idea of retrieving a webpage, parsing the article, and keeping only texts that were substantial enough to be useful for later analysis.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;curl_cffi&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;newspaper&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Article&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;curl_cffi&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;newspaper&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Article&lt;/span&gt;
 
 &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;https://example.com/article&amp;quot;&lt;/span&gt;
 
@@ -378,12 +675,12 @@ By doing so, we hope to move beyond measuring volatility and begin explaining it
 &lt;p&gt;In this post, I walk through a Python workflow for collecting and analyzing historical Brent crude oil futures data. The script retrieves price data, segments it into regular intervals (e.g., every three days), calculates price changes, and exports the results to a CSV file. It can also optionally send the processed data to an external API for further use.&lt;/p&gt;
 &lt;p&gt;To ensure flexibility and reproducibility, the script is designed to prioritize the official Trading Economics API when available, while also providing a fallback to generated sample data. This allows the full workflow to be tested even without API access.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;Python&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;datetime&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timedelta&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pandas&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;requests&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;numpy&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;np&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;datetime&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timedelta&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
 
 &lt;span class="c1"&gt;# 1. Configuration parameters&lt;/span&gt;
 &lt;span class="n"&gt;SLICE_DAYS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;  &lt;span class="c1"&gt;# Slice interval (days)&lt;/span&gt;
@@ -395,7 +692,7 @@ By doing so, we hope to move beyond measuring volatility and begin explaining it
             &lt;span class="n"&gt;TRADING_ECONOMICS_API_KEY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
 &lt;span class="c1"&gt;# 2. Define data retrieval functions (API first, scraping fallback)&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_brent_data_via_api&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;start_date&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2025&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;end_date&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;03&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;22&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2026&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;fetch_brent_data_via_api&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;api_key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;start_date&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2025&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;end_date&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;03&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;22&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2026&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
 &lt;span class="sd"&gt;    Fetch Brent crude oil daily data via Trading Economics API&lt;/span&gt;
 &lt;span class="sd"&gt;    Documentation: https://api.tradingeconomics.com/documentation&lt;/span&gt;
@@ -421,7 +718,7 @@ By doing so, we hope to move beyond measuring volatility and begin explaining it
     &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
         &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;API request failed: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; - &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_brent_data_via_scrape&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;fetch_brent_data_via_scrape&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
 &lt;span class="sd"&gt;    Fallback: scrape from a public website or generate simulated data for demonstration.&lt;/span&gt;
 &lt;span class="sd"&gt;    Note: In production, use a reliable data source and respect the website&amp;#39;s robots.txt.&lt;/span&gt;
@@ -444,7 +741,7 @@ By doing so, we hope to move beyond measuring volatility and begin explaining it
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;df&lt;/span&gt;
 
 &lt;span class="c1"&gt;# 3. Retrieve real data (try official API; if fails, use fallback)&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_brent_data&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;get_brent_data&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
     &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
         &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;TRADING_ECONOMICS_API_KEY&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
             &lt;span class="n"&gt;df&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fetch_brent_data_via_api&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TRADING_ECONOMICS_API_KEY&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -457,7 +754,7 @@ By doing so, we hope to move beyond measuring volatility and begin explaining it
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;fetch_brent_data_via_scrape&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
 &lt;span class="c1"&gt;# 4. Slice data at intervals and calculate price volatility&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;slice_data_and_calc_volatility&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;slice_days&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;slice_data_and_calc_volatility&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;slice_days&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
 &lt;span class="sd"&gt;    For every slice_days days, take a price point and calculate the percentage change&lt;/span&gt;
 &lt;span class="sd"&gt;    from the previous slice.&lt;/span&gt;
@@ -578,7 +875,7 @@ By combining relevance ranking with random selection, we:
 &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Loading model for escalation assessment...&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;zero_shot_pipeline&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pipeline&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;zero-shot-classification&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;facebook/bart-large-mnli&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;assess_escalation&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;assess_escalation&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;label&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;NEUTRAL&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 
@@ -701,7 +998,7 @@ By combining relevance ranking with random selection, we:
 &lt;p&gt;&lt;em&gt;Table 1: Sample list of phrases in each indicator&lt;/em&gt;&lt;/p&gt;
 &lt;h2&gt;Technical Journey&lt;/h2&gt;
 &lt;p&gt;While we changed our direction to research in the NLP component before taking into consideration  the financial feasibility as mentioned above, we had built a financial data collection model using &lt;strong&gt;yfinance&lt;/strong&gt; prior to that already. This is a function that pulls annual financial statement data for a given ticker and tries to construct key metrics such as EBITDA and free cash flow.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;yfinance&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;yf&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;yfinance&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;yf&lt;/span&gt;
 
 &lt;span class="n"&gt;stock&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;yf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Ticker&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
@@ -717,7 +1014,7 @@ By combining relevance ranking with random selection, we:
 &lt;p&gt;Later on, we still want to expand into earnings call transcripts because we believe they may capture tone and pressure more naturally than annual filings. But for now, 10-K MD&amp;amp;A gives us a much cleaner starting point.&lt;/p&gt;
 &lt;p&gt;Below shows how 10-K MD&amp;amp;A sections are extracted. &lt;/p&gt;
 &lt;h3&gt;Extracting 10-K Filings&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;edgar&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;edgar&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Extract 10-K filings in the last n years&lt;/span&gt;
 &lt;span class="n"&gt;company&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Company&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -725,8 +1022,8 @@ By combining relevance ranking with random selection, we:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Getting HTML Content&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;bs4&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;BeautifulSoup&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;bs4&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;BeautifulSoup&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;requests&lt;/span&gt;
 
 &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;filing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filing_url&lt;/span&gt;
 &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -835,10 +1132,10 @@ By combining relevance ranking with random selection, we:
 &lt;p&gt;That turned out to be too weak. In the course workflow, this is really a &lt;strong&gt;data-validation&lt;/strong&gt; step: not just whether the counts match, but whether those two files can be turned into one &lt;strong&gt;aligned segment-level table&lt;/strong&gt; that we can trust.&lt;/p&gt;
 &lt;p&gt;If the transcript were one giant document while the audio file were broken into many small segments, then a direct merge would be impossible. A call-level text score and a segment-level audio score do not live on the same observational level. That sounds like a minor data-wrangling nuisance, but in a multimodal project it is actually foundational. If the units do not match, any “voice-and-language” feature table is partly fiction.&lt;/p&gt;
 &lt;p&gt;So our first useful piece of code was not a model. It was a compact validation-and-construction step that checks one-to-one alignment and then makes the observational unit explicit.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pathlib&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Path&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pathlib&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Path&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pandas&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pd&lt;/span&gt;
 
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;build_segment_table&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;call_dir&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;preview_rows&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;build_segment_table&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;call_dir&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;preview_rows&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;call_path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;call_dir&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="n"&gt;text_path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;call_path&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;text.txt&amp;quot;&lt;/span&gt;
     &lt;span class="n"&gt;feat_path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;call_path&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;features.csv&amp;quot;&lt;/span&gt;
@@ -949,7 +1246,7 @@ By combining relevance ranking with random selection, we:
 &lt;p&gt;In course-workflow terms, this sits in the &lt;strong&gt;cleaning / preprocessing&lt;/strong&gt; stage. We can strip empty rows, standardize the sentence field, and inspect turn structure much more cleanly than before. But preprocessing the transcript does not automatically solve the harder measurement problem.&lt;/p&gt;
 &lt;p&gt;That was genuinely helpful, but it did not solve the problem we first hoped it would solve. The presence of a &lt;code&gt;Person&lt;/code&gt; column tells us that the transcript has multi-speaker structure. It does &lt;strong&gt;not&lt;/strong&gt; by itself tell us which speaker is the CEO, which one is an analyst, and which one is another manager. We realized pretty quickly that speaker separation is not the same as role separation.&lt;/p&gt;
 &lt;p&gt;So the second block of code became a preprocessing-and-inspection step for speaker structure rather than an overconfident “CEO language” measure.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;inspect_person_labeled_call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;inspect_person_labeled_call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
     &lt;span class="n"&gt;call_dir&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;preview_rows&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sentence_width&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;70&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;df&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;call_dir&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;text.csv&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -1014,10 +1311,10 @@ By combining relevance ranking with random selection, we:
 &lt;p&gt;&lt;img alt="Figure 2: Segment lengths in one sample call" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/nlppppp_01_wfc-segment-lengths.png"&gt;&lt;/p&gt;
 &lt;p&gt;The histogram above made that issue visually obvious. Once we saw the spread in segment lengths, equal-weight averaging looked much harder to defend. That was a useful reminder that the workflow is iterative: the visualization was not decoration, it changed the aggregation choice.&lt;/p&gt;
 &lt;p&gt;So our prototype audio code treats aggregation as a transformation step, validates the key assumptions, and compares equal-weight and duration-weighted versions side by side.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;numpy&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;np&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pandas&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pd&lt;/span&gt;
 
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;vocal_stress_from_features&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;features_path&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;min_components&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;vocal_stress_from_features&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;features_path&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;min_components&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;df&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;features_path&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;columns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;columns&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
@@ -1184,7 +1481,7 @@ Even after filtering, the data remained noisy. Most retrieved texts were news di
 Using the &lt;strong&gt;SEC API&lt;/strong&gt;, we collected all &lt;strong&gt;DEFM14A&lt;/strong&gt;((merger-related proxy statement) filings since 2001 as our primary textual dataset. The resulting volume is appropriate and sufficient for our research objectives.&lt;/p&gt;
 &lt;p&gt;The following code shows a function retrieving the direct link to a &lt;strong&gt;DEFM14A&lt;/strong&gt; from the SEC EDGAR database. Using a company's &lt;strong&gt;CIK&lt;/strong&gt; and &lt;strong&gt;accession number&lt;/strong&gt;, it constructs the URL for the filing's index page, fetches the HTML, and parses the document table using &lt;strong&gt;BeautifulSoup&lt;/strong&gt;.
 The script iterates through the filing's attachments to find a match for the specific "DEFM14A" document type. Once found, it converts the relative path into a full absolute URL and returns it. It also includes built-in delays to comply with SEC rate-limiting policies, ensuring a reliable and automated way to extract key legal documents from financial filings.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;find_doc_from_index_page&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cik&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;accession&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;find_doc_from_index_page&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cik&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;accession&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
 
 
    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;cik&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;accession&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -1210,7 +1507,7 @@ The script iterates through the filing's attachments to find a match for the spe
    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;table&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
 
-   &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;abs_url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+   &lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;abs_url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;http&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;href&lt;/span&gt;
        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -1291,8 +1588,8 @@ functionality of Markdown in the context of a blog post.&lt;/p&gt;
 &lt;p&gt;We chose &lt;a href="http://www.investing.com"&gt;Investing.com&lt;/a&gt; to get the whole
 year data of XRP and recalculated the return and 30 days volatility.&lt;/p&gt;
 &lt;p&gt;The code we use is as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;nltk&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;nltk&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pandas&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pd&lt;/span&gt;
 &lt;span class="n"&gt;myvar&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;
 &lt;span class="n"&gt;DF&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;XRP-data.csv&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;

@@ -89,7 +89,7 @@
 <p>That's why we believe our model would stand out. Targeting the pain points of generic AI and apps, SentimentSage addresses the reliability gap in retail financial tech, ensuring that AI-generated insights are both timely and grounded in reality.</p>
 <h2>Approaches</h2>
 <p>The development of SentimentSage will follow a structured approach focused on accuracy, usability, and scalability. The project will begin with a prototype using FinBERT, a pre-trained NLP model specifically designed for financial news sentiment analysis. FinBERT is chosen over other general models because of its deep understanding of financial terminology and context, resulting in more reliable sentiment classification.</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_finbert_pipeline</span><span class="p">():</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_finbert_pipeline</span><span class="p">():</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">BertForSequenceClassification</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;yiyanghkust/finbert-tone&quot;</span><span class="p">)</span>
     <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;yiyanghkust/finbert-tone&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">&quot;sentiment-analysis&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">)</span>
@@ -115,9 +115,9 @@
 <p>The project achieves a sophisticated synergy by combining FinBERT's quantitative sentiment scores with the LLM's qualitative reasoning. By treating the sentiment probabilities as structured features for the LLM, SentimentSage transitions from simple emotion detection to a "rational" synthesis, providing users with a comprehensive summary grounded in both market mood and factual evidence.</p>
 <h2>Challenges and Limitation</h2>
 <p><strong>Single LLM API Key?</strong></p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">OpenAI</span><span class="p">,</span> <span class="n">OpenAIEmbeddings</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span><span class="p">,</span> <span class="n">OpenAIEmbeddings</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;your-openai-key&quot;</span>
 
@@ -130,11 +130,11 @@
 <h2>Evolutions</h2>
 <p><strong>Replacing and Integrating More LLM API Keys</strong></p>
 <p>Here's the simplified setup we added:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">ChatOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
 
-<span class="k">def</span> <span class="nf">get_llm</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_llm</span><span class="p">():</span>
 
     <span class="k">return</span> <span class="n">ChatOpenAI</span><span class="p">(</span>
 

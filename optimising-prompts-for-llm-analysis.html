@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="FINA2350 Students 2026" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Group Cryptollama, Reflective Report, " />
+
+<meta property="og:title" content="Optimising Prompts For LLM Analysis "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/optimising-prompts-for-llm-analysis.html" />
+<meta property="og:description" content="By Group &#34;Cryptollama&#34; Hunting Down a &#34;Neutral-but-Bearish&#34; Error: A Reflective Journey Through LLM Sentiment Analysis We built a crypto news sentiment analyzer using llama3.2 through Ollama. Our results have been good so far although in our intial run through, however, many articles that are supposed to be classified as …" />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="FINA2350 Students 2026" />
+<meta property="og:article:published_time" content="2026-05-03T15:30:00+08:00" />
+<meta name="twitter:title" content="Optimising Prompts For LLM Analysis ">
+<meta name="twitter:description" content="By Group &#34;Cryptollama&#34; Hunting Down a &#34;Neutral-but-Bearish&#34; Error: A Reflective Journey Through LLM Sentiment Analysis We built a crypto news sentiment analyzer using llama3.2 through Ollama. Our results have been good so far although in our intial run through, however, many articles that are supposed to be classified as …">
+
+        <title>Optimising Prompts For LLM Analysis  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/optimising-prompts-for-llm-analysis.html">
+                Optimising Prompts For LLM Analysis
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p>By Group "Cryptollama"</p>
+<h1>Hunting Down a "Neutral-but-Bearish" Error: A Reflective Journey Through LLM Sentiment Analysis</h1>
+<p>We built a crypto news sentiment analyzer using <code>llama3.2</code> through Ollama. Our results have been good so far although in our intial run through, however, many articles that are supposed to be classified as "neutral" sentiment are often misclassified as "bearish". This post documents how our group diagnosed and fixed the misclassification issue to the best of our ability.</p>
+<h2>1. The problem: "neutral-but-bearish"</h2>
+<p>Our LLM pipeline takes crypto news via RSS feeds from Reddit, CoinTelegraph and CoinDesk, feeds the cleaned text into Ollama with a prompt, parses a numeric score in [-1.0, 1.0], and classifies that score into <code>bearish</code> / <code>neutral</code> / <code>bullish</code> using simple thresholds.</p>
+<p>Evaluating against a hand-labelled set of 186 articles, the headline numbers looked respectable: <strong>86% accuracy, 0.85 macro-F1</strong>. Drilling in, the confusion matrix told a less clean story.</p>
+<p><strong>Baseline confusion matrix</strong> (rows = true label, columns = predicted):</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: center;">pred bearish</th>
+<th style="text-align: center;">pred neutral</th>
+<th style="text-align: center;">pred bullish</th>
+<th style="text-align: center;">recall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>true bearish</strong></td>
+<td style="text-align: center;">55</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.93</td>
+</tr>
+<tr>
+<td><strong>true neutral</strong></td>
+<td style="text-align: center;"><strong>13</strong></td>
+<td style="text-align: center;">37</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">0.70</td>
+</tr>
+<tr>
+<td><strong>true bullish</strong></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">68</td>
+<td style="text-align: center;">0.92</td>
+</tr>
+</tbody>
+</table>
+<p>The most striking issue is the 13/50 true neutrals, about a quarter were being labelled bearish. The model was systematically reading neutral content as negative.</p>
+<p>To find out why, we exported the 13 mis-labelled items and inspected the <em>raw scores</em> the model gave each one:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Score the LLM produced</th>
+<th style="text-align: center;"># items</th>
+<th>Examples of the actual text</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>-0.900</code></td>
+<td style="text-align: center;">2</td>
+<td><em>"2017 &amp; BitConnect — I took that 10K out of bitcoin and put it into Bitconnect…"</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>-0.400</code></td>
+<td style="text-align: center;">3</td>
+<td><em>"Crypto Market Pulse: Bitcoin funding rates fell to their most negative levels since 2023…"</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>-0.300</code></td>
+<td style="text-align: center;"><strong>8</strong></td>
+<td><em>"New to crypto. Hey guys, I am fairly new to crypto and there is a lot of information out there…"</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Retrospectives</strong> about old failures scored as low as <code>-0.90</code> because of words like "scam"; <strong>analytical news</strong> reporting negative facts received around <code>-0.40</code> even without taking a bearish stance; <strong>concerned-sounding questions</strong> clustered at exactly <code>-0.30</code>. At <code>score == -0.30</code> there were also <strong>12 true-bearish items</strong> co-located with the 8 neutrals — the model was conflating "skeptical question" with "mild bearish news" at the same numeric output, so no threshold shift could untangle them.</p>
+<p>The diagnosis crystallised: <code>-0.30</code> was being used as a "lazy default for mild concern", and the source of that default was sitting in plain sight in the prompt:</p>
+<blockquote>
+<p><em>"Questions seeking advice are typically neutral <strong>unless they express concern or excitement</strong>."</em></p>
+</blockquote>
+<p>That conditional clause is exactly the loophole. Any concerned-sounding question — and crypto Reddit is full of these — qualifies for the exception, and the model dutifully reaches for the <code>-0.3 to -0.1</code> "Slightly negative: Mild concerns" entry in the prompt's score-scale table.</p>
+<hr>
+<h2>2. The journey: what worked and what didn't</h2>
+<p>Knowing the cause of the failure was easier than fixing it. We ran several rounds of prompt and configuration experiments. Most of them regressed. Below are the four most representative strategies, in roughly the order we tried them.</p>
+<h3>Strategy 1: Full prompt rewrite</h3>
+<p>We discarded the original prompt and wrote a new one telling the model to default to 0.0 unless the text described a specific current event. The same rule that pulled neutral-leaning posts to zero also stripped scores from genuinely bullish posts, since most bullish content in this corpus is opinion-style rather than event reporting. Bullish recall collapsed to <strong>0/74</strong> and accuracy fell to 0.36.</p>
+<h3>Strategy 2: Two-stage classifier</h3>
+<p>The next prompt asked the model to first label each text as either "EVENT" or "DISCUSSION" and to score non-zero only when it picked EVENT. The boundary between the two categories proved too fuzzy: posts beginning with a clear bullish signal were often categorised as DISCUSSION because the rest of the post was opinion. Bullish recall fell to 0.58 and accuracy to 0.62.</p>
+<h3>Strategy 3: Closing reminder</h3>
+<p>A lighter-touch attempt: leave the prompt almost intact, but append a single closing reminder: <em>"REMINDER: Questions, discussions, and opinions always score 0.0."</em> The extra instruction destabilised the model rather than focusing it: neutrals mislabelled as bearish <em>doubled</em> from 13 to 26, and bullish recall dropped from 0.92 to 0.80.</p>
+<h3>Strategy 4 (the winner): three small, orthogonal changes</h3>
+<p>After watching elaborate prompt rewrites fail, we tried the opposite approach: change as little as possible. The winning recipe combined three independent edits, none of which alone explained the full gain. Together they lifted accuracy from 0.86 to 0.88 and macro-F1 from 0.85 to 0.87. Each change is described in detail below.</p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th style="text-align: center;">Accuracy</th>
+<th style="text-align: center;">Macro-F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline</td>
+<td style="text-align: center;">0.8602</td>
+<td style="text-align: center;">0.8487</td>
+</tr>
+<tr>
+<td>Full prompt rewrite</td>
+<td style="text-align: center;">0.3602</td>
+<td style="text-align: center;">0.2946</td>
+</tr>
+<tr>
+<td>Two-stage classifier</td>
+<td style="text-align: center;">0.6237</td>
+<td style="text-align: center;">0.6090</td>
+</tr>
+<tr>
+<td>Closing reminder</td>
+<td style="text-align: center;">0.7581</td>
+<td style="text-align: center;">0.7398</td>
+</tr>
+<tr>
+<td><strong>Winning approach</strong></td>
+<td style="text-align: center;"><strong>0.8817</strong></td>
+<td style="text-align: center;"><strong>0.8698</strong></td>
+</tr>
+</tbody>
+</table>
+<h4>Change 1: a one-sentence prompt edit</h4>
+<p>We left the rest of the original prompt untouched and only replaced the loophole line:</p>
+<div class="highlight"><pre><span></span><code><span class="gd">- &quot;Questions seeking advice are typically neutral unless they express concern or excitement&quot;</span>
+<span class="gi">+ &quot;Questions, discussions, and advice-seeking posts are NEUTRAL (score 0.0),</span>
+<span class="gi">+  regardless of any concerns, skepticism, or negative-sounding words they may contain&quot;</span>
+</code></pre></div>
+
+<p>The justification is direct: the original sentence was the <em>cause</em> of the lazy <code>-0.30</code> default for concerned questions, so the carve-out was removed. The replacement is unconditional. No new content was added. Only one sentence was swapped because earlier strategies showed that the model's overall calibration is fragile.</p>
+<h4>Change 2: temperature 0.1 → 0.0 (greedy decoding)</h4>
+<p>The Ollama API call sets sampling parameters per request:</p>
+<div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">OLLAMA_REQUEST_TIMEOUT_SECONDS</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">OLLAMA_BASE_URL</span><span class="si">}</span><span class="s2">/api/generate&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">model_to_use</span><span class="p">,</span>
+            <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">create_sentiment_prompt</span><span class="p">(</span><span class="n">text</span><span class="p">),</span>
+            <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>    <span class="c1"># was 0.1 — greedy decoding</span>
+                <span class="s2">&quot;top_p&quot;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">,</span>
+                <span class="s2">&quot;top_k&quot;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+                <span class="s2">&quot;repeat_penalty&quot;</span><span class="p">:</span> <span class="mf">1.1</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+</code></pre></div>
+
+<p>When the LLM emits a score like <code>"-0.18"</code> or <code>"0.20"</code>, it picks each character one token at a time from a softmax distribution. At <code>temperature=0.1</code> the most-probable token is heavily favoured but not guaranteed; for a continuous score, that small chance of picking a different token can flip a <code>0.15</code> into a <code>0.20</code> and across a threshold. <code>temperature=0.0</code> forces argmax decoding which always pick the single most-confident token. Borderline scores stop oscillating, and <strong>bullish recall jumped from 0.92 to 0.96</strong> without any change to the prompt.</p>
+<h4>Change 3: bullish threshold 0.20 → 0.125</h4>
+<p>After the first two changes were in place, we ran a small offline grid search over the threshold space against the true labels:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span><span class="o">,</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+
+<span class="n">scored</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;evaluate/scored_sentiment_llama3.2.csv&quot;</span><span class="p">)</span>
+<span class="n">truth</span>  <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;evaluate/sentiment_true_labels.csv&quot;</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scored</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">truth</span><span class="p">))</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">scored</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">y_true</span> <span class="o">=</span> <span class="n">truth</span><span class="p">[</span><span class="s2">&quot;true_label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+<span class="n">best</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.025</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">scores</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">,</span> <span class="s2">&quot;bearish&quot;</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">scores</span> <span class="o">&gt;=</span> <span class="n">u</span><span class="p">,</span> <span class="s2">&quot;bullish&quot;</span><span class="p">,</span> <span class="s2">&quot;neutral&quot;</span><span class="p">))</span>
+        <span class="n">best</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;macro&quot;</span><span class="p">),</span>
+                     <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+<span class="k">for</span> <span class="n">f1m</span><span class="p">,</span> <span class="n">acc</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">best</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;bear&lt;=</span><span class="si">{</span><span class="n">b</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2"> bull&gt;=</span><span class="si">{</span><span class="n">u</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2"> acc=</span><span class="si">{</span><span class="n">acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> f1=</span><span class="si">{</span><span class="n">f1m</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>The data-validated optimum was <code>bearish ≤ -0.20, bullish ≥ 0.125</code>, only the bullish cut moved. The change recovered true-bullish items the model had been scoring in <code>(0.125, 0.20)</code>, which correctly recognised as positive but not strongly enough to clear the original <code>0.20</code> cutoff. The new mapping will be:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">score_to_label</span><span class="p">(</span><span class="n">score</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mf">0.20</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;bearish&quot;</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mf">0.125</span><span class="p">:</span>   <span class="c1"># was 0.20 in the baseline</span>
+        <span class="k">return</span> <span class="s2">&quot;bullish&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;neutral&quot;</span>
+</code></pre></div>
+
+<hr>
+<h2>3. Evaluation: what improved, what didn't, and why</h2>
+<p>Side-by-side metrics on the same 186-item evaluation set:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align: center;">Baseline</th>
+<th style="text-align: center;">Optimized</th>
+<th style="text-align: center;">Δ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Accuracy</strong></td>
+<td style="text-align: center;">0.8602</td>
+<td style="text-align: center;"><strong>0.8817</strong></td>
+<td style="text-align: center;"><strong>+2.15 pp</strong></td>
+</tr>
+<tr>
+<td><strong>Macro-F1</strong></td>
+<td style="text-align: center;">0.8487</td>
+<td style="text-align: center;"><strong>0.8698</strong></td>
+<td style="text-align: center;"><strong>+2.11 pp</strong></td>
+</tr>
+<tr>
+<td>Bearish precision</td>
+<td style="text-align: center;">0.7971</td>
+<td style="text-align: center;">0.8209</td>
+<td style="text-align: center;">+2.4 pp</td>
+</tr>
+<tr>
+<td>Bearish recall</td>
+<td style="text-align: center;">0.9322</td>
+<td style="text-align: center;">0.9322</td>
+<td style="text-align: center;">=</td>
+</tr>
+<tr>
+<td>Bearish F1</td>
+<td style="text-align: center;">0.8594</td>
+<td style="text-align: center;">0.8730</td>
+<td style="text-align: center;">+1.4 pp</td>
+</tr>
+<tr>
+<td>Bullish precision</td>
+<td style="text-align: center;">0.9444</td>
+<td style="text-align: center;">0.9467</td>
+<td style="text-align: center;">+0.2 pp</td>
+</tr>
+<tr>
+<td><strong>Bullish recall</strong></td>
+<td style="text-align: center;">0.9189</td>
+<td style="text-align: center;"><strong>0.9595</strong></td>
+<td style="text-align: center;"><strong>+4.1 pp</strong> ★</td>
+</tr>
+<tr>
+<td>Bullish F1</td>
+<td style="text-align: center;">0.9315</td>
+<td style="text-align: center;">0.9530</td>
+<td style="text-align: center;">+2.2 pp</td>
+</tr>
+<tr>
+<td><strong>Neutral precision</strong></td>
+<td style="text-align: center;">0.8222</td>
+<td style="text-align: center;"><strong>0.8636</strong></td>
+<td style="text-align: center;"><strong>+4.1 pp</strong> ★</td>
+</tr>
+<tr>
+<td>Neutral recall</td>
+<td style="text-align: center;">0.6981</td>
+<td style="text-align: center;">0.7170</td>
+<td style="text-align: center;">+1.9 pp</td>
+</tr>
+<tr>
+<td>Neutral F1</td>
+<td style="text-align: center;">0.7551</td>
+<td style="text-align: center;">0.7835</td>
+<td style="text-align: center;">+2.8 pp</td>
+</tr>
+</tbody>
+</table>
+<p>Confusion-matrix diff (boldface = changed cells):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Baseline / Optimized</th>
+<th style="text-align: center;">pred bearish</th>
+<th style="text-align: center;">pred neutral</th>
+<th style="text-align: center;">pred bullish</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>true bearish</strong> (n=59)</td>
+<td style="text-align: center;">55 / 55</td>
+<td style="text-align: center;">3 / 3</td>
+<td style="text-align: center;">1 / 1</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>true neutral</strong> (n=53)</td>
+<td style="text-align: center;"><strong>13 / 12</strong></td>
+<td style="text-align: center;"><strong>37 / 38</strong></td>
+<td style="text-align: center;">3 / 3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>true bullish</strong> (n=74)</td>
+<td style="text-align: center;"><strong>1 / 0</strong></td>
+<td style="text-align: center;"><strong>5 / 3</strong></td>
+<td style="text-align: center;"><strong>68 / 71</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Net effect: 4 more correct predictions out of 186</strong> (164 → 168). The bearish row was unchanged. Only one of the original 13 neutral→bearish errors was recovered while the other 12 remain stuck because the model scored them at <code>-0.30</code> or below with high confidence. The largest gains came from the bullish row, where <code>temperature=0.0</code> and the lower threshold together captured three borderline items and removed the one false-bearish prediction, lifting bullish recall from 0.92 to 0.96 and neutral <em>precision</em> by 4.1 percentage points.</p>
+<p>The group had assumed prompt engineering would be the dominant lever but the data said otherwise. Prompt engineering produced one of the smallest gains, <strong>decoder configuration</strong> produced the largest, and <strong>post-hoc threshold tuning</strong> produced the most reliable. It could be the case that the prompt was already well-tuned for the Llama model.</p>
+<p>Across multiple attempts to improve the prompt, only one worked, and it changed almost nothing. With a small model, the lesson we learnt is that the right move sometimes might be to leave the prompt alone and tune the things around it.</p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-05-03T15:30:00+08:00">Sun 03 May 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#reflective-report-ref">Reflective Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#group-cryptollama-ref">Group Cryptollama
+                    <span class="superscript">2</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
