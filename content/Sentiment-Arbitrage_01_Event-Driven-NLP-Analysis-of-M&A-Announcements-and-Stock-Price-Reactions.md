@@ -3,6 +3,7 @@ Title: Event-Driven NLP Analysis of M&A Announcements and Stock Price Reactions
 Date: 2026-01-15 17:12
 Category: Reflective Report
 Tags: Sentiment Arbitrage
+Slug: sentiment-arbitrage-01-event-driven-nlp-ma
 ---
 
 By Group "Sentiment Arbitrage"
