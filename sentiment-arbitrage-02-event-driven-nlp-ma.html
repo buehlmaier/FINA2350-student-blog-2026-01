@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="FINA2350 Students 2026" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Sentiment Arbitrage, Reflective Report, " />
+
+<meta property="og:title" content="Event-Driven NLP Analysis of M&amp;A Announcements and Stock Price Reactions "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/sentiment-arbitrage-02-event-driven-nlp-ma.html" />
+<meta property="og:description" content="By Group &#34;Sentiment Arbitrage&#34; From Company Name to Stock Ticker: An Iterative Journey Through M&amp;A Entity Recognition Based on SEC 8-K Filings · NER &amp; Ticker Mapping Module In our M&amp;A announcement-effect prediction project, the hardest part of the entire data pipeline turned out not to be the model — it …" />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="FINA2350 Students 2026" />
+<meta property="og:article:published_time" content="2026-05-03T15:49:00+08:00" />
+<meta name="twitter:title" content="Event-Driven NLP Analysis of M&amp;A Announcements and Stock Price Reactions ">
+<meta name="twitter:description" content="By Group &#34;Sentiment Arbitrage&#34; From Company Name to Stock Ticker: An Iterative Journey Through M&amp;A Entity Recognition Based on SEC 8-K Filings · NER &amp; Ticker Mapping Module In our M&amp;A announcement-effect prediction project, the hardest part of the entire data pipeline turned out not to be the model — it …">
+
+        <title>Event-Driven NLP Analysis of M&amp;A Announcements and Stock Price Reactions  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/sentiment-arbitrage-02-event-driven-nlp-ma.html">
+                Event-Driven NLP Analysis of M&A Announcements and Stock Price Reactions
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p>By Group "Sentiment Arbitrage"</p>
+<h1>From Company Name to Stock Ticker: An Iterative Journey Through M&amp;A Entity Recognition</h1>
+<p><strong>Based on SEC 8-K Filings · NER &amp; Ticker Mapping Module</strong></p>
+<hr>
+<p>In our M&amp;A announcement-effect prediction project, the hardest part of the entire data pipeline turned out not to be the model — it was the seemingly trivial task of <strong>turning a long legal filing into two basic fields: "the acquirer" and "its stock ticker."</strong></p>
+<p>What looks like a one-line problem is actually the place where the whole project is most likely to fall apart. This blog documents the obstacles we met when we matched from naive keywords to a multi-layered, multi-source, confidence-weighted solution.</p>
+<hr>
+<h2>Background: What We're Trying to Do</h2>
+<p>A quick follow-up to our previous blog 1: we ultimately decided to source M&amp;A announcements from SEC EDGAR 8-K filings, thanks to their strong timeliness and material relevance. We will continue using yfinance.py to pull daily stock price data, as minute-by-minute intraday bar data from any provider remains cost-prohibitive. Our analysis will examine how M&amp;A announcements affect the acquirer’s cumulative abnormal returns (CAR).</p>
+<p>SEC 8-K filings are submitted by public companies to disclose material events — including M&amp;A announcements. From these filings we intended to extract two things:</p>
+<ul>
+<li><strong>NER (Named Entity Recognition)</strong>: identify <strong>who is the acquirer</strong>;</li>
+<li><strong>Ticker Mapping</strong>: convert that company name (public) into its stock ticker.</li>
+</ul>
+<p>With these two steps, we can compute the acquirer's CAR, and therefore be able to construct the labels for our prediction task. Now to the story of how we actually got there.</p>
+<hr>
+<h2>Round 1: Naive Keyword Matching</h2>
+<blockquote>
+<p>⚠ <strong>PROBLEM 1</strong>
+How do we extract "the acquirer's name" from thousands of words of legal text?</p>
+<p>✓ <strong>FIRST ATTEMPT</strong>
+The most intuitive approach: regex patterns built around obvious keywords like <code>"acquired"</code>, <code>"merged with"</code>, <code>"to acquire X"</code>, capturing the company name on either side.</p>
+</blockquote>
+<p>Our initial rule set looked something like this:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Naive keyword matching (simplified)</span>
+<span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="sa">r</span><span class="s2">&quot;([A-Z][\w\s,.&amp;]+?)\s+acquired\s+([A-Z][\w\s,.&amp;]+?)&quot;</span><span class="p">,</span>
+   <span class="sa">r</span><span class="s2">&quot;([A-Z][\w\s,.&amp;]+?)\s+to acquire\s+([A-Z][\w\s,.&amp;]+?)&quot;</span><span class="p">,</span>
+   <span class="sa">r</span><span class="s2">&quot;merger between\s+([A-Z][\w\s,.&amp;]+?)\s+and\s+([A-Z][\w\s,.&amp;]+?)&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<blockquote>
+<p>⚠ <strong>NEW PROBLEM</strong></p>
+<blockquote>
+<p>These rules performed <strong>terribly</strong>. Three reasons:
+1. Real-world phrasing is wildly diverse: <code>"completed its previously announced acquisition of..."</code>, <code>"became a wholly owned subsidiary of..."</code> — you &gt;can't enumerate them all;
+2. Many filings use <strong>passive voice</strong> or describe the deal from the subsidiary's point of view;
+3. The captured "company names" were often <strong>half-sentences</strong> or polluted with noise like "the Company" or "its parent."</p>
+</blockquote>
+</blockquote>
+<hr>
+<h2>Round 2: Exploiting the Structure of the Filing</h2>
+<blockquote>
+<p>✓ <strong>NEW APPROACH</strong>
+If the prose is too unpredictable, why not <strong>anchor on the fixed structure of the filing instead</strong>? Every 8-K opens with a standardized header that contains the line <code>(Exact name of registrant as specified in its charter)</code>, with the company name printed directly above it.</p>
+</blockquote>
+<p>So we changed strategy: locate that anchor first, identify the "filer" (the company that submitted the filing), and walk a few lines upward to capture the name. Hit rate jumped immediately.</p>
+<blockquote>
+<p>⚠ <strong>NEW PROBLEM</strong>
+But the problem isn't over — <strong>the filer isn't always the acquirer</strong>. In some M&amp;A events, the 8-K is actually filed by the <strong>target</strong>. Treating the filer as the acquirer flips the label entirely.</p>
+</blockquote>
+<hr>
+<h2>Round 3: Leveraging SEC's Legal Labels</h2>
+<p>Fortunately, SEC filings follow a highly standardized legal style. Inside merger agreements, every party is given a quoted "role label":</p>
+<ul>
+<li><code>"Acme Corporation, a Delaware corporation (\"Parent\")"</code></li>
+<li><code>"NewCo Inc., a Delaware corporation (\"Merger Sub\")"</code></li>
+<li><code>"TargetCo, Inc. (\"the Company\" or \"Target\")"</code></li>
+</ul>
+<blockquote>
+<p>✓ <strong>KEY INSIGHT</strong>
+An entity tagged as <code>("Parent")</code> or <code>("Buyer")</code> → it's the <strong>acquirer</strong>. An entity tagged as <code>("Target")</code> or <code>("Seller")</code> → it's the <strong>target</strong>. Combine that with the filer's identity and we can reliably infer the true acquirer, even when the target is the one filing.</p>
+<p>⚠ <strong>NEW PROBLEM</strong>
+Not all filings follow this convention. Older filings, smaller companies, or short announcements often skip the labeled-entity format entirely. We need a fallback.</p>
+</blockquote>
+<hr>
+<h2>Round 4: Multi-Level Fallback Patterns</h2>
+<blockquote>
+<p>✓ <strong>FALLBACK STRATEGY</strong>
+We wrote a series of regex patterns ordered from <strong>most reliable</strong> to <strong>weakest</strong>, tried in sequence, stopping at the first hit:</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="c1"># Fallback regex patterns (ordered by signal strength)</span>
+<span class="n">fallback_patterns</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="sa">r</span><span class="s2">&quot;([A-Z][\w\s&amp;,]+?)\s+completed its acquisition of\s+([A-Z][\w\s&amp;,]+)&quot;</span><span class="p">,</span>
+   <span class="sa">r</span><span class="s2">&quot;([A-Z][\w\s&amp;,]+?)\s+completed the merger with\s+([A-Z][\w\s&amp;,]+)&quot;</span><span class="p">,</span>
+   <span class="sa">r</span><span class="s2">&quot;to acquire\s+([A-Z][\w\s&amp;,]+)&quot;</span><span class="p">,</span>          <span class="c1"># filer assumed acquirer</span>
+   <span class="sa">r</span><span class="s2">&quot;by and among\s+(.+?)\s+and\s+(.+?)&quot;</span><span class="p">,</span>      <span class="c1"># parse contracting parties</span>
+   <span class="sa">r</span><span class="s2">&quot;became a wholly owned subsidiary of\s+([A-Z][\w\s&amp;,]+)&quot;</span><span class="p">,</span>
+   <span class="sa">r</span><span class="s2">&quot;wholly owned subsidiary of\s+([A-Z][\w\s&amp;,]+)&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<p>If everything fails, we fall back to the filer's name as a last resort — better than nothing, and the downstream confidence score will reflect the uncertainty.</p>
+<blockquote>
+<p>⚠ <strong>NEW PROBLEM</strong>
+The names extracted by fallback regex are <strong>noisy</strong>: date fragments, SEC file numbers, person titles like "Chairman of the Board," role-only words like "Parent," and even broken sentence fragments such as "the company completed..."</p>
+</blockquote>
+<hr>
+<h2>Round 5: Aggressive Name Cleaning</h2>
+<blockquote>
+<p>✓ <strong>VALIDATION RULES</strong>
+We added a strict validation layer that rejects any candidate matching the following:</p>
+</blockquote>
+<ul>
+<li>Sentence fragments (lowercase start, contains verbs like "completed");</li>
+<li>Pure role words ("Parent", "Buyer", "the Company");</li>
+<li>SEC boilerplate ("date of report", "exact name of");</li>
+<li>Person titles ("Chairman", "Chief Executive Officer");</li>
+<li>Abnormal length (&lt; 3 chars or &gt; 100 chars);</li>
+<li>Excessive punctuation (more than 30% non-alphabetic).</li>
+</ul>
+<p>At this point the NER module is essentially done. But ticker mapping is about to be its own iteration nightmare.</p>
+<hr>
+<h2>Round 6: Entering Ticker Mapping</h2>
+<blockquote>
+<p>⚠ <strong>PROBLEM 6</strong>
+Now we have a clean acquirer name. How do we map it to a stock ticker? The most direct idea: download a local <code>company-ticker</code> CSV and do exact lookups.</p>
+<p>✓ <strong>FIRST ATTEMPT</strong>
+Take a local mapping file with thousands of company → ticker pairs and run exact string matches against our extracted names.</p>
+<p>⚠ <strong>NEW PROBLEM</strong>
+SEC filings use <strong>full legal entity names</strong> like <code>"Apple Inc."</code> or <code>"Berkshire Hathaway, Inc."</code>, while the mapping might list them as <code>"Apple"</code> or <code>"Berkshire Hathaway."</code> Add in all the variations — <code>"f/k/a"</code>, <code>"Class A Common Stock"</code>, <code>"Holdings"</code>, <code>"Corporation"</code> — and exact matching collapses to <strong>around 30–40% recall</strong>.</p>
+</blockquote>
+<hr>
+<h2>Round 7: Fuzzy Matching + Candidate Generation</h2>
+<blockquote>
+<p>✓ <strong>IMPROVED APPROACH</strong>
+Two simultaneous moves:</p>
+</blockquote>
+<ol>
+<li><strong>Generate name variants</strong>: strip suffixes ("Inc.", "Corp.", "Holdings"), strip security descriptions ("Class A", "Common Stock"), strip role words, split on commas, split on "former name" markers — producing up to 15 candidates;</li>
+<li><strong>Fuzzy match each candidate</strong>: use <code>difflib.SequenceMatcher</code> with a 90% similarity threshold.</li>
+</ol>
+<p>Each candidate carries its own <code>candidate_confidence</code> — more aggressive transformations get lower scores. The final <code>ticker_confidence</code> = method confidence × candidate confidence, which downstream becomes a component of sample weight in model training.</p>
+<blockquote>
+<p>⚠ <strong>NEW PROBLEM</strong>
+Even with fuzzy matching, the <strong>local mapping is incomplete</strong> — especially for companies that changed names, SPAC mergers, or smaller entities never present in the mapping file. About 20% of filings still come away with no ticker.</p>
+</blockquote>
+<hr>
+<h2>Round 8: Multi-Source Cascade (Final Solution)</h2>
+<blockquote>
+<p>✓ <strong>FINAL DESIGN: 5-LEVEL CASCADE</strong>
+Chain together multiple data sources, starting from the fastest and most reliable, falling back to slower but broader sources only when needed. Each level produces its own confidence score.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Data Source</th>
+<th>Match Method</th>
+<th>Confidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L1</td>
+<td>Local CSV</td>
+<td>Exact match</td>
+<td>~0.96</td>
+</tr>
+<tr>
+<td>L2</td>
+<td>SEC official</td>
+<td>Exact match</td>
+<td>~1.00</td>
+</tr>
+<tr>
+<td>L3</td>
+<td>Local CSV</td>
+<td>Fuzzy match (≥90%)</td>
+<td>0.77 ~ 0.85</td>
+</tr>
+<tr>
+<td>L4</td>
+<td>SEC official</td>
+<td>Fuzzy match (≥90%)</td>
+<td>0.80 ~ 0.90</td>
+</tr>
+<tr>
+<td>L5</td>
+<td>Yahoo Finance API</td>
+<td>Online search + result validation</td>
+<td>0.76 ~ 0.86</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="c1"># Definition of confidence for data source</span>
+   <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;SEC_EXACT&quot;</span><span class="p">:</span>
+       <span class="n">base</span> <span class="o">=</span> <span class="mf">1.00</span>
+
+
+   <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;LOCAL_EXACT&quot;</span><span class="p">:</span>
+       <span class="n">base</span> <span class="o">=</span> <span class="mf">0.96</span>
+
+
+   <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;SEC_FUZZY&quot;</span><span class="p">:</span>
+       <span class="c1"># sim 0.90 -&gt; 0.80, sim 1.00 -&gt; 0.90</span>
+       <span class="n">base</span> <span class="o">=</span> <span class="mf">0.44</span> <span class="o">+</span> <span class="mf">0.46</span> <span class="o">*</span> <span class="n">sim_value</span>
+
+
+   <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;LOCAL_FUZZY&quot;</span><span class="p">:</span>
+       <span class="c1"># sim 0.90 -&gt; 0.765, sim 1.00 -&gt; 0.85</span>
+       <span class="n">base</span> <span class="o">=</span> <span class="mf">0.36</span> <span class="o">+</span> <span class="mf">0.49</span> <span class="o">*</span> <span class="n">sim_value</span>
+
+
+   <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;YFINANCE_SEARCH&quot;</span><span class="p">:</span>
+       <span class="c1"># sim 0.88 -&gt; 0.758, sim 1.00 -&gt; 0.86</span>
+       <span class="n">base</span> <span class="o">=</span> <span class="mf">0.18</span> <span class="o">+</span> <span class="mf">0.68</span> <span class="o">*</span> <span class="n">sim_value</span>
+
+
+   <span class="k">else</span><span class="p">:</span>
+       <span class="n">base</span> <span class="o">=</span> <span class="mf">0.0</span>
+</code></pre></div>
+
+<p>The cascade <strong>short-circuits on first hit</strong> — Match the candidate with the highest confidence score in the most reliable dataset, keep rolling down until a match is found. Finally, a post-filter keeps only valid US tickers matching <code>^[A-Z]{1,5}$</code>, removing foreign listings (which often contain "."), ETFs with long tickers, and malformed codes.</p>
+<hr>
+<h2>The Full NER + Ticker Mapping Pipeline</h2>
+<p><img alt="Picture showing Powell" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Sentiment-Arbitrage_02_FlowChart.png"></p>
+<p>In the end, we dropped newsdata with an unfound acquirer name and ticker to ensure a low false positive rate.</p>
+<hr>
+<h2>Reflection: Why Keyword Matching Was Never the Endpoint</h2>
+<p>Looking back at the iteration path, every "problem → solution" cycle was essentially us <strong>fighting against the limitations of keyword matching</strong>:</p>
+<ol>
+<li>Naive regex keywords → poor recall;</li>
+<li>Structural anchors ("Exact name of registrant") → role confusion;</li>
+<li>SEC legal labels → labels often missing;</li>
+<li>Multi-level fallback regex → noisy names;</li>
+<li>Aggressive cleaning → tickers not found;</li>
+<li>Local exact matching → name variation problems;</li>
+<li>Fuzzy matching → incomplete database;</li>
+<li><strong>Multi-source cascade + confidence weighting</strong> → finally striking a usable balance between coverage and accuracy.</li>
+</ol>
+<p>Keyword matching as a standalone solution simply doesn't work — but when <strong>embedded inside a system with structure, fallbacks, and confidence scores</strong>, it becomes capable of stably processing filings effectively. That's what we ended up with. Every match carries a <code>ticker_confidence</code>, which downstream models consume as a component of sample weight. Less certain matches automatically get less influence on the model — instead of being thrown away, they contribute proportionally to how confident we are in them.</p>
+<hr>
+<h2>Takeaways</h2>
+<p>Three lessons we learned from this "deceptively simple" task:</p>
+<ol>
+<li><strong>Don't start from keywords.</strong> Look first for the <strong>structural signals</strong> in the document — anchors, labels, signatures, fixed templates. They're far more reliable than prose.</li>
+<li><strong>Separate "matching" from "confidence."</strong> Matching answers <strong>what is it</strong>; confidence answers <strong>how sure are we</strong>. Both must coexist, otherwise downstream consumers can't tell signal from noise.</li>
+<li><strong>There's no silver bullet — only cascades.</strong> Single data sources, single rules, single thresholds will all fail. Chain together imperfect solutions, and coverage rises to a usable level.</li>
+</ol>
+<hr>
+<h2>Regarding the later stages…</h2>
+<p>Following NER processing and ticker mapping, we moved on to calculating cumulative abnormal returns (CAR), conducting feature engineering, and building our models. These stages went relatively smoothly with no major hurdles. We’ll dive into detailed explanations of each step in our upcoming report — stay tuned!</p>
+<p><img alt="Picture showing Powell" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/Sentiment-Arbitrage_02_MnA-Announcement-Stock-Reaction-Prediction-Pipeline.png"></p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-05-03T15:49:00+08:00">Sun 03 May 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#reflective-report-ref">Reflective Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#sentiment-arbitrage-ref">Sentiment Arbitrage
+                    <span class="superscript">2</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
