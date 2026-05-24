@@ -24,7 +24,15 @@ blog posts below only shows the most recent posts.
 
 Names of student groups:
 
-  * TBD
+  * Cryptollama
+  * Gen the Alpha
+  * FinWord Warriors
+  * SENTIBRENT
+  * Intel & Corporate Efficiency 
+  * NetFin
+  * NLPPPPP
+  * Sentiment Arbitrage
+  * The Gold Diggers
 
 The source code of this blog is available on
 [GitHub](https://github.com/buehlmaier/FINA2350-student-blog-2026-01).
