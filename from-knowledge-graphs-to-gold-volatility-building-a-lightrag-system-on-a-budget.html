@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="FINA2350 Students 2026" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Group The Gold Diggers, LightRAG, RAG, Knowledge Graph, GARCH, NLP, LLM, Ollama, Reflective Report, " />
+
+<meta property="og:title" content="From Knowledge Graphs to Gold Volatility: Building a LightRAG System on a Budget "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/from-knowledge-graphs-to-gold-volatility-building-a-lightrag-system-on-a-budget.html" />
+<meta property="og:description" content="By Group &#34;The Gold Diggers&#34; Introduction In our first blog post, we walked through how we scraped over 6,400 financial news URLs, extracted 3,252 full articles, and packaged everything into fina2350_master_dataset_for_rag.csv — a file combining gold futures data with GARCH/GARCH-X volatility estimates and thematic text variables across …" />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="FINA2350 Students 2026" />
+<meta property="og:article:published_time" content="2026-04-25T17:00:00+08:00" />
+<meta name="twitter:title" content="From Knowledge Graphs to Gold Volatility: Building a LightRAG System on a Budget ">
+<meta name="twitter:description" content="By Group &#34;The Gold Diggers&#34; Introduction In our first blog post, we walked through how we scraped over 6,400 financial news URLs, extracted 3,252 full articles, and packaged everything into fina2350_master_dataset_for_rag.csv — a file combining gold futures data with GARCH/GARCH-X volatility estimates and thematic text variables across …">
+
+        <title>From Knowledge Graphs to Gold Volatility: Building a LightRAG System on a Budget  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/from-knowledge-graphs-to-gold-volatility-building-a-lightrag-system-on-a-budget.html">
+                From Knowledge Graphs to Gold Volatility: Building a LightRAG System on a Budget
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p><em>By Group "The Gold Diggers"</em></p>
+<hr>
+<h2>Introduction</h2>
+<p>In our first blog post, we walked through how we scraped over 6,400 financial news URLs, extracted 3,252 full articles, and packaged everything into <code>fina2350_master_dataset_for_rag.csv</code> — a file combining gold futures data with GARCH/GARCH-X volatility estimates and thematic text variables across Monetary, Fiscal, and Geopolitical categories.</p>
+<p>That post was about getting data into a usable shape. This one is about what came next: making the narrative content actually <em>interpretable</em> through a knowledge graph retrieval system called <strong>LightRAG</strong>. Honestly, this part of the project gave us more headaches than the data pipeline did — mostly because we were running production-grade AI infrastructure on student budgets and M1 MacBooks.</p>
+<hr>
+<h2>Why LightRAG?</h2>
+<p>Our GARCH model handles the "how much" of gold volatility. What it can't tell you is <em>why</em> a particular week spiked. Was it the Fed signalling a rate hold? Safe-haven flows from a geopolitical event? ETF rebalancing? To get at those questions, we needed something that could reason across a large set of financial documents and give us answers grounded in actual source material.</p>
+<p>That's where RAG (Retrieval-Augmented Generation) comes in. Instead of asking an LLM to recall facts from memory, a RAG system retrieves relevant text from a document store and uses that as context when generating a response. LightRAG takes it further by building a <strong>knowledge graph</strong> on top of the documents, extracting named entities (nodes) and relationships between them (edges). This means it can answer questions that require connecting ideas across multiple sources. A question like <em>"How did Fed rate signals in late 2025 feed into gold ETF outflows in early 2026?"</em> touches monetary policy, investor behaviour, and commodity markets simultaneously. A flat vector search struggles with that. A graph can traverse it.</p>
+<hr>
+<h2>The Model Problem</h2>
+<p>LightRAG recommends using an LLM with at least 32 billion parameters and a 32K token context window. The reason is practical: building a knowledge graph means the model has to read a long chunk of text, identify every relevant entity, infer the relationships between them, and output structured JSON. Smaller models keep dropping entities or producing malformed output mid-pipeline.</p>
+<p>Our M1 MacBooks can realistically run models up to around 8B parameters through Ollama. We tested one and it failed exactly as the docs warned, incomplete extractions, broken relationship chains. We looked at Hugging Face, Google Gemini free tier which lacked rate limits, and local 32B+ deployment which we did not have enough unified memory on any machine.</p>
+<p>What we ended up with was Ollama's cloud-hosted <code>qwen3-vl:235b-cloud</code>, a 235B model that runs on Ollama's servers but connects to our code as if it were local. It's free-tier, which turned out to be both the solution and the source of most of our problems.</p>
+<hr>
+<h2>How the System Is Wired Together</h2>
+<p>Three components run in parallel: the cloud LLM (<code>qwen3-vl:235b-cloud</code>) that builds the graph and answers queries, a local embedding model (<code>bge-m3:latest</code>) that converts text to vectors for semantic search, and a local reranker (<code>bge-reranker-v2-m3</code>) that scores retrieved chunks before they reach the LLM.</p>
+<p>The initialisation code below wires these together. The trickiest part — one that cost us a debugging session — is the <code>ollama_embed.func</code> call. <code>ollama_embed</code> is already decorated to return an <code>EmbeddingFunc</code> object. Passing it directly into another <code>EmbeddingFunc(func=...)</code> double-wraps it and throws a runtime error. Using <code>.func</code> pulls out the raw callable before the decoration.</p>
+<p>To reproduce this: install <code>lightrag-hku</code>, pull <code>bge-m3:latest</code> via Ollama, and set <code>OLLAMA_API_KEY</code> in your <code>.env</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">lightrag</span><span class="w"> </span><span class="kn">import</span> <span class="n">LightRAG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lightrag.llm.ollama</span><span class="w"> </span><span class="kn">import</span> <span class="n">ollama_model_complete</span><span class="p">,</span> <span class="n">ollama_embed</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lightrag.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">EmbeddingFunc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">initialize_rag</span><span class="p">():</span>
+    <span class="n">rag</span> <span class="o">=</span> <span class="n">LightRAG</span><span class="p">(</span>
+        <span class="n">working_dir</span><span class="o">=</span><span class="s2">&quot;./gold_kb&quot;</span><span class="p">,</span>           <span class="c1"># graph and vector store saved here</span>
+        <span class="n">llm_model_func</span><span class="o">=</span><span class="n">ollama_model_complete</span><span class="p">,</span>
+        <span class="n">llm_model_name</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;LLM_MODEL&quot;</span><span class="p">,</span> <span class="s2">&quot;qwen3-vl:235b-cloud&quot;</span><span class="p">),</span>
+        <span class="n">summary_max_tokens</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+        <span class="n">llm_model_kwargs</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;LLM_BINDING_HOST&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># None = Ollama cloud</span>
+            <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;num_ctx&quot;</span><span class="p">:</span> <span class="mi">32768</span><span class="p">},</span>                 <span class="c1"># 32K context minimum</span>
+            <span class="s2">&quot;timeout&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;LLM_TIMEOUT&quot;</span><span class="p">,</span> <span class="s2">&quot;600&quot;</span><span class="p">)),</span>  <span class="c1"># 235B is slow</span>
+        <span class="p">},</span>
+        <span class="n">rerank_model_func</span><span class="o">=</span><span class="n">rerank_model_func</span><span class="p">,</span>
+        <span class="n">embedding_func</span><span class="o">=</span><span class="n">EmbeddingFunc</span><span class="p">(</span>
+            <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+            <span class="n">max_token_size</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
+                <span class="n">ollama_embed</span><span class="o">.</span><span class="n">func</span><span class="p">,</span>   <span class="c1"># .func avoids double EmbeddingFunc wrapping</span>
+                <span class="n">embed_model</span><span class="o">=</span><span class="s2">&quot;bge-m3:latest&quot;</span><span class="p">,</span>
+                <span class="n">host</span><span class="o">=</span><span class="s2">&quot;http://localhost:11434&quot;</span><span class="p">,</span>  <span class="c1"># embedding runs locally</span>
+            <span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">await</span> <span class="n">rag</span><span class="o">.</span><span class="n">initialize_storages</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">rag</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">rag</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">initialize_rag</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;RAG system initialised successfully.&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Expected output on successful setup:</p>
+<div class="highlight"><pre><span></span><code><span class="n">INFO</span><span class="o">:</span><span class="w"> </span><span class="n">Initializing</span><span class="w"> </span><span class="n">LightRAG</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">working_dir</span><span class="o">=./</span><span class="n">gold_kb</span>
+<span class="n">INFO</span><span class="o">:</span><span class="w"> </span><span class="n">Storage</span><span class="w"> </span><span class="n">initialized</span><span class="w"> </span><span class="n">successfully</span>
+<span class="n">RAG</span><span class="w"> </span><span class="n">system</span><span class="w"> </span><span class="n">initialised</span><span class="w"> </span><span class="n">successfully</span><span class="o">.</span>
+</code></pre></div>
+
+<hr>
+<h2>Testing with A Christmas Carol</h2>
+<p>Before throwing financial documents at it, we validated the pipeline on <em>A Christmas Carol</em>. Short, well-known, no domain knowledge required.</p>
+<p>The story split into 42 chunks. Each chunk produced something like:</p>
+<div class="highlight"><pre><span></span><code><span class="n">INFO</span><span class="o">:</span><span class="w"> </span><span class="n">Chunk</span><span class="w"> </span><span class="mi">22</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="n">extracted</span><span class="w"> </span><span class="mi">14</span><span class="w"> </span><span class="n">Ent</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">15</span><span class="w"> </span><span class="n">Rel</span>
+<span class="n">INFO</span><span class="o">:</span><span class="w"> </span><span class="n">Chunk</span><span class="w"> </span><span class="mi">23</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="n">extracted</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="n">Ent</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="n">Rel</span>
+<span class="n">INFO</span><span class="o">:</span><span class="w"> </span><span class="n">Chunk</span><span class="w"> </span><span class="mi">25</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="n">extracted</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="n">Ent</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">17</span><span class="w"> </span><span class="n">Rel</span>
+<span class="n">INFO</span><span class="o">:</span><span class="w">  </span><span class="o">==</span><span class="w"> </span><span class="n">LLM</span><span class="w"> </span><span class="n">cache</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">saving</span><span class="o">:</span><span class="w"> </span><span class="k">default</span><span class="o">:</span><span class="n">extract</span><span class="o">:</span><span class="n">c0f46ef9da55ba5e5f5f4158f37662da</span>
+</code></pre></div>
+
+<p>Final graph: 40 entities, 210 relationships. We queried it in all four modes (Naive, Local, Global, Hybrid) and the differences were interesting. Local mode gave us Scrooge's personal arc. Global mode surfaced Dickens' broader social critique. Hybrid caught something neither found alone — the way the three-spirit structure explicitly links past, present, and future as a single moral argument.</p>
+<p><img alt="LightRAG knowledge graph for A Christmas Carol" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/the-gold-diggers_02_christmas-carol-knowledge-graph.png"></p>
+<p><em>Figure 1. Knowledge graph from A Christmas Carol. 40 nodes, 210 edges. Scrooge and Bob Cratchit are the largest nodes by degree centrality. The sparse, clearly-clustered structure confirmed entity extraction was working before we moved to the gold corpus.</em></p>
+<hr>
+<h2>Loading the Gold Corpus</h2>
+<p>We ended up with 30+ documents covering 2024–2026: WGC quarterly demand reports, Fed policy analyses, commodities outlooks, price forecast papers. Most ingested without issues, though we had to spread work across multiple sessions because the free-tier weekly quota doesn't cover a corpus this size in one go.</p>
+<p><img alt="Ollama cloud usage mid-ingestion" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/the-gold-diggers_02_ollama-cloud-usage-early.png"></p>
+<p><em>Figure 2. Ollama cloud usage partway through ingestion — 58.1% session, 23.4% weekly. We hit 100% weekly more than once before finishing.</em></p>
+<p>The hardest document was <code>fina2350_2026_dataset_for_rag.csv</code> at 273 chunks. First attempt hit the session wall mid-way:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ERROR</span><span class="o">:</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="o">(</span><span class="n">aidan21</span><span class="o">)</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">reached</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">session</span><span class="w"> </span><span class="n">usage</span><span class="w"> </span><span class="n">limit</span><span class="o">,</span>
+<span class="n">upgrade</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">higher</span><span class="w"> </span><span class="n">limits</span><span class="o">:</span><span class="w"> </span><span class="n">https</span><span class="o">://</span><span class="n">ollama</span><span class="o">.</span><span class="na">com</span><span class="o">/</span><span class="n">upgrade</span>
+<span class="n">ERROR</span><span class="o">:</span><span class="w"> </span><span class="n">Failed</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">extract</span><span class="w"> </span><span class="n">document</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">fina2350_2026_dataset_for_rag</span><span class="o">.</span><span class="na">csv</span>
+<span class="n">INFO</span><span class="o">:</span><span class="w"> </span><span class="n">Enqueued</span><span class="w"> </span><span class="n">document</span><span class="w"> </span><span class="n">processing</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="n">stopped</span>
+</code></pre></div>
+
+<p>What saved us is that LightRAG caches completed chunks to disk, so each resume after a quota reset picks up where it left off. After a few retry sessions it completed. We also tried a wider 2023–2026 dataset but dropped it — too quota-heavy given everything else we still needed to process.</p>
+<p>Worth clarifying: GARCH is purely quantitative and has nothing to do with volatility bucketing. The RAG system handles the qualitative interpretation layer. For the CSV we also stripped out all numerical columns (the GARCH and GARCH-X series) and only fed in the narrative text fields — <code>News_Context</code>, <code>Monetary</code>, <code>Fiscal</code>, <code>Geopolitics</code> — since an LLM pipeline isn't going to extract meaningful graph entities from rows of floats.</p>
+<p><img alt="Ollama weekly quota exhausted" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/the-gold-diggers_02_ollama-weekly-quota-exhausted.png"></p>
+<p><em>Figure 3. Weekly quota at 100% after completing the gold corpus. Not surprising — each of 273 chunks requires a full LLM round-trip to the cloud.</em></p>
+<p>Below is what the resulting knowledge graph looks like compared to the Christmas Carol one.</p>
+<p><img alt="Gold market knowledge graph — full view" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/the-gold-diggers_02_gold-market-knowledge-graph.png"></p>
+<p><em>Figure 4. Full knowledge graph from the gold market corpus. The dense central cluster reflects heavily cross-referenced concepts: gold price, Fed policy, ETF flows.</em></p>
+<p><img alt="Gold market knowledge graph — labelled view" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/the-gold-diggers_02_gold-market-knowledge-graph2.png"></p>
+<p><em>Figure 5. Zoomed labelled view. Visible nodes include Gold ETF, Central Bank Buying, 10-Year Treasury Yield, US Trade Policy — monetary, geopolitical, and demand-side concepts all in the same network.</em></p>
+<hr>
+<h2>What Went Wrong</h2>
+<p><strong>VPN.</strong> Some of us use VPNs for other academic work. If it's active during ingestion, the Ollama cloud endpoint drops connections constantly:</p>
+<div class="highlight"><pre><span></span><code>C[1/1]: Post https://ollama.com:443/api/chat?ts=...: unexpected EOF (status code: -1)
+ERROR: Failed to extract document 1/1: Financial_Stability_Review_2025_I.pdf
+</code></pre></div>
+
+<p>Took a while to figure out because it was intermittent. Fix: turn off the VPN entirely before running anything.</p>
+<p><strong>RAG-Anything.</strong> We looked into this multimodal parser because our PDFs have tables and charts that PyPDF2 ignores. It uses a component called MinerU for that. On M1 it immediately threw:</p>
+<div class="highlight"><pre><span></span><code><span class="n">NotImplementedError</span><span class="o">:</span><span class="w"> </span><span class="n">Output</span><span class="w"> </span><span class="n">channels</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">65536</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">supported</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">MPS</span><span class="w"> </span><span class="n">device</span><span class="o">.</span>
+<span class="n">ERROR</span><span class="o">:</span><span class="w"> </span><span class="n">Mineru</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="n">failed</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="mi">0</span>
+</code></pre></div>
+
+<p>MinerU's neural parser exceeds the channel limit on Apple's Metal Performance Shaders backend. Known issue, no M1 fix currently. We stayed with PyPDF2 — fast and simple, but blind to tables and images, which is a limitation we acknowledge in the final report.</p>
+<p><img alt="Parser comparison: Textract vs PyPDF2 vs RAG-Anything" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/the-gold-diggers_02_feature-comparison.png"></p>
+<p><em>Figure 6. Parser comparison across the features we needed. RAG-Anything handles everything including formulas but failed on our hardware. PyPDF2 won by default.</em></p>
+<hr>
+<h2>A Sample Query</h2>
+<p>To see the full pipeline in action, we ran this in hybrid mode — which combines local entity-level search with global community-level summaries for the broadest possible context:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">lightrag</span><span class="w"> </span><span class="kn">import</span> <span class="n">LightRAG</span><span class="p">,</span> <span class="n">QueryParam</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">query_volatility</span><span class="p">(</span><span class="n">rag</span><span class="p">):</span>
+    <span class="c1"># hybrid = local (entity neighbours) + global (community summaries)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rag</span><span class="o">.</span><span class="n">aquery</span><span class="p">(</span>
+        <span class="s2">&quot;Imagine that there are 3 volatility buckets: low, medium, and high. &quot;</span>
+        <span class="s2">&quot;Could you fit February 2026 into one of the buckets?&quot;</span><span class="p">,</span>
+        <span class="n">param</span><span class="o">=</span><span class="n">QueryParam</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hybrid&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">rag</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">initialize_rag</span><span class="p">())</span>  <span class="c1"># uses initialize_rag() defined above</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">query_volatility</span><span class="p">(</span><span class="n">rag</span><span class="p">)))</span>
+</code></pre></div>
+
+<p>Retrieval log:</p>
+<div class="highlight"><pre><span></span><code><span class="n">INFO</span><span class="o">:</span><span class="w"> </span><span class="n">Local</span><span class="w"> </span><span class="n">query</span><span class="o">:</span><span class="w"> </span><span class="mi">40</span><span class="w"> </span><span class="n">entities</span><span class="o">,</span><span class="w"> </span><span class="mi">210</span><span class="w"> </span><span class="n">relations</span>
+<span class="n">INFO</span><span class="o">:</span><span class="w"> </span><span class="n">After</span><span class="w"> </span><span class="n">truncation</span><span class="o">:</span><span class="w"> </span><span class="mi">40</span><span class="w"> </span><span class="n">entities</span><span class="o">,</span><span class="w"> </span><span class="mi">140</span><span class="w"> </span><span class="n">relations</span>
+<span class="n">INFO</span><span class="o">:</span><span class="w"> </span><span class="n">Selecting</span><span class="w"> </span><span class="mi">38</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="mi">38</span><span class="w"> </span><span class="n">entity</span><span class="o">-</span><span class="n">related</span><span class="w"> </span><span class="n">chunks</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">similarity</span>
+<span class="n">INFO</span><span class="o">:</span><span class="w"> </span><span class="n">Final</span><span class="w"> </span><span class="n">context</span><span class="o">:</span><span class="w"> </span><span class="mi">40</span><span class="w"> </span><span class="n">entities</span><span class="o">,</span><span class="w"> </span><span class="mi">140</span><span class="w"> </span><span class="n">relations</span><span class="o">,</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="n">chunks</span>
+</code></pre></div>
+
+<p>The system came back with <strong>High Volatility</strong> for February 2026, citing the Fed's 9-to-3 split vote on the rate path, unemployment at 4.6%, gold's weakest Q1 since 2013, and precious metals intraday ranges running five times their 2025 average. None of that came from our GARCH model — it came from the documents.</p>
+<p><img alt="LightRAG February 2026 volatility classification" src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/images/the-gold-diggers_02_feb26-volatility-response.png"></p>
+<p><em>Figure 7. System output classifying February 2026 as High Volatility, drawing from multiple source documents connected through the knowledge graph.</em></p>
+<hr>
+<h2>Takeaways</h2>
+<p>Running production AI on a free tier teaches you things a paid setup wouldn't. The quota constraints forced us to think carefully about what the model actually needs, which led us to strip numerical columns from the CSV, a decision that turned out to be architecturally correct anyway.</p>
+<p>Debugging was also a different kind of problem. A VPN rerouting traffic doesn't produce a clean stack trace. You form hypotheses and test them, which takes longer but leaves you with a much better understanding of what's actually happening under the hood.</p>
+<p>The harder ongoing challenge is connecting the GARCH outputs and the RAG outputs. GARCH gives us the "when" and "how much"; the knowledge graph gives us the "why". Making them talk to each other coherently is its own problem, and that's what our final report will focus on.</p>
+<hr>
+<p><em>Word count (excluding code and captions): approximately 1,700 words.</em></p>
+<p><em>The Gold Diggers — FINA2350, The University of Hong Kong, Jan–May 2026</em></p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-04-25T17:00:00+08:00">Sat 25 April 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#reflective-report-ref">Reflective Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#garch-ref">GARCH
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#group-the-gold-diggers-ref">Group The Gold Diggers
+                    <span class="superscript">2</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#knowledge-graph-ref">Knowledge Graph
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#lightrag-ref">LightRAG
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#llm-ref">LLM
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#nlp-ref">NLP
+                    <span class="superscript">2</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#ollama-ref">Ollama
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#rag-ref">RAG
+                    <span class="superscript">1</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
