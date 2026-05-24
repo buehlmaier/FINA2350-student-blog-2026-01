@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>FINA2350 Student Blog 2026 - Final Project Report</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/" rel="alternate"/><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/final-project-report.atom.xml" rel="self"/><id>https://buehlmaier.github.io/FINA2350-student-blog-2026-01/</id><updated>2026-05-03T00:00:00+08:00</updated><entry><title>A Comprehensive NLP Analysis of U.S.–Iran Conflict News and Brent Crude Futures (By group SENTIBRENT)</title><link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/a-comprehensive-nlp-analysis-of-us-iran-conflict-news-and-brent-crude-futures-by-group-sentibrent.html" rel="alternate"/><published>2026-05-03T00:00:00+08:00</published><updated>2026-05-03T00:00:00+08:00</updated><author><name>Group SENTIBRENT</name></author><id>tag:buehlmaier.github.io,2026-05-03:/FINA2350-student-blog-2026-01/a-comprehensive-nlp-analysis-of-us-iran-conflict-news-and-brent-crude-futures-by-group-sentibrent.html</id><summary type="html">&lt;h2&gt;Group SENTIBRENT: Analyzing the Geopolitical Impact on Brent Crude Oil&lt;/h2&gt;
+&lt;p&gt;As part of our course on NLP and Text Analysis in Financial Usage, our group, &lt;strong&gt;SENTIBRENT&lt;/strong&gt;, aimed to uncover the relationship between the stock fluctuations of Brent crude oil and US-Iran news [cite: 1, 10]. By combining sophisticated NLP models …&lt;/p&gt;</summary><content type="html">&lt;h2&gt;Group SENTIBRENT: Analyzing the Geopolitical Impact on Brent Crude Oil&lt;/h2&gt;
+&lt;p&gt;As part of our course on NLP and Text Analysis in Financial Usage, our group, &lt;strong&gt;SENTIBRENT&lt;/strong&gt;, aimed to uncover the relationship between the stock fluctuations of Brent crude oil and US-Iran news [cite: 1, 10]. By combining sophisticated NLP models with econometric regression, we established a pipeline that links geopolitical text data directly to market movements.&lt;/p&gt;
+&lt;p&gt;During our initial implementation, we encountered a critical issue: when applying TextBlob sentiment analysis, the majority of articles were labeled as positive, which was inconsistent with the geopolitical context of our dataset. Given that our sample focuses on U.S.–Iran tensions, military actions, and escalation risk, this result indicated a clear measurement problem.&lt;/p&gt;
+&lt;p&gt;For events (event 6 and event 7), we tried different approaches that we covered in class because we were interested in how different the results would be. After verifying the feasibility, we would apply it wider.&lt;/p&gt;
+&lt;h2&gt;Text Labeling&lt;/h2&gt;
+&lt;p&gt;For topic labeling we used three approaches - BERTopic, LDA and the keyword-based.&lt;/p&gt;
+&lt;p&gt;The keyword-based approach served as our baseline. We defined seven manually curated topic categories — Military Operations, Diplomacy &amp;amp; Negotiations, Civilian Impact, Geopolitics &amp;amp; Alliances, Nuclear Program, Leadership &amp;amp; Domestic Politics, and Media and Information War - each populated with domain-specific keyword lists. For every article, we counted regex-matched keyword hits per category and assigned the highest-scoring category as the primary topic, provided it met a minimum threshold of two hits. While straightforward and interpretable, this method is limited by its reliance on manual keyword selection, its inability to disambiguate polysemous words, and its complete lack of contextual understanding.&lt;/p&gt;
+&lt;p&gt;First, we should look back at our oil price list below.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Oil Price" src="images/Group-SENTIBRENT_02_image_Oil_Price.png"&gt;&lt;/p&gt;
+&lt;p&gt;Then, we give out the COMPARISON: BERTOPIC vs LDA vs KEYWORD TOPIC LABELING by Sentiment analysis.
+&lt;img alt="comparison" src="images/Group-SENTIBRENT_02_Comparison.png"&gt;&lt;/p&gt;
+&lt;p&gt;BERTopic represents the most semantically sophisticated approach in our comparison. Rather than relying on word counts or frequency weights, it begins by encoding each document into a dense 384-dimensional vector using the all-MiniLM-L6-v2 sentence transformer, which captures contextual meaning. 
+Unlike LDA, BERTopic does not require the number of topics to be specified in advance — HDBSCAN discovers clusters organically and identifies outlier documents that do not fit any topic (assigned topic ID −1). Topic representations are then extracted using class-based TF-IDF, which identifies the most representative words per cluster. This pipeline yields both a topic label and an assignment probability for each article, along with explicit outlier detection.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;Python&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pandas&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;requests&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;numpy&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;np&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;datetime&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timedelta&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Build BERTopic model with custom vectorizer (removes stopwords from topic labels)&lt;/span&gt;
+&lt;span class="n"&gt;vectorizer_model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;CountVectorizer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="n"&gt;stop_words&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;english&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;ngram_range&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="n"&gt;min_df&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;topic_model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;BERTopic&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="n"&gt;embedding_model&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;embedding_model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;umap_model&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;umap_model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;hdbscan_model&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;hdbscan_model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;vectorizer_model&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;vectorizer_model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;verbose&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;language&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;english&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# — 3. Fit the model —&lt;/span&gt;
+&lt;span class="n"&gt;topics&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;probs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;topic_model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fit_transform&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;raw_texts&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# — 4. Display discovered topics —&lt;/span&gt;
+&lt;span class="n"&gt;topic_info&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;topic_model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_topic_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;=&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;70&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;BERTOPIC RESULTS | &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;raw_texts&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; documents | &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;topic_info&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; topics discovered&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;=&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;70&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;Topic Overview:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;display&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;topic_info&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# — 5. Show top words per topic —&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;=&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;70&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;TOP WORDS PER TOPIC (c-TF-IDF)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;=&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;70&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;topic_id&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;topic_model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_topics&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;()):&lt;/span&gt;
+    &lt;span class="n"&gt;topic_words&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;topic_model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_topic&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;topic_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;topic_id&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="c1"&gt;# ... (continues)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;LDA, by contrast, is an unsupervised generative model that discovers latent topics from the text itself, without any predefined categories. We built a two-step pipeline: first, TF-IDF vectorization converted the preprocessed text into a document-term matrix weighted by term frequency–inverse document frequency, which downweights common words and highlights distinctive terms; second, an LDA model with k = 7 topics (chosen to match the keyword approach) was fitted to this matrix. Each article was then represented as a probability distribution over all seven topics, with the highest-probability topic taken as the primary assignment. This probabilistic framing is a key advantage — rather than a single hard label, LDA captures the mixture of themes within each document. However, LDA operates on a bag-of-words representation and cannot account for word order or semantic context.&lt;/p&gt;
+&lt;h2&gt;Identifying the Root Cause&lt;/h2&gt;
+&lt;p&gt;During early runs, &lt;strong&gt;TextBlob&lt;/strong&gt; labeled most articles as positive — implausible for U.S.–Iran conflict coverage. To diagnose why, we manually compared several articles with their sentiment outputs. TextBlob mainly reflects general linguistic polarity and misses domain-specific negative signals. In formal news writing, conflict is often phrased in neutral terms, so words such as “attack,” “strike,” “missile,” “threat,” “conflict,” “escalation,” “military,” “killed,” and “tension” were not consistently treated as negative, which biased scores upward.&lt;/p&gt;
+&lt;h2&gt;Model Adjustment Using Conflict Context&lt;/h2&gt;
+&lt;p&gt;To address this limitation, we upgraded our sentiment model by incorporating a context-based adjustment directly into our code. Specifically, for each article:
+•We first compute the raw TextBlob polarity score (raw_score)
+•Then, we define two domain-specific dictionaries:
+◦Negative context words (e.g., war, attack, missile, escalation, invasion)
+◦Positive context words (e.g., peace, agreement, ceasefire, negotiation)
+Next, the model counts the frequency of these words:
+•negative_count: total occurrences of conflict-related words
+•positive_count: total occurrences of de-escalation words
+We then construct a context adjustment term:
+&lt;img alt="context adjustments" src="images/Group-SENTIBRENT_02_context_adjustments.png"&gt;&lt;/p&gt;
+&lt;p&gt;This captures whether the article leans toward escalation or de-escalation in its language.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="adjusted score" src="images/Group-SENTIBRENT_02_adjusted_score.png"&gt;&lt;/p&gt;
+&lt;p&gt;This weighted approach ensures that:
+•TextBlob provides a baseline sentiment measure
+•The context adjustment introduces geopolitical relevance&lt;/p&gt;
+&lt;h2&gt;Final Classification&lt;/h2&gt;
+&lt;p&gt;Based on the adjusted score, we assign sentiment labels:
+•Positive: score ≥ 0.05
+•Negative: score ≤ −0.05
+•Neutral: between −0.05 and 0.05&lt;/p&gt;
+&lt;h2&gt;Final Adjusted Sentiment Score&lt;/h2&gt;
+&lt;p&gt;We balance the raw TextBlob polarity with the conflict-context adjustment in code as follows.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;=========================================================&lt;/span&gt;
+&lt;span class="c1"&gt;# IMPROVE!! Upgraded Sentiment Model&lt;/span&gt;
+&lt;span class="c1"&gt;# TextBlob + conflict adjustment&lt;/span&gt;
+&lt;span class="o"&gt;=========================================================&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;analyze_sentiment_upgraded&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;blob&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TextBlob&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;raw_score&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;blob&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sentiment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;polarity&lt;/span&gt;
+
+    &lt;span class="n"&gt;text_lower&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lower&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="n"&gt;negative_context_words&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;war&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;attack&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;strike&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;missile&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;threat&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;conflict&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;escalation&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;military&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;damage&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;killed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;invasion&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;tension&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;blockade&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;hostilities&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;force&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;coercion&amp;quot;&lt;/span&gt;
+    &lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="n"&gt;positive_context_words&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;peace&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;agreement&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ceasefire&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;negotiation&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;resolution&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;cooperation&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;stability&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;reopen&amp;quot;&lt;/span&gt;
+    &lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="n"&gt;negative_count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text_lower&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;negative_context_words&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;positive_count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text_lower&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;positive_context_words&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;total_context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;negative_count&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;positive_count&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;total_context&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;adjusted_score&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;raw_score&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;context_adjustment&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;positive_count&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;negative_count&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;total_context&lt;/span&gt;
+        &lt;span class="n"&gt;adjusted_score&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.6&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;raw_score&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mf"&gt;0.4&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;context_adjustment&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;adjusted_score&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mf"&gt;0.05&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;POSITIVE&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;adjusted_score&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.05&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;NEGATIVE&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;NEUTRAL&amp;quot;&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;raw_textblob_score&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;raw_score&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;adjusted_score&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;adjusted_score&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;label&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;negative_context_count&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;negative_count&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;positive_context_count&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;positive_count&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Importantly, this approach allows us to retain TextBlob’s smoother and more discriminating score distribution for regression analysis, while correcting its inability to recognize geopolitical risk language. Compared to VADER, which tends to produce extreme scores and react to formatting (e.g., capitalization and punctuation), our adjusted measure preserves meaningful variation across articles and reduces systematic measurement error. As a result, the final sentiment variable better reflects the true informational content of conflict news and provides a more reliable independent variable for explaining oil price movements.&lt;/p&gt;
+&lt;h2&gt;Regression Process&lt;/h2&gt;
+&lt;p&gt;With the sentiment scores and escalation index, we can continue to use a regression model to estimate the causal effects of escalation index &amp;amp; sentiment scores in newspapers on the Brent crude oil prices during the US-Iran conflict.&lt;/p&gt;
+&lt;p&gt;Before doing the regression, we need to further collate and clean our data. The below figure shows an example about features of data we consider, e.g., events, adjusted sentiment scores, escalation index, main categories, publication date (or the relevant newspaper), oil prices, etc.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Data cleaning" src="images/Group-SENTIBRENT_02_Data_cleaning.png"&gt;&lt;/p&gt;
+&lt;p&gt;One problem we faced is that merely escalation index &amp;amp; sentiment score cannot well explain the oil prices changes. Our solution is to add two more independent variables: category fixed effect and event fixed effect.&lt;/p&gt;
+&lt;p&gt;“Fixed effect” means the existence of a certain category/event, with all other variables constant, will have a fixed effect on the oil price. But different categories/events have fixed effects of different magnitude. Such effects will be captured by our coefficients in the regression.&lt;/p&gt;
+&lt;p&gt;We classify the topics of each newspaper into three themes: diplomacy, economy, and military conflict. We add this variable, because we think some investors mainly look at category of the items in the newspapers when making oil transaction decisions.&lt;/p&gt;
+&lt;p&gt;We, based on time frames, classify the overall US-Iran conflicts into eight events. This is because oil prices get escalated as the conflict is increasing serious over time.&lt;/p&gt;
+&lt;p&gt;Therefore, our regression formula is that:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Formula" src="images/Group-SENTIBRENT_02_Formula.png"&gt;&lt;/p&gt;
+&lt;p&gt;We then use Stata commands to run the regression. To fully capture the price changes, we think of three dependent variables. In other words, we regress (1) oil price; (2) the difference between highest and lowest oil price per day; (3) log(price) over the independent variables. However, after consideration of statistical significance and interpretation, our best results occur in (1) oil price regression. The exact code is as below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; &lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;delimited&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;fina2350_new.csv&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;varnames&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;encoding&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UTF&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;clear&lt;/span&gt;
+
+  &lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;fina2350_new.csv&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;replace&lt;/span&gt;
+
+  &lt;span class="n"&gt;encode&lt;/span&gt; &lt;span class="n"&gt;main_category&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;gen&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;main_category_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+  &lt;span class="n"&gt;encode&lt;/span&gt; &lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;gen&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;event_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+  &lt;span class="n"&gt;destring&lt;/span&gt; &lt;span class="n"&gt;oilprice_change&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;replace&lt;/span&gt; &lt;span class="n"&gt;ignore&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;%&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+  &lt;span class="n"&gt;regress&lt;/span&gt; &lt;span class="n"&gt;oil_price&lt;/span&gt; &lt;span class="n"&gt;adjusted_sentiment_score&lt;/span&gt; &lt;span class="n"&gt;escalation_index&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;main_category_id&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;event_id&lt;/span&gt;
+
+  &lt;span class="n"&gt;regress&lt;/span&gt; &lt;span class="n"&gt;high_low_dif&lt;/span&gt; &lt;span class="n"&gt;adjusted_sentiment_score&lt;/span&gt; &lt;span class="n"&gt;escalation_index&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;main_category_id&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;event_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;level&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;90&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+  &lt;span class="n"&gt;regress&lt;/span&gt; &lt;span class="n"&gt;ln_price&lt;/span&gt; &lt;span class="n"&gt;adjusted_sentiment_score&lt;/span&gt; &lt;span class="n"&gt;escalation_index&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;main_category_id&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;event_id&lt;/span&gt;
+
+  &lt;span class="n"&gt;ssc&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;coefplot&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;replace&lt;/span&gt;
+
+  &lt;span class="n"&gt;coefplot&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;drop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_cons&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;xline&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;After the regression, we visualize the results via a clearer formula (with coefficients) and a coefficient plot (The “Dot-and-Whisker” Plot). The selected confidence interval for this regression is 95% to ensure more accurate predictions. The R-square is about 0.97, a good capture of overall effects of different factors on oil pricure.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="price calculation" src="images/Group-SENTIBRENT_02_price_calculation.png"&gt;&lt;/p&gt;
+&lt;p&gt;In the coefficient plot, 
+The causal effect of escalation index over the oil price is -1.01, a small negative influence. This points out that most investors may not pay some attention to the escalatory words (e.g., war) in a long newspaper. Instead, they care more about the generael picture, including the category of newspapers and the occurance of world events &lt;/p&gt;
+&lt;p&gt;It is clear that, as time goes by, event takes palce in order, the US-Iran conflict is more serious, and the coefficient for the event fixed effects becomes larger (from 7.37-36.30) and has more effects on the oil prices.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Coefficient" src="images/Group-SENTIBRENT_02_Coefficient.png"&gt;&lt;/p&gt;
+&lt;h3&gt;Key Results&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;em&gt;Model Fit&lt;/em&gt; : The model achieved an R-square of approximately 0.97, indicating a very strong capture of the overall effects on oil prices [cite: 19].&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Escalation Impact&lt;/em&gt;: Interestingly, the causal effect of the escalation index on oil price was -1.01 (a small negative influence) [cite: 21]. This suggests investors don't strictly react to escalatory vocabulary embedded deep within long news articles [cite: 22].&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;The Big Picture&lt;/em&gt;: Instead of granular word sentiment, investors care heavily about the macro environment. The fixed effects for the general category of the news and the specific timeline of events were highly significant [cite: 23].&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Temporal Severity&lt;/em&gt;: As the timeline progressed and the conflict deepened (Events 2 through 8), the coefficients for the event fixed effects massively increased from 7.37 up to 36.30 [cite: 24].&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;By merging advanced language modeling, including BERTopic, Context-Adjusted Sentiment, with strict econometric methodology of Fixed-Effects Regression, we completely mapped the nuanced ways geopolitical news translates into global energy market fluctuations in the end.&lt;/p&gt;</content><category term="Final Project Report"/><category term="NLP"/><category term="Financial Analytics"/><category term="Sentiment Analysis"/><category term="Brent crude oil"/></entry></feed>

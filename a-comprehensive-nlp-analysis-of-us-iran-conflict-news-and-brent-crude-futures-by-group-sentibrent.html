@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="Group SENTIBRENT" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="NLP, Financial Analytics, Sentiment Analysis, Brent crude oil, Final Project Report, " />
+
+<meta property="og:title" content="A Comprehensive NLP Analysis of U.S.–Iran Conflict News and Brent Crude Futures (By group SENTIBRENT) "/>
+<meta property="og:url" content="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/a-comprehensive-nlp-analysis-of-us-iran-conflict-news-and-brent-crude-futures-by-group-sentibrent.html" />
+<meta property="og:description" content="Group SENTIBRENT: Analyzing the Geopolitical Impact on Brent Crude Oil As part of our course on NLP and Text Analysis in Financial Usage, our group, SENTIBRENT, aimed to uncover the relationship between the stock fluctuations of Brent crude oil and US-Iran news [cite: 1, 10]. By combining sophisticated NLP models …" />
+<meta property="og:site_name" content="FINA2350 Student Blog 2026" />
+<meta property="og:article:author" content="Group SENTIBRENT" />
+<meta property="og:article:published_time" content="2026-05-03T00:00:00+08:00" />
+<meta name="twitter:title" content="A Comprehensive NLP Analysis of U.S.–Iran Conflict News and Brent Crude Futures (By group SENTIBRENT) ">
+<meta name="twitter:description" content="Group SENTIBRENT: Analyzing the Geopolitical Impact on Brent Crude Oil As part of our course on NLP and Text Analysis in Financial Usage, our group, SENTIBRENT, aimed to uncover the relationship between the stock fluctuations of Brent crude oil and US-Iran news [cite: 1, 10]. By combining sophisticated NLP models …">
+
+        <title>A Comprehensive NLP Analysis of U.S.–Iran Conflict News and Brent Crude Futures (By group SENTIBRENT)  · FINA2350 Student Blog 2026
+</title>
+        <link href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="FINA2350 Student Blog 2026 - Full Atom Feed" />
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/"><span class=site-name>FINA2350 Student Blog 2026</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       https://buehlmaier.github.io/FINA2350-student-blog-2026-01
+                                    >Home</a>
+                                </li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html">Categories</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html">Tags</a></li>
+                                <li ><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/a-comprehensive-nlp-analysis-of-us-iran-conflict-news-and-brent-crude-futures-by-group-sentibrent.html">
+                A Comprehensive NLP Analysis of U.S.–Iran Conflict News and Brent Crude Futures (By group SENTIBRENT)
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <h2>Group SENTIBRENT: Analyzing the Geopolitical Impact on Brent Crude Oil</h2>
+<p>As part of our course on NLP and Text Analysis in Financial Usage, our group, <strong>SENTIBRENT</strong>, aimed to uncover the relationship between the stock fluctuations of Brent crude oil and US-Iran news [cite: 1, 10]. By combining sophisticated NLP models with econometric regression, we established a pipeline that links geopolitical text data directly to market movements.</p>
+<p>During our initial implementation, we encountered a critical issue: when applying TextBlob sentiment analysis, the majority of articles were labeled as positive, which was inconsistent with the geopolitical context of our dataset. Given that our sample focuses on U.S.–Iran tensions, military actions, and escalation risk, this result indicated a clear measurement problem.</p>
+<p>For events (event 6 and event 7), we tried different approaches that we covered in class because we were interested in how different the results would be. After verifying the feasibility, we would apply it wider.</p>
+<h2>Text Labeling</h2>
+<p>For topic labeling we used three approaches - BERTopic, LDA and the keyword-based.</p>
+<p>The keyword-based approach served as our baseline. We defined seven manually curated topic categories — Military Operations, Diplomacy &amp; Negotiations, Civilian Impact, Geopolitics &amp; Alliances, Nuclear Program, Leadership &amp; Domestic Politics, and Media and Information War - each populated with domain-specific keyword lists. For every article, we counted regex-matched keyword hits per category and assigned the highest-scoring category as the primary topic, provided it met a minimum threshold of two hits. While straightforward and interpretable, this method is limited by its reliance on manual keyword selection, its inability to disambiguate polysemous words, and its complete lack of contextual understanding.</p>
+<p>First, we should look back at our oil price list below.</p>
+<p><img alt="Oil Price" src="images/Group-SENTIBRENT_02_image_Oil_Price.png"></p>
+<p>Then, we give out the COMPARISON: BERTOPIC vs LDA vs KEYWORD TOPIC LABELING by Sentiment analysis.
+<img alt="comparison" src="images/Group-SENTIBRENT_02_Comparison.png"></p>
+<p>BERTopic represents the most semantically sophisticated approach in our comparison. Rather than relying on word counts or frequency weights, it begins by encoding each document into a dense 384-dimensional vector using the all-MiniLM-L6-v2 sentence transformer, which captures contextual meaning. 
+Unlike LDA, BERTopic does not require the number of topics to be specified in advance — HDBSCAN discovers clusters organically and identifies outlier documents that do not fit any topic (assigned topic ID −1). Topic representations are then extracted using class-based TF-IDF, which identifies the most representative words per cluster. This pipeline yields both a topic label and an assignment probability for each article, along with explicit outlier detection.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Python</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1"># Build BERTopic model with custom vectorizer (removes stopwords from topic labels)</span>
+<span class="n">vectorizer_model</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span>
+    <span class="n">stop_words</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span>
+    <span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="n">min_df</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+
+<span class="n">topic_model</span> <span class="o">=</span> <span class="n">BERTopic</span><span class="p">(</span>
+    <span class="n">embedding_model</span><span class="o">=</span><span class="n">embedding_model</span><span class="p">,</span>
+    <span class="n">umap_model</span><span class="o">=</span><span class="n">umap_model</span><span class="p">,</span>
+    <span class="n">hdbscan_model</span><span class="o">=</span><span class="n">hdbscan_model</span><span class="p">,</span>
+    <span class="n">vectorizer_model</span><span class="o">=</span><span class="n">vectorizer_model</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">language</span><span class="o">=</span><span class="s1">&#39;english&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># — 3. Fit the model —</span>
+<span class="n">topics</span><span class="p">,</span> <span class="n">probs</span> <span class="o">=</span> <span class="n">topic_model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">raw_texts</span><span class="p">)</span>
+
+<span class="c1"># — 4. Display discovered topics —</span>
+<span class="n">topic_info</span> <span class="o">=</span> <span class="n">topic_model</span><span class="o">.</span><span class="n">get_topic_info</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BERTOPIC RESULTS | </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">raw_texts</span><span class="p">)</span><span class="si">}</span><span class="s2"> documents | </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">topic_info</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2"> topics discovered&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Topic Overview:&quot;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">topic_info</span><span class="p">)</span>
+
+<span class="c1"># — 5. Show top words per topic —</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TOP WORDS PER TOPIC (c-TF-IDF)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">topic_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">topic_model</span><span class="o">.</span><span class="n">get_topics</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="n">topic_words</span> <span class="o">=</span> <span class="n">topic_model</span><span class="o">.</span><span class="n">get_topic</span><span class="p">(</span><span class="n">topic_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">topic_id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># ... (continues)</span>
+</code></pre></div>
+
+<p>LDA, by contrast, is an unsupervised generative model that discovers latent topics from the text itself, without any predefined categories. We built a two-step pipeline: first, TF-IDF vectorization converted the preprocessed text into a document-term matrix weighted by term frequency–inverse document frequency, which downweights common words and highlights distinctive terms; second, an LDA model with k = 7 topics (chosen to match the keyword approach) was fitted to this matrix. Each article was then represented as a probability distribution over all seven topics, with the highest-probability topic taken as the primary assignment. This probabilistic framing is a key advantage — rather than a single hard label, LDA captures the mixture of themes within each document. However, LDA operates on a bag-of-words representation and cannot account for word order or semantic context.</p>
+<h2>Identifying the Root Cause</h2>
+<p>During early runs, <strong>TextBlob</strong> labeled most articles as positive — implausible for U.S.–Iran conflict coverage. To diagnose why, we manually compared several articles with their sentiment outputs. TextBlob mainly reflects general linguistic polarity and misses domain-specific negative signals. In formal news writing, conflict is often phrased in neutral terms, so words such as “attack,” “strike,” “missile,” “threat,” “conflict,” “escalation,” “military,” “killed,” and “tension” were not consistently treated as negative, which biased scores upward.</p>
+<h2>Model Adjustment Using Conflict Context</h2>
+<p>To address this limitation, we upgraded our sentiment model by incorporating a context-based adjustment directly into our code. Specifically, for each article:
+•We first compute the raw TextBlob polarity score (raw_score)
+•Then, we define two domain-specific dictionaries:
+◦Negative context words (e.g., war, attack, missile, escalation, invasion)
+◦Positive context words (e.g., peace, agreement, ceasefire, negotiation)
+Next, the model counts the frequency of these words:
+•negative_count: total occurrences of conflict-related words
+•positive_count: total occurrences of de-escalation words
+We then construct a context adjustment term:
+<img alt="context adjustments" src="images/Group-SENTIBRENT_02_context_adjustments.png"></p>
+<p>This captures whether the article leans toward escalation or de-escalation in its language.</p>
+<p><img alt="adjusted score" src="images/Group-SENTIBRENT_02_adjusted_score.png"></p>
+<p>This weighted approach ensures that:
+•TextBlob provides a baseline sentiment measure
+•The context adjustment introduces geopolitical relevance</p>
+<h2>Final Classification</h2>
+<p>Based on the adjusted score, we assign sentiment labels:
+•Positive: score ≥ 0.05
+•Negative: score ≤ −0.05
+•Neutral: between −0.05 and 0.05</p>
+<h2>Final Adjusted Sentiment Score</h2>
+<p>We balance the raw TextBlob polarity with the conflict-context adjustment in code as follows.</p>
+<div class="highlight"><pre><span></span><code><span class="o">=========================================================</span>
+<span class="c1"># IMPROVE!! Upgraded Sentiment Model</span>
+<span class="c1"># TextBlob + conflict adjustment</span>
+<span class="o">=========================================================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">analyze_sentiment_upgraded</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">blob</span> <span class="o">=</span> <span class="n">TextBlob</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">raw_score</span> <span class="o">=</span> <span class="n">blob</span><span class="o">.</span><span class="n">sentiment</span><span class="o">.</span><span class="n">polarity</span>
+
+    <span class="n">text_lower</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">negative_context_words</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;war&quot;</span><span class="p">,</span> <span class="s2">&quot;attack&quot;</span><span class="p">,</span> <span class="s2">&quot;strike&quot;</span><span class="p">,</span> <span class="s2">&quot;missile&quot;</span><span class="p">,</span> <span class="s2">&quot;threat&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;conflict&quot;</span><span class="p">,</span> <span class="s2">&quot;escalation&quot;</span><span class="p">,</span> <span class="s2">&quot;military&quot;</span><span class="p">,</span> <span class="s2">&quot;damage&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;killed&quot;</span><span class="p">,</span> <span class="s2">&quot;invasion&quot;</span><span class="p">,</span> <span class="s2">&quot;tension&quot;</span><span class="p">,</span> <span class="s2">&quot;blockade&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hostilities&quot;</span><span class="p">,</span> <span class="s2">&quot;force&quot;</span><span class="p">,</span> <span class="s2">&quot;coercion&quot;</span>
+    <span class="p">]</span>
+
+    <span class="n">positive_context_words</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;peace&quot;</span><span class="p">,</span> <span class="s2">&quot;agreement&quot;</span><span class="p">,</span> <span class="s2">&quot;ceasefire&quot;</span><span class="p">,</span> <span class="s2">&quot;negotiation&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;resolution&quot;</span><span class="p">,</span> <span class="s2">&quot;cooperation&quot;</span><span class="p">,</span> <span class="s2">&quot;stability&quot;</span><span class="p">,</span> <span class="s2">&quot;reopen&quot;</span>
+    <span class="p">]</span>
+
+    <span class="n">negative_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">text_lower</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">negative_context_words</span><span class="p">)</span>
+    <span class="n">positive_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">text_lower</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">positive_context_words</span><span class="p">)</span>
+
+    <span class="n">total_context</span> <span class="o">=</span> <span class="n">negative_count</span> <span class="o">+</span> <span class="n">positive_count</span>
+
+    <span class="k">if</span> <span class="n">total_context</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">adjusted_score</span> <span class="o">=</span> <span class="n">raw_score</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">context_adjustment</span> <span class="o">=</span> <span class="p">(</span><span class="n">positive_count</span> <span class="o">-</span> <span class="n">negative_count</span><span class="p">)</span> <span class="o">/</span> <span class="n">total_context</span>
+        <span class="n">adjusted_score</span> <span class="o">=</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="n">raw_score</span> <span class="o">+</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">context_adjustment</span>
+
+    <span class="k">if</span> <span class="n">adjusted_score</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;POSITIVE&quot;</span>
+    <span class="k">elif</span> <span class="n">adjusted_score</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;NEGATIVE&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;NEUTRAL&quot;</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;raw_textblob_score&quot;</span><span class="p">:</span> <span class="n">raw_score</span><span class="p">,</span>
+        <span class="s2">&quot;adjusted_score&quot;</span><span class="p">:</span> <span class="n">adjusted_score</span><span class="p">,</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+        <span class="s2">&quot;negative_context_count&quot;</span><span class="p">:</span> <span class="n">negative_count</span><span class="p">,</span>
+        <span class="s2">&quot;positive_context_count&quot;</span><span class="p">:</span> <span class="n">positive_count</span>
+    <span class="p">}</span>
+</code></pre></div>
+
+<p>Importantly, this approach allows us to retain TextBlob’s smoother and more discriminating score distribution for regression analysis, while correcting its inability to recognize geopolitical risk language. Compared to VADER, which tends to produce extreme scores and react to formatting (e.g., capitalization and punctuation), our adjusted measure preserves meaningful variation across articles and reduces systematic measurement error. As a result, the final sentiment variable better reflects the true informational content of conflict news and provides a more reliable independent variable for explaining oil price movements.</p>
+<h2>Regression Process</h2>
+<p>With the sentiment scores and escalation index, we can continue to use a regression model to estimate the causal effects of escalation index &amp; sentiment scores in newspapers on the Brent crude oil prices during the US-Iran conflict.</p>
+<p>Before doing the regression, we need to further collate and clean our data. The below figure shows an example about features of data we consider, e.g., events, adjusted sentiment scores, escalation index, main categories, publication date (or the relevant newspaper), oil prices, etc.</p>
+<p><img alt="Data cleaning" src="images/Group-SENTIBRENT_02_Data_cleaning.png"></p>
+<p>One problem we faced is that merely escalation index &amp; sentiment score cannot well explain the oil prices changes. Our solution is to add two more independent variables: category fixed effect and event fixed effect.</p>
+<p>“Fixed effect” means the existence of a certain category/event, with all other variables constant, will have a fixed effect on the oil price. But different categories/events have fixed effects of different magnitude. Such effects will be captured by our coefficients in the regression.</p>
+<p>We classify the topics of each newspaper into three themes: diplomacy, economy, and military conflict. We add this variable, because we think some investors mainly look at category of the items in the newspapers when making oil transaction decisions.</p>
+<p>We, based on time frames, classify the overall US-Iran conflicts into eight events. This is because oil prices get escalated as the conflict is increasing serious over time.</p>
+<p>Therefore, our regression formula is that:</p>
+<p><img alt="Formula" src="images/Group-SENTIBRENT_02_Formula.png"></p>
+<p>We then use Stata commands to run the regression. To fully capture the price changes, we think of three dependent variables. In other words, we regress (1) oil price; (2) the difference between highest and lowest oil price per day; (3) log(price) over the independent variables. However, after consideration of statistical significance and interpretation, our best results occur in (1) oil price regression. The exact code is as below:</p>
+<div class="highlight"><pre><span></span><code> <span class="kn">import</span><span class="w"> </span><span class="nn">delimited</span> <span class="n">using</span> <span class="s2">&quot;fina2350_new.csv&quot;</span><span class="p">,</span> <span class="n">varnames</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">encoding</span><span class="p">(</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span><span class="p">)</span> <span class="n">clear</span>
+
+  <span class="n">save</span> <span class="s2">&quot;fina2350_new.csv&quot;</span><span class="p">,</span> <span class="n">replace</span>
+
+  <span class="n">encode</span> <span class="n">main_category</span><span class="p">,</span> <span class="n">gen</span><span class="p">(</span><span class="n">main_category_id</span><span class="p">)</span>
+
+  <span class="n">encode</span> <span class="n">event</span><span class="p">,</span> <span class="n">gen</span><span class="p">(</span><span class="n">event_id</span><span class="p">)</span>
+
+  <span class="n">destring</span> <span class="n">oilprice_change</span><span class="p">,</span> <span class="n">replace</span> <span class="n">ignore</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">)</span>
+
+  <span class="n">regress</span> <span class="n">oil_price</span> <span class="n">adjusted_sentiment_score</span> <span class="n">escalation_index</span> <span class="n">i</span><span class="o">.</span><span class="n">main_category_id</span> <span class="n">i</span><span class="o">.</span><span class="n">event_id</span>
+
+  <span class="n">regress</span> <span class="n">high_low_dif</span> <span class="n">adjusted_sentiment_score</span> <span class="n">escalation_index</span> <span class="n">i</span><span class="o">.</span><span class="n">main_category_id</span> <span class="n">i</span><span class="o">.</span><span class="n">event_id</span><span class="p">,</span> <span class="n">level</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+
+  <span class="n">regress</span> <span class="n">ln_price</span> <span class="n">adjusted_sentiment_score</span> <span class="n">escalation_index</span> <span class="n">i</span><span class="o">.</span><span class="n">main_category_id</span> <span class="n">i</span><span class="o">.</span><span class="n">event_id</span>
+
+  <span class="n">ssc</span> <span class="n">install</span> <span class="n">coefplot</span><span class="p">,</span> <span class="n">replace</span>
+
+  <span class="n">coefplot</span><span class="p">,</span> <span class="n">drop</span><span class="p">(</span><span class="n">_cons</span><span class="p">)</span> <span class="n">xline</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div>
+
+<p>After the regression, we visualize the results via a clearer formula (with coefficients) and a coefficient plot (The “Dot-and-Whisker” Plot). The selected confidence interval for this regression is 95% to ensure more accurate predictions. The R-square is about 0.97, a good capture of overall effects of different factors on oil pricure.</p>
+<p><img alt="price calculation" src="images/Group-SENTIBRENT_02_price_calculation.png"></p>
+<p>In the coefficient plot, 
+The causal effect of escalation index over the oil price is -1.01, a small negative influence. This points out that most investors may not pay some attention to the escalatory words (e.g., war) in a long newspaper. Instead, they care more about the generael picture, including the category of newspapers and the occurance of world events </p>
+<p>It is clear that, as time goes by, event takes palce in order, the US-Iran conflict is more serious, and the coefficient for the event fixed effects becomes larger (from 7.37-36.30) and has more effects on the oil prices.</p>
+<p><img alt="Coefficient" src="images/Group-SENTIBRENT_02_Coefficient.png"></p>
+<h3>Key Results</h3>
+<ol>
+<li><em>Model Fit</em> : The model achieved an R-square of approximately 0.97, indicating a very strong capture of the overall effects on oil prices [cite: 19].</li>
+<li><em>Escalation Impact</em>: Interestingly, the causal effect of the escalation index on oil price was -1.01 (a small negative influence) [cite: 21]. This suggests investors don't strictly react to escalatory vocabulary embedded deep within long news articles [cite: 22].</li>
+<li><em>The Big Picture</em>: Instead of granular word sentiment, investors care heavily about the macro environment. The fixed effects for the general category of the news and the specific timeline of events were highly significant [cite: 23].</li>
+<li><em>Temporal Severity</em>: As the timeline progressed and the conflict deepened (Events 2 through 8), the coefficients for the event fixed effects massively increased from 7.37 up to 36.30 [cite: 24].</li>
+</ol>
+<p>By merging advanced language modeling, including BERTopic, Context-Adjusted Sentiment, with strict econometric methodology of Fixed-Effects Regression, we completely mapped the nuanced ways geopolitical news translates into global energy market fluctuations in the end.</p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2026-05-03T00:00:00+08:00">Sun 03 May 2026</time>
+            <h4>Category</h4>
+            <a class="category-link" href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/categories.html#final-project-report-ref">Final Project Report</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#brent-crude-oil-ref">Brent crude oil
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#financial-analytics-ref">Financial Analytics
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#nlp-ref">NLP
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/tags.html#sentiment-analysis-ref">Sentiment Analysis
+                    <span class="superscript">2</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://github.com/buehlmaier/FINA2350-student-blog-2026-01" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://buehlmaier.github.io/FINA2350-student-blog-2026-01/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
